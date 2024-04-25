@@ -1,0 +1,67 @@
+Here's the Ladder Diagram program in ASCII art for the pick-and-place application according to IEC 61131-3:
+
+```
+Rung 1: Mode Selection
+|   Auto   |   Manual   |
++----] [----+----] [-----+
+|           |            |
+|     (S)   |     (R)    |
++-----] [---+-----] [----+
+      Mode        Mode
+
+Rung 2: Manual Control
+|  Mode  | Manual |  Clip  |
++---] [--+--] [---+--] [--+--+
+|        |        |   (S) |  |
+|        |        +--] [--+  |
+|        |             Clip  |
+|        |  Clip  |Transfer|  |
+|        +--] [---+--] [--+--+
+|                 |   (S) |
+|                 +--] [--+
+|                  Transfer
+|        |Transfer| Release|
+|        +--] [---+--] [--+--( )
+|                 |   (S) |
+|                 +--] [--+
+|                   Release
+|        | Release|
+|        +--] [---+--( )
+|                 |
++-----------------(R)
+                  Clip
+
+Rung 3: Auto Control
+|  Mode  |  Auto  |  Clip  |
++---]/[--+--] [---+--] [--+--+
+|        |        |   (S) |  |
+|        |        +--] [--+  |
+|        |             Clip  |
+|        |  Clip  |        |  |
+|        +--] [---+ t_trans+--+
+|                 |   (S) |
+|                 +--] [--+
+|                    2 sec
+|        | t_trans|Transfer|
+|        +--] [---+--] [--+--( )
+|                 |   (S) |
+|                 +--] [--+
+|                  Transfer
+|        |Transfer| Release|
+|        +--] [---+--] [--+--( )
+|                 |   (S) |
+|                 +--] [--+
+|                   Release
+|        | Release|
+|        +--] [---+--( )
+|                 |
++-----------------(R)
+                  Clip
+```
+
+Explanation:
+- Rung 1 selects the mode using Set (S) and Reset (R) for the "Mode" flag. When "Auto" is pressed, it sets the "Mode" flag to 1 (Auto mode). When "Manual" is pressed, it resets the "Mode" flag to 0 (Manual mode).
+- Rung 2 handles the manual control process. When in Manual mode and the respective buttons are pressed, it sets (S) the corresponding flags (Clip, Transfer, Release) to execute the manual actions. The Release action also resets (R) the Clip flag.
+- Rung 3 handles the auto control process. When in Auto mode and the "Auto" button is pressed, it sets (S) the Clip flag to start the sequence. After clipping, a 2-second timer (t_trans) is activated, and when it times out, it sets (S) the Transfer flag. After transferring, the Release flag is set (S). Finally, the Release action resets (R) the Clip flag to prepare for the next cycle.
+
+Note: The "(S)" and "(R)" symbols represent Set and Reset coils, respectively. The "--( )" symbol represents a normal coil.

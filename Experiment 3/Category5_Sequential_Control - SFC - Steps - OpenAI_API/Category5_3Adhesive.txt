@@ -1,0 +1,70 @@
+Given the task of creating a self-contained 61131-3 Sequential Function Chart (SFC) program for the sequential control part of step B.2, "Reaction," in an ISA-88 batch control recipe for adhesive production, let's walk through the steps:
+
+### Step 1:#### Define and list the inputs and outputs of the Sequential Function Chart.
+
+- **Inputs:**
+  - `Start_Reaction`: Boolean signal to start the reaction process.
+  - `Temp_Reached`: Boolean signal indicating that the required temperature has been reached.
+  - `Mixing_Done`: Boolean signal indicating that the mixing process is complete.
+  - `Reaction_Time_Elapsed`: Boolean signal from a timer indicating that the reaction time has elapsed.
+- **Outputs:**
+  - `Heat_On`: Boolean signal to activate heating.
+  - `Mixer_On`: Boolean signal to activate the mixer.
+  - `Next_Step`: Boolean signal to move to the next step in the process sequence.
+
+### Step 2:#### Briefly describe the state machine of the requirements.
+
+The state machine for the "Reaction" step in the adhesive production process includes the following states:
+1. **Start:** Waiting for the process to start.
+2. **Heating:** Heating up the mixture to a required temperature.
+3. **Mixing:** Activating the mixer to mix ingredients thoroughly after reaching the required temperature.
+4. **Reacting:** Maintaining the conditions for the chemical reaction to occur.
+5. **Done:** Completing the reaction process and preparing for the next step.
+
+Transitions between the states are triggered by the inputs, such as reaching the required temperature, completing the mixing, and the reaction time elapsing.
+
+### Step 3:#### Give the Sequential Function Chart program in ASCII art.
+
+```
+    +--[Start]--+ 
+    |           | 
+    |           v
+    |         (Start_Reaction)
+    |           |
+    +-->[Heating]--------------+
+    |           |              |
+    |     (Temp_Reached)       |
+    |           |              |
+    +-->[Mixing]---------+     |
+    |           |        |     |
+    |  (Mixing_Done)     |     |
+    |           |        |     |
+    +-->[Reacting]       |     |
+                |        |     |
+    (Reaction_Time_Elapsed)   |
+                |        |     |
+                |        |     |
+                +->[Done]<----+
+                      |
+                      v
+                  (Next_Step)
+```
+
+### Step 4:#### Explain the purpose of each step, action, and transition.
+
+- **Start:** Awaiting the start of the reaction process. Once the `Start_Reaction` signal is received, the process moves to the Heating state.
+- **Heating:** In this step, the `Heat_On` output is activated to heat the mixture. The transition to the next state occurs once the `Temp_Reached` input signal indicates the mixture has reached the required temperature.
+- **Mixing:** The `Mixer_On` output is activated to mix the ingredients thoroughly. The process moves to the Reacting state after the `Mixing_Done` signal is received, indicating mixing is complete.
+- **Reacting:** This state maintains the current conditions to allow the chemical reaction to occur. The transition to Done is triggered by the `Reaction_Time_Elapsed` signal.
+- **Done:** This state represents the completion of the reaction process. The `Next_Step` output can be activated to proceed to the next process step.
+
+Transitions between states are governed by conditions related to each state's completion, such as reaching temperature, mixing completion, and reaction time elapse.
+
+### Step 5:#### Check the SFC you generate according to the IEC 61131 standard.
+
+The provided Sequential Function Chart (SFC) adheres to the IEC 61131-3 standard as it clearly defines:
+- Input and output signals that drive the reactions and transitions between the steps.
+- The flow from one step to another, ensuring a logical and sequential execution of tasks.
+- Conditions for transitions that are specific and directly related to the process parameters.
+
+The SFC structure, with its steps, actions, and transitions, meets the requirements for controlling a process in a defined sequence, in this case, the "Reaction" step in adhesive production, thereby complying with IEC 61131-3 standards for PLC programming.

@@ -1,0 +1,56 @@
+Step 1:####
+Inputs:
+- EmergencyStop (Button 1)
+- StartMachine (Button 2)
+- CoffeeAndMilk (Button 3)
+- CoffeeOnly (Button 4)
+- TankLevel130ml (Sensor indicating the tank has reached 130ml)
+
+Outputs:
+- ValveCoffee (Controls the coffee valve)
+- ValveMilk (Controls the milk valve)
+- ValveOutput (Controls the output valve)
+- Mixer (Controls the mixer operation)
+
+Step 2:####
+```
+                        +----+
+           +----------->| S1 |--------------+
+           |            +----+              |
+           |               |                |
+           |               v                |
+      +----+----+       +----+           +----+
+      | Start   |       |Fill |           |Stop|
+      +---------+       +----+           +----+
+           ^               |                |
+           |               v                |
+           |            +----+           +----+
+           |            |Mix |           |Error|
+           |            +----+           +----+
+           |               |                |
+           |               v                |
+           |            +----+              |
+           +------------|End |<-------------+
+                        +----+
+```
+
+Step 3:####
+- **Start**: Initial step. Waits for the StartMachine button to be pressed.
+- **Fill**: Begins filling the tank with coffee and milk if CoffeeAndMilk button is pressed or with only coffee if CoffeeOnly button is pressed. Continues until the tank level reaches 130ml.
+- **Mix**: Starts the mixer once the tank level reaches 130ml. The mixer works for 4 seconds.
+- **End**: Opens the output valve to dispense the coffee after mixing is complete.
+- **Stop**: Emergency stop is activated if any issue is detected during the process like valves not opening or mixer not working.
+- **Error**: Reports an error state. It is activated from the "Stop" step if emergency stop is pressed or any unexpected event occurs.
+
+Transitions:
+- From Start to Fill: When StartMachine button is pressed.
+- From Fill to Mix: When TankLevel130ml sensor is triggered.
+- From Mix to End: After 4 seconds of mixing.
+- From any step to Stop: When EmergencyStop button is pressed.
+- From Stop to Error: Detects any malfunction like valves not opening or mixer failure.
+
+Step 4:####
+The state machine begins in the Start state waiting for the StartMachine button to be pressed. Upon pressing, it transitions to either Fill with coffee or coffee and milk based on the button pressed, waiting until the tank is filled to 130ml, then transitions to Mix where the mixture is blended for 4 seconds. Following mixing, it moves to End to dispense the drink. At any point, if an emergency stop is initiated, the machine transitions to Stop and then to Error if a problem is detected. This ensures the machine operates in a set sequence with safety checks.
+
+Step 5:####
+The SFC designed follows the IEC 61131-3 standard for Sequential Function Charts. Each step has clear transitions based on inputs like buttons and sensors, ensuring logical and sequential operation. The transitions are conditioned on tangible events, making the design robust and adherent to standards. The inclusion of an emergency stop and error state adheres to the standards of safety and error handling prescribed by IEC 61131-3.

@@ -1,0 +1,51 @@
+Given the requirements, we'll create a Sequential Function Chart (SFC) model for controlling the alternating operation of two water pumps, P1 and P2, based on water level sensors HL (High Level) and LL (Low Level). The control logic ensures only one pump operates at a time and they switch after each operation to balance wear.
+
+```
+(Start of Sequential Function Chart)
+
+        +---------------------<-------------------------+
+        |                                               |
+        |                                               |
++============+                                          |
+||          ||                                          |
+|| Initial  ||                                          |
+||  State   ||                                          |
+|| (Idle)   ||                                          |
++============+                                          |
+        |                                               |
+        |                                               |
+        + HL                                            |
+        |                                               |
+        |                                               |
++---------------+     +------+-------------+------+     |
+|    Pump1On    |     |  N   |  P1         |      |     |
+|               |---->|      |(Activate)   |      |     |
+|               |     |      |             |      |     |
++---------------+     +------+-------------+------+     |
+        |                                               |
+        |                                               |
+        + LL                                            |
+        |                                               |
+        |                                               |
++---------------+     +------+-------------+------+     |
+|    Pump2On    |     |  N   |  P2         |      |     |
+|               |---->|      |(Activate)   |      |     |
+|               |     |      |             |      |     |
++---------------+     +------+-------------+------+     |
+        |                                               |
+        |                                               |
+        + LL                                            |
+        |                                               |
+        |                                               |
+        +------------------->---------------------------+
+
+(End of Sequential Function Chart)
+```  
+
+**Explanation of the Sequence:**
+- **Initial State (Idle):** The system is idling, waiting for the water level to rise above the high line (HL).
+- **Pump1On:** Once HL is activated (indicating high water level), Pump1 (P1) starts to reduce the water level. The operation moves to this step automatically from the initial state when the condition is met.
+- **Pump2On:** After Pump1 reduces the water level below the low level line (LL), and then the water rises above HL again, Pump2 (P2) is activated instead of Pump1 to balance the wear on the pumps. This step is sequenced to activate after Pump1 stops (when water is below LL again) and HL is active again.
+- The cycle repeats, with each pump only operating when the water level crosses above HL (to start) and then stopping when going below LL, ensuring alternating operation of the pumps.
+
+Note that this diagram is simplified for clarity. Additional control logic may be required to prevent rapid switching and to handle edge cases or unexpected conditions (e.g., both HL and LL are active simultaneously).

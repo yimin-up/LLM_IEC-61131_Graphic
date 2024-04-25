@@ -1,0 +1,65 @@
+Here is the Sequential Function Chart (SFC) program for the pick-and-place robot application according to IEC 61131-3:
+
+```
+(Start of Sequential Function Chart)
+
+       +----------------------<------------------------+
+       |                                               |
+       |                                               |
++============+                                         |
+||          ||                                         |
+|| Initial  ||                                         |
+||          ||                                         |
++============+                                         |
+       |                                               |
+       |                                               |
+       +------------------+---------------------------+ |
+              /                        \               |
+             /                          \              |
+            /                            \             |
++---------------+                  +---------------+    |
+|    Manual     |                  |     Auto      |    |
+|               |                  |               |    |
++---------------+                  +---------------+    |
+       |                                   |            |
+       |                                   |            |
+       + Clip                              + Auto       |
+       |                                   |            |
++---------------+                  +---------------+    |
+|     Clip      |                  |     Clip      |    |
+|               |                  |               |    |
++---------------+                  +---------------+    |
+       |                                   |            |
+       |                                   |            |
+       + Transfer                          + 2s         |
+       |                                   |            |
++---------------+                  +---------------+    |
+|   Transfer    |                  |   Transfer    |    |
+|               |                  |               |    |
++---------------+                  +---------------+    |
+       |                                   |            |
+       |                                   |            |
+       + Release                           + Release    |
+       |                                   |            |
++---------------+                  +---------------+    |
+|    Release    |                  |    Release    |    |
+|               |                  |               |    |
++---------------+                  +---------------+    |
+       |                                   |            |
+       |                                   |            |
+       +------------------+---------------------------+ |
+                                    |                   |
+                                    |                   |
+                                    +-------------------+
+
+(End of Sequential Function Chart)
+```
+
+Key points:
+1. The SFC has an initial step.
+2. There are two main branches for Manual and Auto modes, selected based on respective button presses. 
+3. In Manual mode, the sequence is Clip -> Transfer -> Release, each triggered by respective button presses.
+4. In Auto mode, the sequence Clip -> Transfer (2s delay) -> Release is automatically executed once the Auto button is pressed. It can repeat if Auto is pressed again.
+5. The Manual and Auto sequences are interlocked, meaning only one can execute at a time.
+
+This SFC captures the key requirements you described for the pick-and-place robot application. Let me know if you need any clarification or have additional requirements!

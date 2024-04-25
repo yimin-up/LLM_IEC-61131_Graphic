@@ -1,0 +1,26 @@
+The corresponding Ladder Diagram for the provided Sequential Function Chart is depicted below:
+
+```
+(Start of Ladder Diagram)
+
+|      BI   MoveDown        I        MoveUp     S    |
++-----|/|---| |-----+-----|/|-------| |-----+---( )--+
+|                     |               |      |        |
+|      M+             |               |      |        |
++-----| |-------------+               |      |        |
+|                                       |    |        |
+|                     +-----| |---------+    |        |
+|                     |      M-              |        |
+|                     |                      |        |
++---------------------+----------------------+        |
+|                                                       |
+|      I              S        BI      MoveDown        |
++-----| |-----+-----|/|-------|/|--------( )-----------+
+|             |                           |             |
+|             +--------| |----------------+             |
+|                      M+                               |
+
+(End of Ladder Diagram)
+```
+
+This diagram converts the SFC actions and transitions into corresponding Ladder Diagram elements according to IEC 61131-3 standards. The coils `( )` are used to activate the respective actions (MoveDown, MoveUp) based on the evaluation of input conditions (BI for both direction indicator and I for initial condition). The contacts `| |` and `|/|` represent the normally closed and normally open states, respectively. The M+ and M- symbols are used to indicate motor movement directions, adhering to common practices in ladder logic design for motion control.

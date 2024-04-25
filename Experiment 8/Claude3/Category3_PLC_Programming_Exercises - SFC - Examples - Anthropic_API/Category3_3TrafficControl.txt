@@ -1,0 +1,69 @@
+Here is a self-contained IEC 61131-3 sequential function chart program for a traffic light controller that reacts to pedestrian buttons and gives priority to emergency vehicles:
+
+```
+PROGRAM TrafficLight
+VAR
+  EmergencyVehicle : BOOL := FALSE;  // Input - Presence of emergency vehicle 
+  PedestrianButton : BOOL := FALSE;  // Input - Pedestrian push button
+  CarTrafficRed    : BOOL := FALSE;  // Output - Red light for car traffic
+  CarTrafficYellow : BOOL := FALSE;  // Output - Yellow light for car traffic 
+  CarTrafficGreen  : BOOL := FALSE;  // Output - Green light for car traffic
+  PedestrianRed    : BOOL := FALSE;  // Output - Red light for pedestrians
+  PedestrianGreen  : BOOL := FALSE;  // Output - Green light for pedestrians
+  tGreen : TIME := T#45s;  // Green light duration 
+  tYellow : TIME := T#5s;  // Yellow light duration
+  tRed : TIME := T#2s;     // All red duration
+  tWalk : TIME := T#20s;   // Pedestrian walk duration
+END_VAR
+
+INITIAL_STEP NormalOperation:
+  CarTrafficGreen := TRUE;
+  PedestrianRed := TRUE;
+
+TRANSITION FROM NormalOperation TO PedestrianRequest
+  := PedestrianButton;
+
+STEP PedestrianRequest:
+  CarTrafficGreen := FALSE;
+  CarTrafficYellow := TRUE;
+
+TRANSITION FROM PedestrianRequest TO AllRed 
+  := tYellow;
+
+STEP AllRed:
+  CarTrafficYellow := FALSE;  
+  CarTrafficRed := TRUE;
+
+TRANSITION FROM AllRed TO PedestrianWalk
+  := tRed;
+
+STEP PedestrianWalk:
+  PedestrianRed := FALSE;
+  PedestrianGreen := TRUE; 
+
+TRANSITION FROM PedestrianWalk TO NormalOperation
+  := tWalk;
+
+TRANSITION FROM NormalOperation TO EmergencyMode
+  := EmergencyVehicle;
+
+STEP EmergencyMode:
+  CarTrafficRed := TRUE;
+  CarTrafficYellow := FALSE;
+  CarTrafficGreen := FALSE;
+  PedestrianRed := TRUE;
+  PedestrianGreen := FALSE;
+
+TRANSITION FROM EmergencyMode TO NormalOperation 
+  := NOT EmergencyVehicle;
+
+END_PROGRAM
+```
+
+This SFC program defines the traffic light sequence and transitions between states based on timers and the status of the pedestrian button and emergency vehicle sensor. 
+
+In normal operation, car traffic has a green light while pedestrians have a red light. When the pedestrian button is pushed, it transitions to yellow then red for cars, and green for pedestrians for a walk interval. After the walk, it returns to normal operation.
+
+If an emergency vehicle is detected at any point, it immediately transitions to an emergency mode, where all lights are red except the emergency vehicle light (not shown). It stays in this mode until the emergency vehicle is no longer detected.
+
+Let me know if you have any other questions!

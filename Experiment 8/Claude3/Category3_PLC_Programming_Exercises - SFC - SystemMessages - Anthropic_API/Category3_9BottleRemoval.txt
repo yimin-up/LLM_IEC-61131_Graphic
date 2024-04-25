@@ -1,0 +1,69 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program in ASCII art for the bottle packaging system you described:
+
+       +-----+
+  INIT |  o  | 
+       +--|--+
+          |
+          |
+       +--v--+     +-------+
+       |     |-----|  N    |
+       | S1  |     +---|---+
+       |     |-------| P |
+       +--^--+        +---+
+          |
+          |
+       +--v--+
+       |     |
+       | S2  |
+       |     |
+       +--^--+
+          |
+          |
+       +--v--+     +---------+
+       |     |-----|BOTTLE   |
+       | S3  |     |DETECTED |
+       |     |-----+---------+
+       +--^--+
+          |
+          |
+       +--v--+     +---------+
+       |     |-----|EMPTY    |
+       | S4  |     |BOTTLE   |
+       |     |-----+---------+
+       +--^--+
+          |
+          |
+       +--v--+     +---------+
+       |     |-----|REMOVE   |
+       | S5  |     |EMPTY    |
+       |     |     |BOTTLE   |
+       +--^--+     +---------+
+          |
+          |
+       +--v--+
+       |     |
+       | S6  |
+       |     |
+       +-----+
+
+S1: Conveyor ON
+S2: Wait for bottle 
+S3: Bottle detected
+S4: Check if bottle empty
+S5: Remove empty bottle
+S6: Package full bottle
+
+N: Normally open transition
+P: Proximity sensor
+
+This SFC has 6 steps:
+1. S1 turns on the conveyor 
+2. S2 waits for a bottle to be detected by sensor P
+3. S3 is reached when a bottle is detected
+4. S4 checks if the detected bottle is empty 
+5. S5 removes the bottle if it is empty
+6. S6 packages the bottle if it is full
+
+The program will loop back to S2 to wait for the next bottle after either removing an empty one or packaging a full one. The normally open transition N ensures the conveyor stays on.
+
+Let me know if you have any other questions!

@@ -1,0 +1,54 @@
+Step 1:####
+Inputs and outputs for this Ladder Diagram program include:
+- Inputs:
+  - CarPresentSensor (CPS): Detects the presence of a car.
+    - Symbol: `| |` (Parallel lines represent a normally open contact)
+  - HumanPresentSensor (HPS): Detects the presence of a human.
+    - Symbol: `|/|` (Parallel lines with a diagonal represent a normally closed contact)
+- Outputs:
+  - CarWash (CW): Starts the car wash process.
+    - Symbol: `( )` (Circle represents a coil)
+  - Alarm (ALM): Activates an alarm.
+    - Symbol: `( )` (Circle represents a coil)
+
+
+Step 2:####
+Ladder Diagram program:
+
+```
+       +----[ | ]----[ |/| ]---------+( )----+
+       |    CPS      HPS            CW      |
+       |                                    |
+       |                                    |
+       |    [ | ]-------------------( )-----+
+       +---- HPS                     ALM    +
+```
+
+In this program, CPS detects if a car is present, and HPS is used to detect if a human is present. Car washing starts only if a car is present and no human is detected. The alarm activates if a human is detected in the car wash area.
+
+Step 3:####
+Logical expressions for each rung:
+
+- Rung 1: `CarWash = CarPresentSensor AND NOT HumanPresentSensor`
+    - This means that the car wash (CW) starts only if a car is detected (CPS is true) and no human is present (HPS is false).
+
+- Rung 2: `Alarm = HumanPresentSensor`
+    - This means the alarm (ALM) is activated if a human is detected (HPS is true).
+
+Step 4:####
+Briefly describing the state machine of the Ladder Diagram:
+
+- **Idle State:** 
+    - *Inputs:* CarPresentSensor = 0, HumanPresentSensor = 0
+    - *Outputs:* CarWash = 0, Alarm = 0
+- **Car Present, No Human:** 
+    - *Inputs:* CarPresentSensor = 1, HumanPresentSensor = 0
+    - *Outputs:* CarWash = 1 (car washing starts), Alarm = 0
+- **Car Present, Human Present:** 
+    - *Inputs:* CarPresentSensor = 1, HumanPresentSensor = 1
+    - *Outputs:* CarWash = 0 (car washing stops), Alarm = 1 (alarm activates)
+- **No Car, Human Present:** 
+    - *Inputs:* CarPresentSensor = 0, HumanPresentSensor = 1
+    - *Outputs:* CarWash = 0, Alarm = 1 (alarm still activates)
+
+Thus, the PLC program ensures safety and operation of the automatic car wash station, reacting promptly to the presence of cars and humans within the car wash area.

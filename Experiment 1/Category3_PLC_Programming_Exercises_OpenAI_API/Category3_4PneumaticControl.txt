@@ -1,0 +1,62 @@
+Below is an example of a Structured Text (ST) program in accordance with the IEC 61131-3 standard for controlling a pneumatic system. This program uses a simple Proportional (P) control approach to maintain the flow and pressure of the pneumatic system within specified ranges.
+
+In this example, we use the following assumptions:
+
+- `InputFlowSensor` represents the sensor measuring the flow rate (in standard liters per minute).
+- `DesiredFlow` is the setpoint for the pneumatic system flow (set to 50 standard liters per minute).
+- `InputPressureSensor` represents the sensor measuring the system pressure (in bar).
+- `PressureLowerLimit` and `PressureUpperLimit` defines the pressure range boundaries that we want to maintain (set to 5.5 and 6 bar respectively).
+- `ValveControl` is the output signal to control the air valve, typically a 4-20 mA signal or a similar protocol, calibrated to control the flow rate and pressure within the actuator.
+- `ControlLoopTimer` is a timer used to create the 100 ms control loop frequency.
+
+You need to define beforehand the constants and variables used in this program. A simple proportional control approach is used for illustrative purposes; however, a real-world application should use a proper PID control algorithm.
+
+```pascal
+PROGRAM PneumaticControl
+    VAR
+        InputFlowSensor : REAL;                    // Flow sensor input
+        InputPressureSensor : REAL;                // Pressure sensor input
+        DesiredFlow : REAL := 50.0;                // Desired flow rate in standard liters per minute
+        PressureLowerLimit : REAL := 5.5;          // Pressure lower limit in bar
+        PressureUpperLimit : REAL := 6.0;          // Pressure upper limit in bar
+        FlowControlOutput : REAL;                  // Output to flow control valve
+        PressureReliefOutput : REAL;               // Output to pressure relief valve
+        ControlLoopTimer : TON;                    // Timer for control loop frequency
+        FlowKp : REAL := 1.0;                      // Proportional gain for flow control
+        PressureKp : REAL := 1.0;                  // Proportional gain for pressure control
+    END_VAR
+
+BEGIN
+    IF NOT ControlLoopTimer.Q THEN
+        ControlLoopTimer(IN := TRUE, PT := T#100MS); // Start timer for 100ms control loop
+    END_IF;
+    
+    IF ControlLoopTimer.Q THEN
+        // Flow control logic
+        FlowControlOutput := (DesiredFlow - InputFlowSensor) * FlowKp;
+        // Clamp output signal within actuator operating range 
+        FlowControlOutput := CLAMP(FlowControlOutput, 0.0, 100.0);
+
+        // Pressure control logic
+        IF InputPressureSensor < PressureLowerLimit THEN
+            PressureReliefOutput := (PressureLowerLimit - InputPressureSensor) * PressureKp;
+            PressureReliefOutput := CLAMP(PressureReliefOutput, 0.0, 100.0);
+        ELSIF InputPressureSensor > PressureUpperLimit THEN
+            PressureReliefOutput := (InputPressureSensor - PressureUpperLimit) * PressureKp;
+            PressureReliefOutput := CLAMP(PressureReliefOutput, -100.0, 0.0);
+        ELSE
+            PressureReliefOutput := 0.0;
+        END_IF;
+        
+        // Output to actuators:
+        // Here you would map FlowControlOutput and PressureReliefOutput to the actual hardware outputs
+        // e.g., ActuatorValveOutput1 := FlowControlOutput;
+        // e.g., ActuatorValveOutput2 := PressureReliefOutput;
+
+        // Reset Timer
+        ControlLoopTimer(IN := FALSE);
+    END_IF;
+END_PROGRAM
+```
+
+Please note that an actual pneumatic control system might require safety interlocks and other considerations for reliable and safe operation. Additionally, depending on the system's characteristics and actuator response times, the gains and control logic might need to be improved with Integral and Derivative components for a proper PID control. When implementing the program in a real PLC, you would also need to map the analog inputs and outputs to the correct sensor signals and actuator commands.

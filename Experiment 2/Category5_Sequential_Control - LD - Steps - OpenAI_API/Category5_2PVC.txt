@@ -1,0 +1,81 @@
+Given the task to create an ISA-88 control recipe for batch production of polyvinyl chloride (PVC) by polymerizing vinyl chloride monomers with the process stages of polymerize, decover, and dry, let's develop a ladder diagram (LD) program accordingly.
+
+#### Step 1:
+The inputs and outputs for the Ladder Diagram (LD) based on the provided operations are as follows:
+
+**Inputs:**
+- Start_process (Boolean): Initiate the batch process.
+- Temp_reached (Boolean): True if temperature is between 55 - 60°„C.
+- Pressure_decreased (Boolean): True if reactor pressure decreases.
+
+**Outputs:**
+- Evacuate_reactor (Boolean): Activate reactor evacuation.
+- Add_water_surfactants (Boolean): Activates valves/pumps for adding demineralized water and surfactants.
+- Add_vinyl_chloride (Boolean): Actuates valve/pump for adding vinyl chloride monomer.
+- Add_catalyst (Boolean): Actuates valve/pump for adding catalyst.
+- Heat_reactor (Boolean): Activate reactor heating mechanism.
+- Process_done (Boolean): Indicates completion of the batch process.
+
+**Standard Symbols Used:**
+- `(|)` - Normally open contact
+- `( )` - Coil
+- `[/]` - Normally closed contact
+- `[/|\]` - Timer
+
+#### Step 2:
+```plaintext
+(Start_process)-----(|)----[/|\]---(Evacuate_reactor)
+                           T1: 5 min
+                           Prepare reactor operation
+
+                           -----(|)----(Add_water_surfactants)
+                           After T1
+                           Charge operation 1
+
+                           -----(|)----[/|\]---(Add_vinyl_chloride)
+                                  T2: 2 min
+                                  After adding water & surfactants
+                                  Charge operation 2
+
+                           -----(|)----[/|\]---(Add_catalyst)
+                                  T3: 1 min
+                                  After T2
+                                  React operation 1
+
+                           -----(Temp_reached)-----(|)----(Heat_reactor)
+                                               
+                           -----(Pressure_decreased)-----(|)----[/|\]---(Process_done)
+                                                             T4: Hold until pressure decrease
+```
+
+#### Step 3:
+Logical expressions for each rung:
+
+1. `Start_process AND NOT T1 Done` triggers `Evacuate_reactor`.
+2. After T1 completes, trigger `Add_water_surfactants`.
+3. `Add_water_surfactants AND NOT T2 Done` triggers `Add_vinyl_chloride`.
+4. After T2 completes, `NOT T3 Done` triggers `Add_catalyst`.
+5. If `Temp_reached` THEN `Heat_reactor`
+6. If `Pressure_decreased AND NOT T4 Done`, then `Process_done` after T4.
+
+#### Step 4:
+The state machine is as follows:
+
+1. **Initialization State:** Wait for `Start_process`.
+2. **Prepare Reactor:** On start, evacuate the reactor for 5 minutes.
+3. **Charge:** Sequentially add demineralized water and surfactants, then vinyl chloride monomer and catalyst, with respective timers.
+4. **React:** Heat until the temperature reached is 55 - 60°„C and hold until the reactor pressure decreases indicating the end of the reaction.
+5. **Completion:** Indicate process completion.
+
+Each operation waits for the previous step to complete before proceeding, and certain steps are contingent on process conditions like temperature and pressure.
+
+#### Step 5:
+According to the IEC 61131 standard, the Ladder Diagram provided:
+
+1. Follows the standard sequential organization of operations with clear start and end conditions.
+2. Utilizes timers appropriately for controlling durations and sequential steps.
+3. Uses conditions efficiently to move through the process stages.
+4. Clearly delineates operations with start and end signals, aligning with control recipe requirements.
+5. The logical expressions match with intended operations indicating the LD adheres to PLC programming practices as recommended by IEC 61131-3.
+
+This LD program is structured to follow the sequential steps necessary for the batch production process of polyvinyl chloride, respecting the ISA-88 standards for control recipes and structured accordingly to IEC 61131-3 guidelines for ladder logic.

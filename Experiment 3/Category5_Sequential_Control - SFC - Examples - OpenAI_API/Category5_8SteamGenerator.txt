@@ -1,0 +1,54 @@
+Implementing a non-linear model-predictive controller (NMPC) for a complex process such as the startup of a steam generator in a power plant involves in-depth knowledge of the process dynamics, as well as optimization techniques. The IEC 61131-3 standard, including Sequential Function Chart (SFC), is not directly designed for expressing sophisticated controllers like NMPC but rather for outlining the flow of operations. Yet, I will demonstrate how the NMPC concept can be represented in the context of SFC for a steam generator startup procedure, focusing on the high-level sequence of operations that would be part of deploying such a controller.
+
+Given the complexity and the non-linearity of the steam generator startup process, the NMPC aims to control variables such as pressure, temperature, and flow rates, optimizing them for a fast and safe startup while minimizing fuel consumption and wear on the equipment. The optimization aspect would typically be handled by an external NMPC algorithm, possibly running on a dedicated controller or a computer system capable of handling the computational load.
+
+### High-Level SFC for NMPC Startup of a Steam Generator:
+
+```
+(Start of Sequential Function Chart)
+
+        +--------------------------------------------------+
+        |                                                  |
+        |     +------------+         +------------------+  |
+        |     |            |         |                  |  |
+        |     | Initialize |-------->| Initialize NMPC  |  |
+        |     | Variables  |         | Algorithm       |  |
+        |     |            |         |                  |  |
+        +-----+------------+         +------------------+  |
+              |                                           |
+              |                                           |
+              +-->+-------------------------------------+ |
+                  |                                     | |
+                  |     +---------------------------+   | |
+                  +---->|                           |   | |
+                  |     | Prepare Operational       |   | |
+                  |     | Constraints & Objectives  |   | |
+                  |     |                           |---+ |
+                  |     +---------------------------+     |
+                  |                                         |
+                  |     +---------------------------+     |
+                  +---->|                           |     |
+                  |     | Execute NMPC Optimization |     |
+                  |     | and Apply Control Actions |-----+
+                  |     |                           |
+                  |     +---------------------------+
+                  |
+                  |     +---------------------------+
+                  +---->|                           |
+                        | Monitor & Adjust NMPC     |
+                        | Parameters as Necessary   |
+                        |                           |
+                        +---------------------------+
+
+(End of Sequential Function Chart)
+```
+
+In this outline, the NMPC process begins with the **Initialization** of variables relevant to the steam generator operation, such as temperature setpoints, pressure levels, and flow rates. Following this, the **NMPC Algorithm** itself is initialized, involving setting up the optimization problem with operational constraints (e.g., safety limits, equipment capacities) and objectives (e.g., minimize startup time, fuel consumption).
+
+The process then moves to **Prepare Operational Constraints & Objectives**, where dynamic adjustments to the model parameters are made to reflect the real-time operating conditions and targets.
+
+Next, the **Execute NMPC Optimization** step involves running the optimization algorithm to determine the optimal control actions needed for the current time step. This would typically involve solving a complex optimization problem that takes into account the system model, constraints, and objectives.
+
+Finally, the **Monitor & Adjust NMPC Parameters** step represents the ongoing process of monitoring the system response to the applied control actions, adjusting the NMPC parameters as needed based on feedback, and preparing for the next optimization cycle.
+
+This SFC illustrates the structured approach to implementing NMPC in a complex control scenario like a steam generator startup, emphasizing the sequential nature of initialization, optimization, and monitoring tasks.

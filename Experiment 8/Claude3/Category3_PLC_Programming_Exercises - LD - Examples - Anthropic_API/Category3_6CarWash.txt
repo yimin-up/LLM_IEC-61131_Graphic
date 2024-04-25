@@ -1,0 +1,56 @@
+Here's a Ladder Diagram program for an automatic car wash station based on your requirements:
+
+```
+(Start of Ladder Diagram)
+|                                                                         |
+|  CarSensor   HumanSensor                                     WashActive |
++-----| |-----------|/|------------------------------------------(S)------+
+|                                                                         |
+|                            HumanSensor    WashActive                    |
++--------------------------------|1|----------(R)-------------------------+
+|                                                                         |
+|                                                               WashActive |
++-----------------------------------------------------------------(S)------+
+|                                                                         |
+|                                                  WashActive             |
++---------------------------------------------------|/|-----------(R)------+
+|                                                                         |
+|                                                                         |
+|  WashActive                                                             |
++-----| |------------------------------------------------------------------|
+|         +--------+                                                      |
+|         |   TON  |                                                      |
+|     ----|IN   Q  |----                                                  |
+|         |     ET |                                                      |
+|   T#30s-|PT     |                                                       |
+|         +--------+                                                      |
+|                                                                         |
+|                                                                         |
+|  WashActive                                                   WashMotor |
++-----| |---------------------------------------------------------(S)------+
+|                                                                         |
+|                            WashActive                         WashMotor |
++--------------------------------|/|-------------------------------(R)-----+
+|                                                                         |
+|                                                                         |
+|                            HumanSensor                          Alarm   |
++--------------------------------|1|-------------------------------(S)-----+
+|                                                                         |
+|                                                                 Alarm   |
++-----------------------------------------------------------------(R)------+
+|                                                                         |
+(End of Ladder Diagram)
+```
+
+Explanation:
+1. The first rung detects if a car is present (CarSensor) and no human is detected (HumanSensor) to set the WashActive flag.
+2. The second rung resets the WashActive flag if a human is detected while washing is active.
+3. The third rung is a self-holding circuit to maintain the WashActive flag once set.
+4. The fourth rung resets the WashActive flag when washing is completed.
+5. The fifth rung uses a TON (On-Delay) timer to define the wash duration (e.g., 30 seconds).
+6. The sixth rung starts the WashMotor when WashActive is set.
+7. The seventh rung stops the WashMotor when WashActive is reset.
+8. The eighth rung activates the Alarm if a human is detected during the wash process.
+9. The ninth rung resets the Alarm when the human is no longer detected.
+
+This Ladder Diagram program should control the automatic car wash station based on the presence of a car and the absence of humans in the wash area, and it will trigger an alarm if a human is detected during the wash process.

@@ -1,0 +1,104 @@
+For an ISA-88 based batch control system focused on adhesive production, let's define a simplified version of what a recipe might look like, focusing primarily on one of the steps: "B.2 Reaction". 
+
+**ISA-88 Recipe for Adhesive Production**
+
+- **Phase A: Preparation**
+  1. Material Charging
+  2. Premix
+
+- **Phase B: Production**
+  1. Transfer
+  2. **Reaction**
+  3. Cooling
+
+- **Phase C: Finishing**
+  1. Additives Introduction
+  2. Final Mix
+  3. Discharge
+
+For the **B.2 Reaction** step, we are going to write a concise Sequential Function Chart (SFC) program compliant with IEC 61131-3 standards, focusing on the reaction process with timers and process parameters.
+
+**IEC 61131-3 SFC for B.2 Reaction Step:**
+
+```plaintext
+(Start of Sequential Function Chart for B.2 Reaction Step)
+
++-----------------------------------------------------------------+       
+| B.2 Reaction                                                    |       
+|                                                                 |       
+|   [START] -------> (HeatUp) -------> (MaintainTemp)             |       
+|                        |                     |                  |       
+|                        |<---T1--<---|         |                  |       
+|                        V                     V T2               |       
+|                     [Heating]             [ReactionMaintain]    |       
+|                        |                     |                  |       
+|                        |------->|---T3--->|  |                  |       
+|                                  |          |                  |       
+|                               [CoolDown] <--+                  |       
+|                                  |                             |       
+|                                  +-----> [End]                 |       
++-----------------------------------------------------------------+
+
+Key:
+- (State) or [Action] are steps in the SFC.
+- T1, T2, T3 represent timer conditions or process conditions to transition to the next step.
+- V represents sensor or condition checks.
+
+Actions and Conditions:
+- HeatUp: Activate heating system to reach the reaction temperature (e.g., 90¡ãC).
+- MaintainTemp: Keep the temperature at 90¡ãC for the reaction to occur.
+- CoolDown: Activate cooling system to lower the temperature to a safe handling level (e.g., 45¡ãC).
+
+Timers and Parameters:
+- T1 (HeatUp Time): Time required to reach 90¡ãC, let's say 30 minutes.
+- T2 (Reaction Time): Maintain 90¡ãC for the reaction duration, assumed to be 2 hours.
+- T3 (CoolDown Time): Time to cool down to 45¡ãC, estimated as 45 minutes.
+
+(End of Sequential Function Chart for B.2 Reaction Step)
+```
+
+**Control Logic for B.2 Reaction:**
+```iec
+PROGRAM ReactionStep
+VAR
+    timer1: TON; // Timer for Heating up
+    timer2: TON; // Timer for Maintaining Reaction Temperature
+    timer3: TON; // Timer for Cooling Down
+    heatingSystem: BOOL; // Heating system controller
+    coolingSystem: BOOL; // Cooling system controller
+    temperatureSensor: INT; // Simulated Temperature Sensor
+    currentState: INT := 0; // Current Step Counter
+END_VAR
+
+CASE currentState OF
+    0: // Initial State, Start Heating
+        heatingSystem := TRUE;
+        timer1(IN:=heatingSystem, PT:=T#30m); // Start heating timer          
+        IF temperatureSensor >= 90 THEN
+            currentState := 1; // Proceed to next state
+            timer1(IN:=FALSE); // Stop Timer
+        END_IF;
+        
+    1: // Maintain Reaction Temperature
+        heatingSystem := FALSE; 
+        timer2(IN:=TRUE, PT:=T#2h); // Start maintaining reaction temperature timer
+        IF timer2.Q THEN
+            currentState := 2; // Proceed to next state
+            timer2(IN:=FALSE); // Stop Timer
+        END_IF;
+        
+    2: // Start Cooling Down
+        coolingSystem := TRUE;
+        timer3(IN:=coolingSystem, PT:=T#45m); // Start cooling timer
+        IF temperatureSensor <= 45 OR timer3.Q THEN
+            currentState := 3; // Proceed to End state
+            timer3(IN:=FALSE); // Stop Timer
+            coolingSystem := FALSE; // Turn off Cooling System
+        END_IF;
+        
+    3: // Process Ended
+        // Reset all controls or setup for the next process    
+END_CASE
+```
+
+This PLC program encapsulates the control logic for the "Reaction" step within adhesive production, including transitions based on timers corresponding to heating, maintaining the reaction temperature, and cooling based on predefined conditions.

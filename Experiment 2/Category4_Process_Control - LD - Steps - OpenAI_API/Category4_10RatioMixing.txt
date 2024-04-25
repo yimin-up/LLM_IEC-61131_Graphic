@@ -1,0 +1,57 @@
+To implement a ratio control for mixing two reactants in a 2 to 1 ratio using a Ladder Diagram (LD) according to IEC 61131-3 standards, let's approach the task step by step.
+
+### Step 1:#### Define and list the inputs and outputs of the Ladder Diagram, and the standard symbols they use.
+
+Inputs:
+1. **S1** - Start button (Normally Open contact)
+2. **S2** - Stop button (Normally Open contact)
+3. **Flow_A** - Flow sensor for Reactant A (Digital Input)
+4. **Flow_B** - Flow sensor for Reactant B (Digital Input)
+
+Outputs:
+1. **Pump_A** - Pump for Reactant A (Coil)
+2. **Pump_B** - Pump for Reactant B (Coil)
+
+Standard Symbols:
+- `(| |)` for Normally Open Contact
+- `(/| |)` for Normally Closed Contact
+- `( )` for Coil
+
+### Step 2:#### Give the Ladder Diagram program.
+
+The LD program will be designed to ensure that for every 2 parts of Reactant A, 1 part of Reactant B is added. 
+
+```
+          +----[ S1 ]----( Pump_A )----+
+          |                            |
+          |         +----[ S2 ]--------|-( Pump_B )----+
+          |         |                                       |
+          +----[/| S2 ]-------------------+
+          |                                       |
+          +----[ Flow_A ]----------------+                                       
+          +----[ Flow_A ]---[ S2 ]---( Pump_B )  
+```
+
+### Step 3:#### Give the logical expressions for each rung.
+
+1. Rung 1: `Pump_A = S1 AND NOT S2` - Pump A is activated when the start button is pressed and is not stopped by S2.
+2. Rung 2: `Pump_B = S1 AND S2 AND Flow_A` - Pump B is activated when the start button is pressed, not stopped, and Reactant A is flowing.
+
+### Step 4:#### Briefly describe the state machine of the Ladder Diagram.
+
+This simple process control system operates in states based on the conditions of the Start and Stop buttons, and the flow of Reactant A:
+
+- **State 0 - Idle**: Both pumps are off when neither Start nor Stop is activated, or Stop is activated after the start.
+- **State 1 - Mixing Started**: Upon pressing the Start button (`S1`), Pump A is activated to start the flow of Reactant A, assuming `S2` is not activated. If Flow_A is detected, then Pump B is also activated but with a logic ensuring twice the amount of Reactant A before Reactant B is activated to maintain the 2:1 mixing ratio.
+- **State 2 - Stop**: Pressing the Stop button (`S2`) deactivates both pumps, transitioning the system back to the idle state.
+
+### Step 5:#### Check the LD you generate according to the IEC 61131 standard.
+
+The Ladder Diagram follows the basic syntax and structural requirements of the IEC 61131-3 standard for PLC programming:
+
+- Use of Normally Open and Normally Closed contacts is correct as per standard symbols and logic.
+- The order of operations in each rung adheres to PLC programming principles, where inputs are evaluated left to right to control an output.
+- Correct use of parallel circuits to implement logic that requires simultaneous conditions.
+- The inclusion of safety or override conditions (Stop button logic) is in line with best practices for control systems.
+
+This LD should be validated for syntax in a specific PLC programming environment to ensure compatibility and performance as expected.

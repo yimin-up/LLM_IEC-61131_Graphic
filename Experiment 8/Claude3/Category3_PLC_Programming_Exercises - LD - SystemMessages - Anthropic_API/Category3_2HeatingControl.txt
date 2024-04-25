@@ -1,0 +1,40 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program to control a heating system to maintain temperature between 20-22°„C based on 3 temperature sensors:
+
+      PROGRAM HeatingControl
+      VAR
+        Temp1 : REAL := 0.0;  // Temperature sensor 1 input 
+        Temp2 : REAL := 0.0;  // Temperature sensor 2 input
+        Temp3 : REAL := 0.0;  // Temperature sensor 3 input
+        AvgTemp : REAL := 0.0; // Calculated average temperature  
+        HeaterOn : BOOL := FALSE; // Heater control output
+      END_VAR
+
+      LD    Temp1
+      ADD   Temp2
+      ADD   Temp3
+      DIV   3.0
+      ST    AvgTemp
+
+      LD    AvgTemp
+      LT    20.0
+      OR(
+      LD    HeaterOn
+      AND
+      LD    AvgTemp
+      LT    22.0
+      )
+      ST    HeaterOn
+
+      END_PROGRAM
+
+Explanation:
+1. The first rung calculates the average of the 3 temperature sensor inputs and stores it in AvgTemp variable.  
+
+2. The second rung controls the heater:
+   - If AvgTemp < 20, turn heater on
+   - If heater is already on, keep it on until AvgTemp >= 22
+   - Otherwise turn heater off
+
+3. HeaterOn is the Boolean output that controls turning the heater on or off.
+
+This implements a simple thermostat control with 2 degree hysteresis to maintain the average measured temperature between 20-22°„C. Let me know if you have any other questions!

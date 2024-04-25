@@ -1,0 +1,79 @@
+Step 1:####
+For a traffic light system that reacts to pedestrian push buttons and to the presence of emergency vehicles, the inputs and outputs can be defined as follows:
+
+Inputs:
+1. `PB_Pedestrian` - Pedestrian push button (BOOL); true when pressed.
+2. `EV_Presence` - Emergency vehicle presence sensor (BOOL); true when an emergency vehicle is detected.
+
+Outputs:
+1. `TL_Cars_Green` - Traffic light for cars, green (BOOL).
+2. `TL_Cars_Yellow` - Traffic light for cars, yellow (BOOL).
+3. `TL_Cars_Red` - Traffic light for cars, red (BOOL).
+4. `TL_Pedestrian_Green` - Traffic light for pedestrians, green (BOOL).
+5. `TL_Pedestrian_Red` - Traffic light for pedestrians, red (BOOL).
+
+Standard symbols used in Ladder Diagram:
+- `()` for inputs.
+- `()` with a bar on left for negated inputs.
+- `()` with underline for outputs.
+- `---[ ]---` for normally open contact (represents the condition of an input or output being true).
+- `---[/]---` for normally closed contact.
+- `---( )---` for coil (sets the output to true).
+
+Step 2:####
+Given the complexity of a full traffic control system and the limits of ASCII art representation, below is a simplified version focusing on priority for pedestrians and emergency vehicles:
+
+```plaintext
+(Start)                   (End)
+   |                        |
++--+--+                  +--+--+
+|     |                  |     |
+| PB_ |                  |EV_Pr|
+|Pedes|                  |esenc|
+|trian|                  |e    |
+|     |                  |     |
++--+--+                  +--+--+
+   |                        |
+   V                        V
++--[ ]--+                +--[ ]--+
+|TL_Cars|                |TL_Cars|
+|_Green |                |_Red   |
++--[ ]--+                +--[ ]--+
+   |                        |
+   V                        V
++--[ ]--+                +--[ ]--+
+|TL_Pede|                |TL_Pede|
+|strian_|                |strian_|
+|_Green |                |_Green |
++-------+                +-------+
+   |                        |
+   V                        V
++--[ ]--+                +--[ ]--+
+|TL_Cars|                |TL_Cars|
+|_Red   |  <-[ ]->       |_Green |
++--[ ]--+  |EV_Presence| +-------+
+   |       <-[ ]->        |
+   V         |PB_Pedestrian|
++--[ ]--+    |
+|TL_Pede|    |
+|strian_|    |
+|_Red   |    |
++-------+    |
+```
+
+Note: This diagram is highly simplified and does not represent a full state machine or handle all transitions (like yellow lights for cars or complete pedestrian phases, including wait times). It's intended to illustrate basic control logic for prioritizing pedestrian and emergency vehicle signals.
+
+Step 3:####
+1. Pedestrian button controls pedestrian lights, but not when an emergency vehicle is present:
+   - Logical expression: `(PB_Pedestrian AND NOT EV_Presence) --> TL_Pedestrian_Green`
+   - When `PB_Pedestrian` is true and `EV_Presence` is false, `TL_Pedestrian_Green` is set.
+2. Emergency vehicle presence gives priority to the vehicle, overriding the pedestrian control:
+   - Logical expression for emergency vehicle presence: `EV_Presence --> TL_Cars_Green AND TL_Pedestrian_Red`
+
+Step 4:####
+This simplified state machine assumes:
+1. At the system start, cars have a green light and pedestrians have a red light by default.
+2. If a pedestrian button is pressed (`PB_Pedestrian`), and no emergency vehicle is present (`NOT EV_Presence`), the system switches to give pedestrians a green light (`TL_Pedestrian_Green`), and cars a red one (`TL_Cars_Red`).
+3. If an emergency vehicle is detected (`EV_Presence`), cars immediately get a green light (`TL_Cars_Green`), and pedestrians get a red light (`TL_Pedestrian_Red`), regardless of the pedestrian button state. This ensures emergency vehicles have priority.
+
+The above description outlines a basic prioritization system but lacks many real-world complexities (e.g., timing controls, intermediate yellow states for cars, all-red phases, system initialization, etc.). This example primarily demonstrates how inputs (pedestrian push button, emergency vehicle sensor) can control outputs (traffic lights) using a Ladder Logic approach.

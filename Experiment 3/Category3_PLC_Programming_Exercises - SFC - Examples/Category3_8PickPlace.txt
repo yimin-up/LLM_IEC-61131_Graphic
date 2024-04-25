@@ -1,0 +1,49 @@
+Designing a PLC program for a pick-and-place application using Sequential Function Chart (SFC) involves creating a structure that can switch between Auto and Manual modes, and control the actions (Clip, Transfer, Release) in each mode. The process follows IEC 61131-3 standards. Let's define the SFC steps and transitions based on the provided process description. 
+
+Please note, the actual implementation and integration into a PLC programming environment would require translating this ASCII representation into the specific software's format and possibly adding more details to the action blocks (like timers, sensors check, etc.).
+
+```
++======================+   
+||        Start        ||    
++======================+ 
+            |                             
+  +---------+-----------+                 
+  | Mode Selection      |                 
+  +---------+-----------+               
+            |                                         
+            | Auto/Manual
+            |
++-----------v-------------+  +-------------------+
+|      Mode: Manual       |  |     Mode: Auto    |
++-----------+-------------+  +---------+---------+
+            |                                |
++-----------v-------------+  Clip        +---v---+  Clip
+|        Clip Item        |------------->| Wait  |
++-----------+-------------+              +---+---+
+            |                                |
+Transfer    |                        Transfer|
+            |                                |   (2 sec)
++-----------v-------------+              +---v---+
+|      Transfer Item      |------------->|       |
++-----------+-------------+              |       |
+            |                            |       |
+Release     |                        Release    |
+            |                            |       |
++-----------v-------------+              +---+---+
+|      Release Item       |<-----------------+
++-------------------------+
+```
+
+**Explanation:**
+
+- **Start**: Initial step where the system starts.
+- **Mode Selection**: The system waits for the user to select either Auto or Manual mode.
+- **Mode: Manual**: In this mode, the process waits for the operator to press the "Clip", "Transfer", and "Release" buttons to perform each action manually.
+- **Mode: Auto**: In this mode, the process automatically performs clip, wait (simulation of 2-second transfer action), and release of the item in a sequence. If the "Auto" button is pressed again during or after completion, the sequence is repeated.
+- **Clip Item**: Action state where the robotic arm clips the item from Conveyor A.
+- **Transfer Item**: Action state where the robotic arm moves the item from Conveyor A to Conveyor B. In Auto mode, a 2-second wait mimics this action.
+- **Release Item**: Action state where the robotic arm releases the item onto Conveyor B.
+
+Note: The implementation of transitions like pressing buttons needs to be handled by the PLC's input signals. The waiting in Auto mode (for example, to simulate the 2-second transfer time) could be implemented using timers.
+
+This SFC is a high-level representation to guide the programming process. The actual implementation would need to define conditions for transitions (such as inputs from sensors or buttons) and actions (to activate/deactivate motors or solenoids) more precisely in the PLC software following the IEC 61131-3 standard.

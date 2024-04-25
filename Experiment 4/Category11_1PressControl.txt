@@ -1,0 +1,28 @@
+Given your requirements, here's a simplified Ladder Diagram expressed in ASCII art. This design assumes the press only starts its cycle when the start button (BI) is pressed and is in the upper position, indicated by sensor S.
+
+```
+(Start of Ladder Diagram)
+
+|                 BI              M+|   
++-----( )------+/|------+--------( )----+
+|                        |             |
+|               S       I              |
++-----( )------| |------|/|-----+      |
+|                               |      |
+|                              M-|     |
+|                           +--( )-----+
+|                          S|  
++--------------------------|/|-------+  
+|                                         | 
+|                                         M+|
++---------------------------------------( )-+
+
+(End of Ladder Diagram)
+```
+
+Explanation:
+- When the start button (BI) is pressed and the press is in its upper position (indicated by sensor S), the motor M+ is activated to start the press's descent.
+- The descent continues until the lower position sensor (I) is triggered, indicating the press has reached the bottom of its cycle. This stops the M+ motor and should activate M- motor to initiate the ascent.
+- The upward motion (M-) would ideally continue until sensor S is triggered again, indicating the press has returned to its upper starting position, completing the cycle.
+
+This diagram is simplified and assumes logic for alternating control between the M+ and M- outputs based on sensor inputs. Additional considerations like safety interlocks, emergency stops, and ensuring the press cannot reverse direction mid-cycle without reaching the appropriate sensor are beyond this basic logic and are crucial for a real-world application.

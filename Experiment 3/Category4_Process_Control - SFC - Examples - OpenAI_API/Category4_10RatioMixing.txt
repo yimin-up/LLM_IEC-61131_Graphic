@@ -1,0 +1,80 @@
+Designing a program for ratio control in a 2 to 1 ratio for mixing two reactants requires careful control of the quantities or flow rates of the two reactants. The Sequential Function Chart (SFC) below is conceptualized to manage this process in compliance with the IEC 61131-3 standard, using steps, transitions, and actions to control the ratios effectively.
+
+For simplification, let's denote:
+- R1: Reactant 1 with a desired ratio of 2 parts.
+- R2: Reactant 2 with a desired ratio of 1 part.
+- Flow_R1 and Flow_R2: Control the flow of Reactant 1 and Reactant 2.
+- SENSOR_R1 and SENSOR_R2: Sensors or flow meters to verify the correct ratio.
+
+This program doesn't include specific implementation details, such as PID control or specific I/O handling, which would depend on the precise hardware setup and would typically be encapsulated within function blocks or programmed within each action.
+
+```
+(Program Start)
+
++=================================================+
+|                     Start                       |
++=================================================+
+             |
+             |(Initialization)
+             v
++=================================================+
+|            Check_Ready_To_Mix                   |
++=================================================+<+
+             |                                     |
+    +-------+------+                              |
+    | Mix Condition|                              |
+    +--------------+                              |
+             |                                    |
+             v                                    |
++=================================================+|  (Reactant Mixing Loop)
+|               Start_Mixing                      | |
++=================================================+|               |
+             |                                    | |
+     +-------+------+               +----------+  | |
+     | R1 and R2 OK |               | Wait for |<-+ |
+     +--------------+               |  ratios  |    |
+             |                      +----------+    |
+             v                                         |
++=================================================+   |
+|             Control_R1_Ratio                    +---+
++=================================================+
+             |
+    +--------+---------+
+    | 2 Parts R1 Added |
+    +------------------+
+             |
+             v
++=================================================+
+|             Control_R2_Ratio                    |
++=================================================+
+             |
+    +--------+---------+
+    | 1 Part R2 Added  |
+    +------------------+
+             |
+             v
++=================================================+
+|              Verify_Mixing                      |
++=================================================+
+             |
+     +-------+------+               +----------+
+     | Mixing Correct|               | Adjust   |
+     +--------------+                +----------+
+             |
+             v
++=================================================+
+|                 End_Mixing                      |
++=================================================+
+
+(Program End)
+```
+
+**Explanation:**
+- **Start**: The initial state, ready to begin the process.
+- **Check_Ready_To_Mix**: Verifies if the system is ready for mixing, ensuring reactants are available and equipment is operational.
+- **Start_Mixing**: The process of mixing commences, controlled by the flow of reactants R1 and R2.
+- **Control_R1_Ratio / Control_R2_Ratio**: These steps control the addition of each reactant, ensuring the 2:1 ratio is maintained. This would involve calculating the required flow rates and adjusting valves or pumps accordingly.
+- **Verify_Mixing**: Ensures the correct ratio was achieved and the quality of the mix meets the specifications.
+- **End_Mixing**: Marks the completion of the cycle, ready to repeat or halt based on system commands.
+
+The loop captures the dynamic control required to maintain the ratio, with checks at each step to ensure correctness. Any adjustments or recalibrations are implied to occur in the "Wait for ratios" and "Adjust" steps, necessitating real-time monitoring and possibly PID control for precise adjustments.

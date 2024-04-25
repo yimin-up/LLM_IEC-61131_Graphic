@@ -1,0 +1,66 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program in ASCII art for controlling a 5-floor elevator based on the provided requirements:
+
+      +----+         +----+         +----+         +----+         +----+
+      |LS1B|         |LS2B|         |LS3B|         |LS4B|         |LS5B|
+      +--+-+         +--+-+         +--+-+         +--+-+         +--+-+
+         |              |              |              |              |
+         +----+  +----+ |    +----+    |    +----+    |    +----+    |
+         |LS1T|  |LS2T| |    |LS3T|    |    |LS4T|    |    |LS5T|    |
+         +--+-+  +--+-+ |    +--+-+    |    +--+-+    |    +--+-+    |
+            |       |   |       |      |       |      |       |      |
+            |       |   |       |      |       |      |       |      |
+         +--+-------+---+-------+------+-------+------+-------+------+
+         |                                                            |
+         |                        Floor Select                        |
+         |                                                            |
+         +------------------------------------------------------------+
+         |                                                            |
+         |  +----+      +----+      +----+      +----+      +----+    |
+         +--|UP1 |      |UP2 |      |UP3 |      |UP4 |      |UP5 |    |
+         |  +----+      +----+      +----+      +----+      +----+    |
+         |     |           |           |           |           |      |
+         |     |           |           |           |           |      |
+         |  +--+-+      +--+-+      +--+-+      +--+-+      +--+-+   |
+         +--|DN1 |      |DN2 |      |DN3 |      |DN4 |      |DN5 |   |
+            +----+      +----+      +----+      +----+      +----+   |
+               |           |           |           |           |      |
+               |           |           |           |           |      |
+            +--+-----------+-----------+-----------+-----------+----+ |
+            |                                                        | |
+            |                     Call Buttons                       | |
+            |                                                        | |
+            +--------------------------------------------------------+ |
+            |                                                          |
+            |  +----+                                                  |
+            +--|TMR1|                                                  |
+            |  +----+                                                  |
+            |     |                                                    |
+            |     |                                                    |
+            |  +--+-+                                                  |
+            +--|TMR2|                                                  |
+               +----+                                                  |
+                  |                                                    |
+                  |                                                    |
+               +--+----------------------------------------------------+
+               |
+               |  +----+
+               +--|MOVU|
+               |  +----+
+               |     |
+               |     |
+               |  +--+-+
+               +--|MOVD|
+                  +----+
+
+LS1B to LS5B: Bottom limit switches for each floor
+LS1T to LS5T: Top limit switches for each floor
+UP1 to UP5: Up buttons for each floor
+DN1 to DN5: Down buttons for each floor
+TMR1: 7 seconds timer for opening the door
+TMR2: 10 seconds timer for reopening the door if no buttons are pressed
+MOVU: Move the elevator upwards
+MOVD: Move the elevator downwards
+
+The ladder diagram uses the limit switches to determine the current floor. The up and down buttons on each floor, along with the current direction, determine the next floor to move to. The timers control the door opening and closing. The MOVU and MOVD coils control the elevator motor to move it up or down accordingly.
+
+This is a simplified representation and would need to be expanded with more detailed logic, but it provides a basic structure for the elevator control program according to IEC 61131-3 Ladder Diagram standards.

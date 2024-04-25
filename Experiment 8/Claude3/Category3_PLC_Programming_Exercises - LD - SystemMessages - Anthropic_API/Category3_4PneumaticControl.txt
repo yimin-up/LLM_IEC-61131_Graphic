@@ -1,0 +1,51 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program to control the pneumatic system per the requirements:
+
+      +---------------------------+
+      |        PNEUMATIC_CTL      |
+      +---------------------------+
+      |                           |
+ I1.0 | [TON]                     |
+------| PT:T#100ms                |
+      | IN       Q          ET    |
+      | []       []        []     |
+      |                           |
+      |                           |
+ I1.1 |    +---+  +---+           |
+------|----| > |--| & |----+      |
+      |    +---+  +---+    |      |
+      |     5.5            |      |
+      |                    |      |
+ I1.2 |    +---+  +---+    |      |
+------|----| < |--| & |----+      |
+      |    +---+  +---+           |
+      |      6                    |
+      |                           |
+      |         +---+  +---+      |
+      |    +----| & |--| & |------| Q2.0
+      |    |    +---+  +---+      |
+      |    |                      |
+      |    |                      |
+      |    |    +---+             |
+      |    +----| & |-------------| Q2.1
+      |         +---+             |
+      |                           |
+      |                           |
+      |                           |
+      +---------------------------+
+
+Inputs:
+I1.0 - Cycle timer, 100ms
+I1.1 - Pressure sensor, low limit 5.5 bar 
+I1.2 - Pressure sensor, high limit 6 bar
+
+Outputs:  
+Q2.0 - Solenoid valve, air flow control to 50 slpm
+Q2.1 - Compressor control
+
+Description:
+- The TON timer block runs the control loop at 100ms frequency
+- If pressure is below 5.5 bar, Q2.0 and Q2.1 energize to allow air flow and run compressor
+- If pressure is above 6 bar, Q2.0 and Q2.1 de-energize to stop air flow and compressor
+- When pressure is between 5.5 and 6 bar, Q2.0 energizes to allow 50 slpm air flow, Q2.1 stays off
+
+This LD controls the pneumatic system to maintain 5.5-6 bar pressure and 50 slpm flow rate to the actuators, running the control logic every 100ms. Let me know if you have any other questions!

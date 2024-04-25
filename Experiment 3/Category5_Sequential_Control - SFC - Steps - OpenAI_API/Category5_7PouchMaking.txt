@@ -1,0 +1,119 @@
+Step 1:####
+Inputs:
+- Start button: Initiates the start-up sequence.
+- Stop button: Initiates the shutdown sequence.
+- Raw material tension sensor: Provides feedback on the tension of the raw material.
+
+Outputs:
+- Heating stations: Controls the 8 heating stations.
+- Cooling stations: Controls the 8 cooling stations.
+- Horizontal cutter: Controls the operation of the horizontal cutter.
+- Vertical cutter: Controls the operation of the vertical cutter.
+- Feeder units: Controls the operation of the two feeder units to maintain proper tension.
+
+####
+
+Step 2:####
+State Machine Description:
+1. **Initialization**: Ensure the system is ready for start-up, checking safety protocols.
+2. **Start-Up Sequence**:
+   - **Heating Start**: Activate heating stations progressively.
+   - **Stabilize Tension**: Start feeder units to stabilize raw material tension before full operation.
+   - **Cooling Start**: Activate cooling stations once the heating phase is stable.
+   - **Cutting System Activation**: Bring the horizontal and vertical cutters online after the cooling stations stabilize.
+3. **Operational**: The system runs with all components functioning.
+4. **Shutdown Sequence**:
+   - **Cutting System Shutdown**: Deactivate cutters first to prevent any additional material processing.
+   - **Cooling Stop**: Deactivate cooling stations.
+   - **Heating Stop**: Deactivate heating stations last to prevent damage to partially treated materials.
+   - **Tension Release**: Gradually release tension in the feeder units.
+5. **System Ready**: The system is shut down and ready to be started again.
+
+####
+
+Step 3:####
+```plaintext
+          +-----+
+          |  1  | Initialization
+          +-----+
+            | |
+            | v
++-----------+ +----------+
+|  2  Heating Start      |
++-----------+ +----------+
+            | |
+            | v
+   +--------+ +----------+
+   |  3  Stabilize Tension |
+   +--------+ +----------+
+            | |
+            | v
+   +--------+ +--------+
+   |  4  Cooling Start  | 
+   +--------+ +--------+
+            | |
+            | v
+   +--------+ +----------+
+   |  5  Cutting Systems Activation |
+   +--------+ +----------+
+            | |
+            | v
+            +-----+
+            |  6  | Operational
+            +-----+
+            | | 
+            | v
+            +-----+
+            |  7  | Shutdown Sequence:
+            +-+---+
+            | | |
+     +------+-+ +---+------+
+     |  7.1 Cutting System Shutdown |
+     +------+-+ +---+------+
+            | |
+            | v
++-----------+ +-----------+
+|  7.2 Cooling Stop       |
++-----------+ +-----------+
+            | |
+            | v
+    +-------+ +---------+
+    |  7.3 Heating Stop  |
+    +-------+ +---------+
+            | |
+            | v
+    +-------+ +---------+
+    |  7.4 Tension Release |
+    +-------+ +---------+
+            | |
+            | v
+          +-----+
+          |  8  | System Ready
+          +-----+
+```
+####
+
+Step 4:####
+1. **Initialization**: Prepares the machine for start-up, checking all necessary systems and safety features.
+2. **Heating Start**: Gradually brings the heating stations to operational levels to treat material properly.
+3. **Stabilize Tension**: Engages feeder units to control the tension of the raw material, ensuring smooth flow.
+4. **Cooling Start**: Initiates the cooling process to solidify and stabilize the product after heating.
+5. **Cutting Systems Activation**: Engages both cutters for shaping the final product.
+6. **Operational**: The machine operates under normal conditions with all processes functioning together.
+7. **Shutdown Sequence**:
+   - **7.1 Cutting System Shutdown**: Turns off cutters to stop processing the material.
+   - **7.2 Cooling Stop**: Gradually powers down the cooling stations.
+   - **7.3 Heating Stop**: Safely turns off heating stations to avoid damaging any remaining materials in the process area.
+   - **7.4 Tension Release**: Feeder units slow down and stop, releasing any tension in the system to prevent damage.
+8. **System Ready**: The machine is fully shut down and is in a safe state for the next start-up.
+
+####
+
+Step 5:####
+The above SFC is checked according to the IEC 61131 standard by ensuring:
+- Clear separation of states for startup and shutdown sequences.
+- Sequential transitions that ensure the proper order of operations and machine safety.
+- Properly defined inputs and outputs relevant to each step's functionality.
+- The inclusion of initial and final states to denote the start and end of the machine's operation cycle.
+- This ensures the SFC is structured, systematic, and adheres to the safety and operational standards recommended for industrial control systems.
+####

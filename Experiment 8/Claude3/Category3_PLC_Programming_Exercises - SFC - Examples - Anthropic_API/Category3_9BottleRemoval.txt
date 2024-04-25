@@ -1,0 +1,79 @@
+Here is a self-contained IEC 61131-3 sequential function chart program for the bottle packaging system:
+
+```
+PROGRAM BottlePackaging
+VAR
+  BottleDetected: BOOL := FALSE;  // Proximity sensor for any bottle 
+  EmptyDetected: BOOL := FALSE;   // Proximity sensor for empty bottles
+  Conveyor: BOOL := FALSE;        // Conveyor motor  
+  RemoveCylinder: BOOL := FALSE;  // Cylinder to remove empty bottles
+END_VAR
+
+(* Main SFC *)
++----+     +-------------+
+|INIT|---->|WaitForBottle|
++----+     +-------------+
+               |
+               |
+               + BottleDetected
+               |
+               |        +------------+
+               +------->|CheckIfEmpty|
+                        +------------+
+                             |
+                             |
+            +----------------+----------------+
+            |                                 |
+            + EmptyDetected                   + NOT EmptyDetected
+            |                                 |
++-----------+-----------+       +------------+------------+
+|RemoveEmptyBottle      |       |MoveToPackaging          |
+|                       |       |                         |
+|N RemoveCylinder       |       |N Conveyor               |
++-----------+-----------+       +------------+------------+
+            |                                 |
+            + NOT EmptyDetected              + BottleAtPackaging
+            |                                 |
+            +----------------+----------------+
+                             |
+                             |
+                        +----+-----+
+                        |INIT      |
+                        +----+-----+
+
+(* Action Blocks *)
+ACTION WaitForBottle:
+  Conveyor := FALSE;
+  RemoveCylinder := FALSE;
+END_ACTION
+
+ACTION CheckIfEmpty:
+  // Check EmptyDetected sensor
+END_ACTION  
+
+ACTION RemoveEmptyBottle:
+  RemoveCylinder := TRUE; 
+  Conveyor := TRUE;
+END_ACTION
+
+ACTION MoveToPackaging:
+  RemoveCylinder := FALSE;
+  Conveyor := TRUE; 
+END_ACTION
+
+END_PROGRAM
+```
+
+This SFC program defines the following:
+
+- Input variables for the bottle detection sensors
+- Output variables to control the conveyor and removal cylinder 
+- Main SFC with 4 steps:
+  1) Wait for any bottle 
+  2) Check if detected bottle is empty
+  3) Remove empty bottle (if detected)
+  4) Move non-empty bottle to packaging
+- Transitions between steps based on sensor states
+- Action blocks with logic for each step
+
+The program will continuously cycle, waiting for bottles, checking if they are empty, removing empties, and sending filled bottles to packaging. Let me know if you have any other questions!

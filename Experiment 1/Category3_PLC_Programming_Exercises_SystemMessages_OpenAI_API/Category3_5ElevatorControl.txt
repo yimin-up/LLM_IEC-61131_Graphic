@@ -1,0 +1,98 @@
+To craft a self-contained IEC 61131-3 Structured Text (ST) program for controlling an elevator in a 5-floor building, we must define the following elements:
+- Input signals for bottom and top limit switches for each floor.
+- Input signals for up and call buttons on each floor, and buttons inside the elevator cabin.
+- Output signals to control the elevator's motor direction (up/down) and door (open/close).
+- Timers for door opening logic.
+
+Given the complexity, the program logic will include:
+- Reading inputs from limit switches and buttons.
+- Deciding the elevator's next move based on current position, requested floors (call from floors and inside cabin), and timing logic for door operations.
+- Controlling the motor and door operations accordingly.
+
+Let's start by sketching a simplified version of such a program.
+
+```pascal
+PROGRAM ElevatorControl
+VAR
+    // Floor limit switches (1 for each floor, top and bottom)
+    BottomSwitch: ARRAY[1..5] OF BOOL; // BottomSwitch[1] for 1st floor, etc.
+    TopSwitch: ARRAY[1..5] OF BOOL;
+    
+    // Call buttons on each floor and inside elevator for each floor
+    CallButton: ARRAY[1..5] OF BOOL;
+    InsideButton: ARRAY[1..5] OF BOOL;
+    
+    // Up buttons on floors 1-4
+    UpButton: ARRAY[1..4] OF BOOL;
+    
+    // Elevator control
+    MotorUp, MotorDown, DoorOpen: BOOL;
+    
+    // Timers
+    DoorOpenTimer: TON; // Timer for door open duration
+    WaitTimer: TON;     // Wait before closing door if no button pressed
+    
+    // Current floor and direction
+    CurrentFloor: INT := 1;
+    UpDirection: BOOL := TRUE; // Starts going up
+    
+    // State variables
+    RequestedFloor, i: INT;
+    DoorOpenRequest: BOOL := FALSE;
+    
+END_VAR
+
+// Initialize timers
+DoorOpenTimer(IN:= DoorOpen, PT:= T#7s);
+WaitTimer(IN:= NOT DoorOpen, PT:= T#10s);
+
+//Example logic for processing floor requests and controlling the elevator
+
+// Reset control outputs
+MotorUp := FALSE;
+MotorDown := FALSE;
+DoorOpen := FALSE;
+
+// Check for floor button requests inside cabin or call buttons on floors
+FOR i := 1 TO 5 DO
+    IF InsideButton[i] OR CallButton[i] THEN
+        RequestedFloor := i;
+        EXIT; // Assume first request is processed first for simplicity
+    END_IF
+END_FOR
+
+// Elevator control logic
+IF RequestedFloor > 0 THEN
+    IF CurrentFloor < RequestedFloor THEN
+        MotorUp := TRUE;
+    ELSIF CurrentFloor > RequestedFloor THEN
+        MotorDown := TRUE;
+    ELSE
+        // Reached requested floor
+        DoorOpen := TRUE;
+        DoorOpenRequest := TRUE;
+        DoorOpenTimer(IN:= DoorOpen, PT:= T#7s); // Start door open timer
+        RequestedFloor := 0; // Clear requested floor
+    END_IF
+ELSEIF DoorOpenRequest AND DoorOpenTimer.Q THEN
+    DoorOpen := FALSE; // Close door after timer
+    DoorOpenRequest := FALSE;
+    WaitTimer(IN:= NOT DoorOpen, PT:= T#10s); // Start wait timer
+END_IF
+
+// Reset current floor when door closes based on limit switches
+FOR i := 1 TO 5 DO
+    IF (BottomSwitch[i] AND NOT MotorUp) OR (TopSwitch[i] AND NOT MotorDown) THEN
+        CurrentFloor := i;
+        EXIT;
+    END_IF
+END_FOR
+
+// Add safety and optimization logic as needed, and detailed door logic with WaitTimer
+```
+
+**Important Notes:**
+1. This program sketch is a basic framework and needs several safety features and optimizations.
+2. The logic for `WaitTimer` to reopen the door if no buttons are pressed needs to be integrated more thoroughly with input handling and state checks.
+3. Handling simultaneous requests, optimizing path planning (to efficiently service multiple floors), and integrating complete safety features (like emergency stop, overload detection, and maintenance mode) are beyond this simplified logic.
+4. Real-world elevator control systems use intricate algorithms for efficiency, safety, and compliance with local regulations.

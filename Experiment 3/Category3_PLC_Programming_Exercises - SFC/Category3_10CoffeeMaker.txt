@@ -1,0 +1,63 @@
+Given the requirements for a coffee machine with specific functionalities as described, below is a simplified Sequential Function Chart (SFC) program in ASCII art. This SFC program is designed based on the IEC 61131-3 standard, focusing on sequence control of the mentioned operations: starting the machine, filling the mixer tank with coffee and/or milk, mixing, and dispensing.
+
+### Initial Setup (Assumptions)
+- **Initial conditions**: All tanks and valves are assumed to be closed and the mixer is off initially.
+- **Inputs**:
+  - `PB1`: Emergency stop (Push Button 1)
+  - `PB2`: Start machine (Push Button 2)
+  - `PB3`: Coffee and Milk (Push Button 3)
+  - `PB4`: Coffee only (Push Button 4)
+  - `TankLevel`: Mixer tank level (0 to 130ml)
+- **Outputs**:
+  - `ValveCoffee`: Control valve for coffee
+  - `ValveMilk`: Control valve for milk
+  - `ValveOutput`: Output valve for dispensing
+  - `Mixer`: Mixer control
+
+Please note, ASCII art has its limitations for representing detailed logic within each step or actions. For a fully functional implementation, detailed programming in respective IEC 61131-3 languages (like Structured Text, Ladder Diagram, or Function Block Diagram) for each action/transitions is required.
+
+```
+         +----+
+         |Start|
+         +--+-+
+            |
+       +----v----+     +-----------+
+       | Valve ON |---->| Wait Fill |
+       +----+----+     +-----+-----+
+            |                |
+            |<---------------+
+            | TankLevel=130ml
+            |
+       +----v----+
+       | Mix ON  |
+       +----+----+
+            | Timer=4s
+       +----v----+
+       |Valve OFF|
+       +----+----+
+            |
+       +----v----+     +-------------+
+       |Output ON|---->| Wait Output |
+       +----+----+     +------+------+
+            |                 |
+            |<----------------+
+            | TankLevel=0ml
+       +----v----+ 
+       |  End    |
+       +---------+
+```
+
+### Explanation
+
+- **Start**: This is the initial state, waiting for PB2 to be pressed to initiate the process.
+- **Valve ON**: Based on the input from PB3 or PB4, the appropriate valves (coffee and/or milk) open to fill the mixer tank.
+- **Wait Fill**: The system waits until the `TankLevel` reaches 130ml. Once reached, it proceeds to the next step.
+- **Mix ON**: Turns on the mixer for 4 seconds, ensuring coffee and milk are adequately mixed.
+- **Valve OFF**: All valves including coffee and milk valves shut off.
+- **Output ON**: The output valve opens to dispense the mixed coffee.
+- **Wait Output**: Awaits until the `TankLevel` drops to 0ml, indicating the output has been fully dispensed.
+- **End**: The process concludes, ready to start a new cycle when PB2 is pressed again.
+
+**Safety Mechanism**: At any stage, if `PB1` (emergency stop) is triggered, all operations halt immediately for safety.
+
+This simplified SFC sketch provides a structured sequence for controlling a coffee machine based on the described requirements. For actual programming and deployment, extensive testing and integration with the PLC's input/output system, detailed action blocks, and transition conditions in accordance with IEC 61131-3 standards would be necessary.

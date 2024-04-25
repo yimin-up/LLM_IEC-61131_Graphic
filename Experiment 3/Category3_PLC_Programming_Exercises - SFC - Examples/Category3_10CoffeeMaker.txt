@@ -1,0 +1,69 @@
+Given the complexity and safety requirements of a coffee machine control system, below is a simplified Sequential Function Chart (SFC) that models the operation based on the requirements provided. The chart is divided into different steps, each representing a key state or operation in the coffee-making process.
+
+```
+(Start of Sequential Function Chart)
+
+    +-------------------<--------------------------+
+    |                                              |
+    |                                              |
++===========+                                      |
+||         ||                                      |
+|| Initial ||                                      |
+||         ||                                      |
++===========+                                      |
+    |                                              |
+    + Button 2 (Start)                             |
+    |                                              |
+    |                                              |
+    +------------+------------+-----------+        |
+    |            |            |           |        |
+    |            |            | +-------+ |        |
+    |            |            |-|Emergency|        |
+    |            |            | +-------+ |        |
+    |            |            |           |        |
+    |            |            +-----------+        |
+    |            |                                |
++---------+ +---------+  +--------------+      +---------+
+|Coffee+Milk|CoffeeOnly|  |              |      |         |
+|Valves Open|Valve Open|  |              |      | Stop    |
+|           |          |--|              |<-----|         |
++---------+ +---------+  |  Mixer_Fill   |      |         |
+    |            |        |  (Level=130) |      +---------+
+    |            |        |              |
+    |            |        +--------------+
+    |            |                   |
+    |            |                   + Mixer (4s Timer)
+    |            |                                 |
+    |            |                         +---------------+
+    |            |                         |               |
+    |            +------------------------>|  Mixing      |
+    +------------------------------------->|              |
+                              |            +---------------+
+                              |                     |
+                              |                     + Output Valve Open
+                              |                             |
+                              |                     +---------------+
+                              |                     |               |
+                              +-------------------->|  Dispense     |
+                                                    |               |
+                                                    +---------------+
+                                                         |
+                                                         |
+                                              +--------------------+
+                                              |                    |
+                                              +<-------------------+
+
+(End of Sequential Function Chart)
+```
+
+**Description of the Operations:**
+
+1. **Initial**: The machine is in an idle state, waiting for input.
+2. **Start**: When button 2 is pressed, the cycle begins based on the selection. If the emergency stop button (Button 1) is pressed at any point, it transitions to the "Stop" state.
+3. **Coffee+Milk/ CoffeeOnly**: Depending on the selection via button 3 or button 4, the respective valves open to allow coffee and milk or just coffee into the mixer tank.
+4. **Mixer_Fill**: The system waits until the mixer tank level reaches 130ml. In case of emergency, it transitions to "Stop".
+5. **Mixing (4 seconds)**: The mixer operates for a preset duration of 4 seconds. This is handled using a timer. Upon expiration or if an emergency stop is initiated, it moves to the next step or stops, respectively.
+6. **Dispense**: After mixing, the output valve opens to dispense.
+7. **Stop**: This state is effective if the Emergency Stop button is pressed at any time, halting operation instantly for safety.
+
+This is a basic model, and real implementation would require interlocks, safety checks, and more detailed handling, including the management of fault conditions not covered in the simplified SFC.

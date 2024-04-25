@@ -1,0 +1,53 @@
+Certainly! Below is an example of a Structured Text (ST) program based on the IEC 61131-3 standard for a simple automatic car wash system in a PLC.
+
+```iec
+PROGRAM AutoCarWash
+VAR
+    CarDetected : BOOL;         // Input: Sensor to detect if a car is present
+    HumanDetected : BOOL;       // Input: Sensor to detect if a human is present in the car wash area
+    StartWash : BOOL;           // Output: Command to start the car wash process
+    StopWash : BOOL;            // Output: Command to stop the car wash process
+    Alarm : BOOL;               // Output: Alarm to signal the detection of a human
+    WashingActive : BOOL;       // Internal flag to indicate the car wash is in progress
+END_VAR
+
+// Safety check first: Stop everything and raise alarm if a human is detected
+IF HumanDetected THEN
+    WashingActive := FALSE;
+    StopWash := TRUE;
+    Alarm := TRUE;
+ELSE
+    // Clear the alarm if no human is detected
+    Alarm := FALSE;
+    
+    // Washing logic
+    IF CarDetected AND NOT WashingActive THEN
+        // No human detected and car is present so start washing
+        StartWash := TRUE;
+        WashingActive := TRUE;
+    ELSIF NOT CarDetected THEN
+        // No car detected, stop washing and reset the washing active flag
+        StopWash := TRUE;
+        WashingActive := FALSE;
+    END_IF
+END_IF
+
+// Reset start/stop commands if needed
+IF StartWash THEN
+    StartWash := FALSE;
+END_IF
+IF StopWash THEN
+    StopWash := FALSE;
+END_IF
+```
+
+This code represents the core control logic for the car wash station. It needs to be called cyclically by the PLC's main loop.
+
+Key notes about how this program works:
+
+- `CarDetected` and `HumanDetected` are assumed to be inputs to the PLC from sensors. Depending on the actual implementation, these might be read from input registers or IO cards.
+- `StartWash` and `StopWash` are outputs used to control relays or contactors that start or stop the wash process.
+- `Alarm` is a boolean output that can be tied to an alarm system to alert operators or users of the station about a safety hazard.
+- `WashingActive` is an internal flag used to maintain the state of whether a wash cycle is in progress or not.
+
+In practice, there would be additional software layers to manage timers (for how long the wash takes), specific control of the wash sequence (pre-wash, soap, rinse, dry, etc.), and fault handling. An actual PLC implementation would also include interfacing with the physical IO, safety interlocks, and any communication with external monitoring systems.

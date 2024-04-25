@@ -1,0 +1,67 @@
+Here's a self-contained IEC 61131-3 Ladder Diagram program for the coffee machine based on the given requirements:
+
+```
+PROGRAM CoffeeMachine
+VAR
+  EmergencyStop: BOOL;
+  StartButton: BOOL;
+  CoffeeAndMilkButton: BOOL;
+  CoffeeOnlyButton: BOOL;
+  CoffeeValve: BOOL;
+  MilkValve: BOOL;
+  OutputValve: BOOL;
+  MixerTank: INT;
+  MixerTimer: TON;
+  MixerRunning: BOOL;
+END_VAR
+
+(*Network 1: Emergency Stop*)
+    |  EmergencyStop  |
+    +--| |------------|/|-------(CoffeeValve)
+    |                 |/|-------(MilkValve)
+    |                 |/|-------(OutputValve)
+    |                 |/|-------(MixerRunning)
+
+(*Network 2: Start Button*)
+    |  StartButton  |
+    +--| |-----------|/|-------(CoffeeValve)
+    |                |/|-------(MilkValve)
+
+(*Network 3: Coffee and Milk Button*)
+    |  CoffeeAndMilkButton  |
+    +--| |------------------|/|-------(CoffeeValve)
+    |                       |/|-------(MilkValve)
+
+(*Network 4: Coffee Only Button*)
+    |  CoffeeOnlyButton  |
+    +--| |---------------|/|-------(CoffeeValve)
+
+(*Network 5: Mixer Tank Level*)
+    |  MixerTank >= 130  |
+    +--| |---------------|/|-------(CoffeeValve)
+    |                    |/|-------(MilkValve)
+    |                    | |-------(MixerRunning)
+
+(*Network 6: Mixer Timer*)
+    |  MixerRunning  |
+    +--| |-----------|TON|
+    |                 PT:T#4s
+    |                 Q:MixerTimer.Q
+
+(*Network 7: Output Valve*)
+    |  MixerTimer.Q  |
+    +--| |-----------|/|-------(OutputValve)
+
+END_PROGRAM
+```
+
+Explanation:
+1. Network 1: The emergency stop button is used to halt the machine instantly. When pressed, it closes all valves and stops the mixer.
+2. Network 2: The start button is used to open the coffee and milk valves to begin filling the mixer tank.
+3. Network 3: The coffee and milk button is used to select both coffee and milk. It opens both the coffee and milk valves.
+4. Network 4: The coffee only button is used to select only coffee. It opens only the coffee valve.
+5. Network 5: When the mixer tank reaches the maximum level of 130ml, it closes the coffee and milk valves and starts the mixer.
+6. Network 6: The mixer timer is set to run for 4 seconds. When the mixer is running, the timer starts counting.
+7. Network 7: When the mixer timer reaches 4 seconds, it opens the output valve to dispense the output.
+
+Note: This is a simplified representation of the Ladder Diagram program using ASCII art. In an actual PLC programming environment, the symbols and layout may differ slightly.

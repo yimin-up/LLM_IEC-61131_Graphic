@@ -1,0 +1,63 @@
+Given the task of designing an ISA-88 batch recipe for 100kg of cocoa milk production with specific ingredients and providing a 61131-3 compliant Sequential Function Chart (SFC) for the control strategy, below is a simplified conceptualization of both the recipe and the SFC program for the required production cycle. This example assumes basic process operations such as filling, mixing, heating, and discharging the product from a vessel equipped for both stirring and heating.
+
+### ISA-88 Batch Recipe for 100kg Cocoa Milk Production
+
+**Ingredients:**
+- Milk: 60kg (Ingredient temperature: 5°„C)
+- Water: 20kg (Ingredient temperature: [Room Temperature] 25°„C)
+- Liquid Sugar: 10kg
+- Cocoa: 10kg
+
+**Equipment:**
+- Mixing and Blending Vessel with Stirring and Heating Capabilities
+
+**Process Steps:**
+1. **Preparation:** Ensure the vessel is clean and ready for use.
+2. **Filling:**
+   a. Fill the vessel with 60kg of Milk.
+   b. Add 20kg of Water.
+   c. Introduce 10kg of Liquid Sugar.
+   d. Add 10kg of Cocoa.
+3. **Mixing:** Stir the mixture at moderate speed to ensure homogeneity.
+4. **Heating:** Heat the mixture to 75°„C to ensure proper blending and pasteurization.
+5. **Cooling:** (Optional) Cool down to 25°„C for filling into containers.
+6. **Discharging:** Empty the vessel content in preparation for packaging.
+
+**End of Recipe**
+
+### Sequential Function Chart (SFC) Program
+
+The SFC program below will focus on the control of mixing following the ISA-88 batch recipe standards, conceptualized in ASCII art for simplicity.
+
+```
+(Start of SFC)
+
+                   +-----------------------------<-----------------------------+
+                   |                                                           |
+                   |                                                           |
+           +---------------+    +-----------+    +---------------+    +------------------+
+           | Preparation   |    |  Filling  |    |    Mixing    |    |     Heating     |
+           | (Ensure clean |--> | (Add all  |--> | (Stir at     |--> | (Heat up to 75°„C |
+           | vessel)       |    | ingredients)|   | moderate     |    | and hold until  |
+           +---------------+    +-----------+    | speed)       |    | even temp.)     |
+                                                 +---------------+    +------------------+
+                                                                           |
+                                                                           |
+                                                                           + V
+                                                                           |
+                                                                  +-----------------+    +----------------+
+                                                                  |   Cooling (Opt) |    |  Discharging   |
+                                                                  | (Cool down to   |--> | (Empty vessel  |
+                                                                  | 25°„C for        |    | content)       |
+                                                                  | packaging)      |    +----------------+
+                                                                  +-----------------+
+
+
+(End of SFC)
+```
+**Notes:**
+- The Filling step should add ingredients sequentially or as per compatibility.
+- The Mixing, Heating, and Optional Cooling times and parameters (e.g., mixer speed, heating rate) depend on the specific equipment capabilities and product specifications.
+- The Discharging step assumes the final product meets quality specifications and is ready for packaging or further processing.
+
+This framework provides a basis for both a conceptual batch recipe and a simple SFC program structure. It's intended as a guide and requires further detail and adjustment based on specific equipment, production requirements, and quality standards.

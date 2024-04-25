@@ -1,0 +1,58 @@
+Step 1:####
+Inputs:
+- BottomLimitSwitch[N]: Array of bottom limit switches for floors 1 to 5. 
+- TopLimitSwitch[N]: Array of top limit switches for floors 1 to 5.
+- UpButton[N]: Up button inputs on floors 1 to 4.
+- DownButton[N]: Down button inputs on floors 2 to 5.
+- CabinButton[N]: Array of cabin button inputs for floors 1 to 5.
+
+Outputs:
+- MotorUp: Activates to move the elevator up.
+- MotorDown: Activates to move the elevator down.
+- DoorOpen: Activates to open the elevator door.
+
+Internal:
+- Direction: Stores the current direction of the elevator.
+- CurrentFloor: Stores the current floor position of the elevator.
+- TimerDoorOpen: 7 seconds timer for door opening.
+- TimerDoorWait: 10 seconds timer for waiting before closing the door or re-opening if no button is pressed.
+
+Step 2:####
+```plaintext
++----[ ]----(S1)----[ ]----(S2)----[ ]----(S3)---+     +----(S4)----+
+|                                                |     |           |
+|                                                v     v           |
+|          +-[T1]-+    +-[T2]-+    +-[T3]-+    +-[T4]-+    +-[T5]-+  |
+|          | Door |    | Wait |    | Move|    | Door |    | Wait |  |
+|          | Open |    | Door |    |Elev.|    | Open |    | Door |  |
+|          |      |<---+      +<---+     +<---+      +<---+      |  |
+|          +------+    +------+    +-----+    +------+    +------+  |
+|            |             ^          |          |             ^    |
+|       +----+             |          |          +----+        |    |
+|       |                  +----+     +----+           |       |    |
+|       v                       |          |            v       |    |
++---->(T1.1)                  (T2.1)     (T3.1)               (T4.1)  +
+```
+
+Step 3:####
+S1: Initial step. The elevator is in a standby state waiting for input.
+- T1: Door Open Action. Opens the elevator door and starts the door open timer (TimerDoorOpen).
+- T1.1: Transition for door open timer completion.
+
+S2: Waiting for door operations, checking if any cabin or call button is pressed or the door open timer expires.
+- T2: Wait Door. Waits for the door to be manually closed or to automatically close after the TimerDoorWait.
+- T2.1: Transition for door wait timer completion or button press.
+
+S3: Moving the elevator. Decides the direction based on button inputs and current floor.
+- T3: Move Elev. Elevator is moving to the desired floor based on the inputs.
+- T3.1: Transition checks for the arrival at the desired floor.
+
+S4: Door operations after arriving at a floor. Handles opening and potentially re-opening the door.
+- T4: Door Open. Re-opens the elevator door at the current floor, starts the TimerDoorOpen.
+- T4.1: Transition back to Wait Door if the door is re-opened or the elevator needs to wait before moving.
+
+Step 4:####
+The state machine represented in the SFC starts at the initial step (S1) wherein the elevator is on standby. The transition (T1.1) from S1 to S2 happens when a button is pressed and the elevator door opens and the TimerDoorOpen expires. S2 waits either for a cabin button to be pressed or for TimerDoorWait to expire, leading to S3 where the elevator starts moving towards the desired direction. Upon reaching the desired floor (transition T3.1), the elevator door re-opens (S4), and based on whether a button inside the cabin is pressed or after TimerDoorWait, it can either go back to waiting for a door operation (S2) or move to another floor (S3). 
+
+Step 5:####
+According to the IEC 61131 standard, the SFC structure should represent a clear and structured state diagram for the process. The steps (S1, S2, S3, S4) represent the major states in the elevator control process, while the transitions (T1, T2, T3, T4) are conditioned upon timer expiries or external inputs like button presses. Each step and transition should be adequately programmed with the internal logic to handle inputs, manage timers, and control outputs (elevator movement and door operations). It is vital to ensure that transitions are based on clear and deterministic conditions, to avoid undefined states or behaviors in the system.

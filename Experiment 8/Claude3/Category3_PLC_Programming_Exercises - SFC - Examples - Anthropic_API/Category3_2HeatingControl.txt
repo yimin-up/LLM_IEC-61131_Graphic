@@ -1,0 +1,54 @@
+Here is a self-contained IEC 61131-3 sequential function chart program to control a heating system to maintain temperature between 20°„C and 22°„C based on three temperature sensors:
+
+```
+PROGRAM HeatingControl
+VAR
+  Temp1, Temp2, Temp3: REAL;  // Temperature sensor inputs 
+  HeaterOutput: BOOL;         // Heater control output
+  AverageTemp: REAL;          // Calculated average temperature
+END_VAR
+
+(* Main control steps *)
+INITIAL_STEP Init:
+  HeaterOutput := FALSE;
+  -> Monitoring;
+
+STEP Monitoring:
+  AverageTemp := (Temp1 + Temp2 + Temp3) / 3.0;
+  
+  IF AverageTemp < 20.0 THEN
+    -> HeatingOn;
+  ELSIF AverageTemp > 22.0 THEN  
+    -> HeatingOff;
+  END_IF;
+
+STEP HeatingOn:
+  HeaterOutput := TRUE;
+  
+  IF AverageTemp > 21.0 THEN
+    -> Monitoring;
+  END_IF;
+  
+STEP HeatingOff:
+  HeaterOutput := FALSE;
+
+  IF AverageTemp < 21.0 THEN
+    -> Monitoring; 
+  END_IF;
+
+END_PROGRAM
+```
+
+The key aspects:
+
+1. Temperature sensor inputs Temp1, Temp2, Temp3 are declared as REALs
+2. HeaterOutput is a BOOL to turn heater on/off 
+3. AverageTemp stores calculated average of 3 sensors
+4. Init step ensures heater starts off, transitions to Monitoring 
+5. Monitoring calculates average temp, transitions to HeatingOn if < 20°„C or HeatingOff if > 22°„C
+6. HeatingOn turns output on, transitions back to Monitoring when temp > 21°„C
+7. HeatingOff turns output off, transitions to Monitoring when temp < 21°„C
+
+This maintains the temperature between 20-22°„C. The 1 degree hysteresis between heating on/off prevents rapid cycling.
+
+Let me know if you have any other questions!

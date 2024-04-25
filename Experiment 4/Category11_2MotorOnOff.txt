@@ -1,0 +1,22 @@
+Sure, for a control system utilizing a start and stop button to control a motor, here's a simple Ladder Diagram in ASCII art:
+
+```
+(Start of Ladder Diagram)
+
+|                  Start                    M     |
++----[/]----------| |----------------------( )----+
+|                                                   |
+|                  Stop                             |
++----[\]--------------------------------------------+
+|                                                   |
+|                  M                                |
++----| |--------------------------------------------+
+
+(End of Ladder Diagram)
+```
+
+Explanation:
+- The `Start` button, when pressed, closes its normally open (NO) contact shown by `| |`, allowing current to flow and energize the motor represented by `( )`.
+- The `Stop` button, when pressed, opens its normally closed (NC) contact shown by `[\]`, breaking the circuit and de-energizing the motor.
+- A parallel branch is added with a contact of the motor `M` itself (`| |` next to `M`), allowing the motor to stay on once it's been energized, even if the start button is released. This is referred to as a "holding" or "seal-in" circuit.
+- Releasing the start button won't stop the motor due to the holding circuit. Pressing the stop button breaks the circuit, stopping the motor.

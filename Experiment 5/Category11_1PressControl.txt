@@ -1,0 +1,42 @@
+Sequential Function Chart:
+```
+(Start of Sequential Function Chart)
+
+       +----------------------<------------------------+
+       |                                               |
+       |                                               |
++============+                                         |
+||          ||                                         |
+|| Initial  ||                                         |
+||          ||                                         |
++============+                                         |
+       |                                               |
+       |                                               |
+       + BI                                            |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+| DescendPress  |   |  N   |  M+        |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + I                                             |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   AscendPress |   |  N   |  M-        |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + S                                             |
+       |                                               |
+       |                                               |
+       +----------------------->-----------------------+
+
+(End of Sequential Function Chart)
+```
+This Sequential Function Chart represents the process control required for the hydraulic press based on the provided specifications. The cycle begins when the start button (BI) is pressed. The press starts at the upper position (with sensor S high), and it descends (M+) until it reaches the lower position (I high). Then, the press ascends (M-) back to the upper position, completing the cycle.

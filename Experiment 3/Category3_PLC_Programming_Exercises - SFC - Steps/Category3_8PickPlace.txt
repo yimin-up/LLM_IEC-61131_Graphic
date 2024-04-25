@@ -1,0 +1,57 @@
+Step 1:####
+Inputs:
+- Auto_Button: A Boolean input that triggers the auto control process.
+- Manual_Button: A Boolean input for shifting to manual operation mode.
+- Clip_Button: A Boolean input used in manual mode to clip the product from conveyor A.
+- Transfer_Button: A Boolean input used in manual mode to initiate the transfer of the product to conveyor B.
+- Release_Button: A Boolean input used in manual mode to release the product on conveyor B.
+
+Outputs:
+- Clip_Action: A Boolean output that activates the robot arm's clamping mechanism.
+- Transfer_Action: A Boolean output that controls the motion of the robot arm between conveyors.
+- Release_Action: A Boolean output that controls the release mechanism of the robot arm.
+
+Step 2:####
+```
+              +-------------------+
+              |       Start       |
+              +-------------------+
+                      |
+                      V
+              +-------------------+
+              |   Check Mode      |    Auto       
+              +-------------------+------------> (Auto Mode)
+                      |
+                     Manual
+                      V
+              +-------------------+
+              |  Manual Control   |
+              +-------------------+
+             /|\                /|\
+              |                  |
+   Clip       |       Transfer   |       Release
+              |                  |
+              V                  V
++-------------------+   +-------------------+
+|    Clip Product   |   |  Transfer Product |
++-------------------+   +-------------------+
+                        |
+                        V
+                  +-------------------+
+                  |  Release Product  |
+                  +-------------------+
+```
+Step 3:####
+- Start: Initializes the system.
+- Check Mode: Decides the operation mode based on the state of the Auto_Button and the Manual_Button.
+- Auto Mode: Not explicitly shown here, but involves automatic control of the process after selecting the auto mode.
+- Manual Control: The entry state for manual operations, waits for input from the user.
+- Clip Product: Activated when the Clip_Button is pressed, engages the Clip_Action to pick the product from conveyor A.
+- Transfer Product: Enabled after Clip Product or upon pressing Transfer_Button, engages Transfer_Action to move the product.
+- Release Product: This state is reached from Transfer Product, engaging Release_Action to release the product on conveyor B.
+
+Step 4:####
+The state machine described starts by initializing and then immediately checks the mode of operation (auto or manual). If manual mode is selected (via Manual_Button), the system waits for the user to press buttons in sequence: Clip, Transfer, and Release to move the product from conveyor A to conveyor B. Each action (Clip, Transfer, Release) corresponds to a state in the state machine. In auto mode (selected via Auto_Button), these steps would be automated with predefined timings, especially for the transfer action. Transitions between states are conditioned on the inputs, making the sequence adhere to the desired process flow.
+
+Step 5:#### 
+According to the IEC 61131-3 standard, this Sequential Function Chart (SFC) provides a clear, executable sequence of operations for a robotic pick-and-place system. The clear separation of steps and the use of conditions for transitions align with the IEC 61131-3 structures for SFC programming. The specified inputs and outputs also adhere to standard PLC practices, allowing for straightforward implementation in an IEC 61131-3 compliant PLC programming environment.

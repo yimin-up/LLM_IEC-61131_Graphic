@@ -1,0 +1,40 @@
+To implement a feedforward control for mixing two reactants in a Sequential Function Chart (SFC) according to IEC 61131-3 standards, we need to define a program that encompasses steps such as initialization, controlling the opening of valves for reactants A and B, monitoring the reaction condition, and then completing the process. This ASCII represents a simplified version that might be part of larger control logic. Note that in practical applications, actual parameters like flow rates, quantification of reactants, and safety checks would be highly detailed and specific to the chemical process and hardware used.
+
+For simplicity, we'll define the steps:
+- **Init**: Initialize the process
+- **OpenValveA**: Control opening of Valve for Reactant A
+- **OpenValveB**: Control opening of Valve for Reactant B
+- **Mixing**: Condition where reactants A and B are being mixed
+- **EndProcess**: Process completed
+
+This simplified SFC will not include transitions¡¯ logic expressions, as they would depend on process-specific parameters like reactant volumes, flow rates, or process timers. In real-world applications, these would be critical for moving safely and correctly between steps.
+
+SFC ASCII representation:
+
+```plaintext
+          +-----+
+          | Init |
+          +--+--+
+             |
+   +---------+---------+
+   |                   |
++--v--+            +---v--+
+|OpenValveA|        |OpenValveB|
++--+---+            +---+--+
+   |                   |
+   +---------+---------+
+             |
+          +--v--+
+          |Mixing|
+          +--+--+
+             |
+          +--v--+
+          |EndProcess|
+          +-----+
+```
+
+In a real programming environment within IEC 61131-3, each of these steps (Init, OpenValveA, OpenValveB, Mixing, EndProcess) would be associated with actions. These actions could involve output commands to actuators (like opening or closing valves), setting internal flags, calculation of mix ratios, or timers to determine durations for each part of the process.
+
+Transitions between steps would require logical conditions to be met, based on the process sensors' feedback (like flow sensors, level sensors, and temperature sensors), internal logic flags, or timers. For instance, moving from "Init" to "OpenValveA" could depend on a condition like `SystemReady AND ReactantALevel OK`. 
+
+However, since the logic for these conditions can be highly variable and specific, they are not detailed in this ASCII diagram. Note that in practical implementation, every transition (represented typically by horizontal lines connecting steps in SFC diagrams) would include conditions based on process feedback and other logic to safely advance through the mixing process.

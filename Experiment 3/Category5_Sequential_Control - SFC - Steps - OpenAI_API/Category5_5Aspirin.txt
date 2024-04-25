@@ -1,0 +1,84 @@
+Step 1:####
+Inputs:
+- Reactor_Temperature_Sensor: Measures the temperature of the reactor.
+- Reactor_Pressure_Sensor: Measures the pressure inside the reactor.
+- Reactor_Level_Sensor: Measures the fill level (volume) of the reactor.
+- Start_Reaction_Button: Starts the reaction process.
+- Emergency_Stop: Stops the machine in case of emergency.
+
+Outputs:
+- Valve_Acetic_Anhydride: Controls the flow of Acetic anhydride into the reactor.
+- Valve_Salicylic_Acid: Controls the flow of Salicylic acid into the reactor.
+- Valve_Sulphuric_Acid: Controls the flow of Sulphuric acid into the reactor.
+- Reactor_Heater: Controls the heating of the reactor.
+- Stirrer_On: Turns the stirrer in the reactor on and off.
+
+####
+
+Step 2:####
+The state machine for the reaction stage of the acetylsalicylic acid production involves the following steps:
+1. Idle/Initialization: The system is initialized or in an idle state waiting for the start command.
+2. Charging: The educts Acetic anhydride, Salicylic acid, and Sulphuric acid are charged into the reactor.
+3. Mixing: The contents of the reactor are mixed thoroughly.
+4. Reacting: The reaction takes place under controlled temperature until completion.
+5. Cooling: The mixture is cooled down to a safe handling temperature.
+
+Transitions between these states are triggered by the completion of the previous action and checks such as reaching the desired temperature or pressure.
+
+####
+
+Step 3:####
+```plaintext
++-----------------+
+|    Idle/Init    |
++-----------------+
+        |
+        | Start_Reaction_Button
+        V
++-----------------+       +-------------------------+
+|    Charging     |-----> |     Charging_Complete   |
++-----------------+       +-------------------------+
+                                         |
+                                         |
+                                         V
+                                  +--------------+
+                                  |    Mixing    |
+                                  +--------------+
+                                         |
+                                         | Mix_Time_Elapsed
+                                         V
+                                  +--------------+
+                                  |   Reacting   |
+                                  +--------------+
+                                         |
+                                         | Reaction_Complete
+                                         V
+                                  +--------------+
+                                  |    Cooling   |
+                                  +--------------+
+                                         |
+                                         | Cooling_Complete
+                                         V
+                                  +--------------+
+                                  |    Idle/Init |
+                                  +--------------+
+```
+
+####
+
+Step 4:####
+- **Idle/Initialization**: This is the starting point of the program, waiting for the start command to initiate the process.
+- **Charging**: Upon receiving the start command, valves for Acetic anhydride, Salicylic acid, and Sulphuric acid open to charge the reactor. Actions include activating the Valve_Acetic_Anhydride, Valve_Salicylic_Acid, and Valve_Sulphuric_Acid outputs.
+  - **Transition**: Charging_Complete transition evaluates the level sensor to determine when the charging is finished.
+- **Mixing**: The ingredients in the reactor are mixed by turning the stirrer on. This is crucial for a homogenous reaction mixture.
+  - **Transition**: Mix_Time_Elapsed checks if the stirrer has been on for enough time to assume thorough mixing.
+- **Reacting**: The reactor heater is activated to maintain the reaction temperature. The reaction takes place under controlled conditions.
+  - **Transition**: Reaction_Complete assesses whether the reaction has proceeded to completion, often through a combination of time and sensor data.
+- **Cooling**: Once the reaction is complete, the mixture is cooled to a safe handling temperature before proceeding to the next stage in the process.
+  - **Transition**: Cooling_Complete ensures the mixture has reached a safe temperature.
+- Return to Idle/Initialization: The process can then be restarted or halted completely.
+
+####
+
+Step 5:####
+The provided Sequential Function Chart (SFC) aligns with the IEC 61131-3 standard for PLC programming and control of batch processes. The steps clearly define the required process stages for the reaction part of acetylsalicylic acid production. Each step is linked to corresponding actions controlling hardware (valves, heater, stirrer) and transitions based on sensor inputs and process timers ensure the process moves logically from one step to the next. The visualization aids troubleshooting and ensures the automation logic is transparent for maintenance and validation purposes.

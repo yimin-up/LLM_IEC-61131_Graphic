@@ -1,0 +1,72 @@
+Step 1:####
+Inputs:
+1. Emergency Stop (PB1): Normally closed push button.
+2. Start Machine (PB2): Normally open push button.
+3. Coffee and Milk Selection (PB3): Normally open push button.
+4. Coffee Only Selection (PB4): Normally open push button.
+5. Mixer Tank Level Sensor (TL): Analog input for tank level, digital signal when the level reaches 130ml.
+   
+Outputs:
+1. Coffee Valve (CV): Digital output to control the coffee valve.
+2. Milk Valve (MV): Digital output to control the milk valve.
+3. Mixer (MX): Digital output to control the start of the mixer.
+4. Output Valve (OV): Digital output to control the output valve.
+5. Timer for Mixer (TMX): Timer to control the mixer operation for four seconds.
+
+Symbols:
+- `|--( )--|` represents a normally open contact.
+- `|/-( )-|` represents a normally closed contact.
+- `( )` represents a coil.
+- `(/)` represents a normally closed push button in ASCII art.
+- `T#4s` represents a timer with a set time of four seconds.
+- `|---(TL>=130)---|` represents a digital signal from the tank level sensor.
+
+Step 2:####
+```
+          +----[/]----+----[ ]----+----[/]----+----[ ]----+
+Emergency |    PB1    |   Start   |    PB3    |    PB4    |
+Stop      +-----------+-----------+-----------+-----------+
+          |           |           |-----------|           |
+          |           |           |           |           |
+          |           |           |           |           |
+          |           |           +----( )----+           |
+          |           |                 CV                 |
+          |           |                                   |
+          |           |           +----( )----------------+
+          |           |           |     MV                |
+          |           |                                   |
+          |           +-----------+                       |
+          |                       |                       |
+          |   +----[TL>=130]------+                       |
+          |   |                                           |
+          |   |   +---( )------------+                    |
+          +---+---+        MX        +--------------------+
+              |   +-----------------+   |
+              |                         |
+              +----| T#4s |--+          |
+                    +-------+          |
+                              +---( )--+
+                                    OV
+```
+
+Step 3:####
+1. Coffee Valve (CV) Logic: `PB4`
+    - The coffee valve opens when the "Coffee Only" button (PB4) is pressed.
+
+2. Milk Valve (MV) Logic: `PB3`
+    - The milk valve opens when the "Coffee and Milk" button (PB3) is pressed.
+
+3. Mixer (MX) Logic: `(TL>=130)`
+    - The mixer starts when the tank level sensor signals that the mixer tank has reached a level of 130ml.
+
+4. Output Valve (OV) Logic: `TMX.Done`
+    - The output valve opens when the timer for the mixer operation expires after four seconds.
+
+Step 4:####
+The state machine of this Ladder Diagram can be described as follows:
+1. Initially, all valves and the mixer are off. The system waits for a start signal bypassing the emergency stop (PB1 must not be pressed) and selecting either "Coffee and Milk" (PB3) or "Coffee Only" (PB4) options.
+2. If "Coffee Only" is selected, only the coffee valve (CV) opens to fill the mixer tank. If "Coffee and Milk" is selected, both coffee (CV) and milk (MV) valves open to fill the mixer tank.
+3. As the tank fills, once it reaches 130ml, the level sensor triggers and starts the mixer (MX). Simultaneously, coffee and/or milk valves close, preventing additional liquid from entering the tank.
+4. The mixer operates for four seconds, as dictated by the timer (TMX), ensuring proper mixing of the contents.
+5. Once the timer expires, the mixing process stops, and the output valve (OV) opens to dispense the coffee into a cup.
+6. The system then returns to its initial state, ready for another operation cycle, unless the emergency stop (PB1) is engaged at any point to halt the operation immediately for safety reasons.

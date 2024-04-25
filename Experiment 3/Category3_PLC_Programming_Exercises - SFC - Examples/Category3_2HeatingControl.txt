@@ -1,0 +1,69 @@
+Given the requirements, we will model a straightforward controller for the heating system using the IEC 61131-3 Sequential Function Chart (SFC) paradigm. The ASCII representation provided here simulates the logical steps in controlling the heating system based on temperature sensor inputs. Since the actual IEC 61131-3 programming involves specific software environments and syntax for SFC, below is a conceptual representation in ASCII art to depict the logic flow.
+
+**Note:** In practice, the "actions" (A) like `Heater_On` and `Heater_Off` would be tied to real outputs controlling the heater, and the transitions (--)would evaluate conditions based on inputs from temperature sensors.
+
+```
+(Start of Sequential Function Chart)
+
+    +===============+
+    ||             ||
+    ||  Start      ||
+    ||             ||
+    +===============+
+            |
+            |
+            v
+    +===============+       +-------+
+    ||             ||       |       |
+    || Check Temp  ||<----->| T<=20 |<------------------------------------------+
+    ||             ||       |       |                                           |
+    +===============+       +-------+                                           |
+            |                                                                   |
+       T>20 & T<=22                                                             |
+            |                                                                   |
+            v                                                                   |
+    +===============+       +-------+                                           |
+    ||             ||       |       |                                           |
+    ||   Idle      ||<----->| T<22  |                                           |
+    ||             ||       |       |                                           |
+    +===============+       +-------+                                           |
+            |                                                                   |
+            |                                                                   |
+            v                                                                   |
+    +===============+       +-------+                                           |
+    ||             ||       |       |                                           |
+    ||  Heat On    ||<----->| T<20  |                                           |
+    ||             ||       |       |                                           |
+    +===============+       +-------+                                           |
+            |                                                                   |
+            v                                                                   |
+    +===============+       +-------+                                           |
+    ||             ||       |       |                                           |
+    ||  Monitoring ||<----->| T>=22 |-------------------------------------------+
+    ||             ||       |       |                      
+    +===============+       +-------+                      
+            |
+            |
+            v
+    +===============+
+    ||             ||
+    ||  Heat Off   ||
+    ||             ||
+    +===============+
+            |
+            |
+            +----------<-----------------<-----------------<
+            
+(End of Sequential Function Chart)
+```
+
+**Explanation:**
+
+- **Start:** Initial state of the system.
+- **Check Temp:** Evaluates if temperature falls below 20¡ãC.
+- **Idle:** System maintains this state as long as the temperature is within the 20¡ãC to 22¡ãC range.
+- **Heat On:** Activated when the temperature falls below 20¡ãC; the heater is turned on to raise the temperature.
+- **Monitoring:** Once heating begins, continuously monitor the temperature.
+- **Heat Off:** If the temperature reaches or exceeds 22¡ãC, the heater turns off.
+
+This chart is an abstract representation. Implementation details such as sensor value reading, exact logic for transitions (`T<=20`, `T>20 & T<=22`, `T<22`, `T<20`, `T>=22`), and "actions" (e.g., `Heater_On`, `Heater_Off`) will vary based on the specific PLC programming environment and hardware being used.

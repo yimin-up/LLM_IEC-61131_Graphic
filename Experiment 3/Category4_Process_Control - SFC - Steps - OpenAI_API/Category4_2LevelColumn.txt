@@ -1,0 +1,60 @@
+Step 1:####
+Inputs:
+- Level_Sensor: The current level of the distillation column measured by the sensor.
+- Set_Point: The desired level in the distillation column.
+
+Outputs:
+- Valve_Control: Control signal for the inlet valve to adjust the flow rate, thus controlling the level in the column.
+
+Internal Variables:
+- Error: Difference between Set_Point and Level_Sensor.
+- Integral: Accumulation of the Error over time.
+- Derivative: Rate of change of Error.
+- P_Out: Proportional output calculated by multiplying the Error by the Proportional gain.
+- I_Out: Integral output, which is the Integral value multiplied by the Integral gain.
+- D_Out: Derivative output, calculated from the Derivative by the Derivative gain.
+
+Parameters (constants):
+- Kp: Proportional gain.
+- Ki: Integral gain.
+- Kd: Derivative gain.
+
+Step 2:####
+The state machine for this PID control will sequentially move through initializing the PID controller, calculating the PID components (Proportional, Integral, Derivative), computing the total PID output, and adjusting the valve accordingly. The cycle repeats to continually adjust the level in the distillation column based on the feedback from the level sensor.
+
+1. **Initialization**: Set up initial conditions, variables.
+2. **Calculate Error**: Compute the difference between the Set_Point and the Level_Sensor reading.
+3. **Calculate P, I, D Components**: Based on the Error, compute the Proportional, Integral, and Derivative components.
+4. **Compute Output**: Sum up P, I, and D components to generate the control signal for the valve.
+5. **Adjust Valve**: Apply the computed control signal to the valve.
+6. **Loop Back**: The process loops back to the "Calculate Error" step to continuously adjust based on new sensor readings.
+
+Step 3:####
+
+```plaintext
++----------------+   +----------------+   +--------------------+   +-------------------+   +-----------------+
+| Initialization |-->| Calculate Error |-->| Calculate P,I,D    |-->| Compute Output    |-->| Adjust Valve    |
++----------------+   +----------------+   | Components         |   +-------------------+   +-----------------+
+                                           +--------------------+                              |
+                                              |                                                   |
+                                              +---------------------------------------------------+
+```
+
+Step 4:####
+- **Initialization**: Sets initial values for Integral and Derivative calculations, ensuring they start from a known state rather than uninitialized memory.
+- **Calculate Error**: Determines how far off the current level is from the desired set point. This difference (error) drives the PID control mechanism.
+- **Calculate P, I, D Components**: Each component of the PID controller is calculated here:
+  - **P_Out**: Proportional to the current error.
+  - **I_Out**: Based on the accumulation (Integral) of past errors.
+  - **D_Out**: Based on the rate of change (Derivative) of the error.
+- **Compute Output**: The outputs of the Proportional, Integral, and Derivative calculations are combined to produce a total control signal that aims to minimize error and stabilize the system quickly.
+- **Adjust Valve**: The control signal is applied to the valve, adjusting the fluid flow into the distillation column to correct the level towards the set point.
+- **Loop Back**: The process continuously recalculates based on the current state, making it dynamic and responsive to changes in the system.
+
+Step 5:####
+The IEC 61131-3 Sequential Function Chart (SFC) standards are followed here by:
+- Structuring the process into clear, sequential steps that are easy to understand and follow.
+- Using standard terminologies like Initialization, Calculation, and Adjustment to define process states.
+- The transitions are based on completion of actions rather than on timed intervals, ensuring the process moves forward based on system feedback rather than arbitrary delays.
+
+This SFC approach ensures that the PID control process is logically organized, making it scalable and modifiable for similar processes or more complex systems while adhering to international programming standards.

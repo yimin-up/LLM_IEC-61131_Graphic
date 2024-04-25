@@ -1,0 +1,75 @@
+#### Step 1:####
+Inputs: 
+- TempSensor: Temperature sensor input (°„C)
+- PressureSensor: Pressure sensor input (bar)
+- StartProcess: Start process button (Boolean)
+- StopProcess: Stop process button (Boolean)
+
+Outputs: 
+- Heater: Control heater (Boolean)
+- Cooler: Control cooler (Boolean)
+- PressureValve: Control Pressure Valve (Boolean)
+
+#### Step 2:####
+The state machine for the reaction stage consists of the following states:
+1. **Initialization**: Setup of initial conditions before starting the process.
+2. **Heating**: Increase the temperature to the required level for the reaction to occur.
+3. **Reaction**: Maintain temperature and pressure for a specified time to ensure completion of the chemical reaction.
+4. **Cooling**: Decrease the temperature after the reaction is complete.
+5. **PressureRegulation**: Adjust the pressure within the system to safe levels throughout the process.
+6. **EndProcess**: The process is stopped, and all equipment is safely turned off.
+
+#### Step 3:####
+```
++--[Initialization]--+
+|                    |                                     
++--------+-----------+
+         |
+         |<StartProcess>
+         v
+   +--[Heating]--+  
+   | T<450       | Temperature less than 450°„C  
+   +-----+-------+  
+         |
+         |TempSensor>=450
+         v
+  +--[Reaction]--+  
+  | T>=450 &     | Maintain temperature at 450°„C
+  | P<200        | Pressure less than 200 bar  
+  +-----+-------+  
+         |
+         | Time = 30min
+         v
+   +--[Cooling]--+  
+   | T>200       | Temperature greater than 200°„C  
+   +-----+-------+  
+         |
+         |TempSensor<=200
+         v
++--[PressureRegulation]--+  
+| Adjust P to <150 bar   |  
++---------+--------------+  
+          |
+          |<StopProcess>
+          v         
+   +--[EndProcess]--+  
+   | Stop all       |  
+   +----------------+  
+```
+
+#### Step 4:####
+- **Initialization**: Prepares the system for starting the process, ensuring that all conditions are safe for operation.
+- **Heating**: The heater is activated until the temperature reaches 450°„C. The action will be controlling the `Heater` output based on `TempSensor`.
+- **Reaction**: In this state, the temperature is maintained at 450°„C, and pressure should not exceed 200 bar. Based on `TempSensor` and `PressureSensor`, actions may involve adjusting the `Heater`, `Cooler`, and `PressureValve` to maintain these conditions.
+- **Cooling**: After the reaction is complete, this state cools down the system to 200°„C. The `Cooler` is activated as needed.
+- **PressureRegulation**: Independently or as part of the Cooling state, ensures pressure is reduced to safe levels (<150 bar). Adjusts `PressureValve` based on `PressureSensor`.
+- **EndProcess**: Shuts down all operations, ensuring the system is safely deactivated.
+
+The transitions are based on sensor inputs reaching specific set points or conditions, like `StartProcess`, temperature or pressure values being within a certain range, and `StopProcess`. Timing (e.g., for the reaction state) can be handled with internal timers set to the required durations.
+
+#### Step 5:####
+According to the IEC 61131-3 standard, the Sequential Function Chart (SFC) follows the guidelines by:
+- Clearly defining states (steps) and their specific conditions for transitions, aligning with structured programming approaches.
+- Using inputs and outputs that are related to real-world sensors and actuators, adhering to practical implementation considerations.
+- Providing a visual and logical flow from start to end, facilitating understanding and troubleshooting of the process control logic.
+- Including conditions for safety and proper sequence of operations, which is critical for batch process control like in chemical manufacturing.

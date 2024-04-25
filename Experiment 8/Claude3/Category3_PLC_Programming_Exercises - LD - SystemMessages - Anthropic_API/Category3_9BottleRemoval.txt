@@ -1,0 +1,35 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program in ASCII art for the bottle packaging system you described:
+
+      Bottle     Empty      Cylinder   Cylinder
+     Detected   Detected    Extend     Retract
+    +--] [------+--] [------+--( )-----+--( )--+
+    |           |           |          |       |
+    |           |           |     +----+       |
+    |           |           |     |            |
+    |           |        +--+-----+            |
+    |           |        |                     |
+    |        +--+--------+--+                  |
+    |        |              |                  |
+    +--------+              |                  |
+             |              |                  |
+             +--[/]----[TON]+--[TOF]--+        |
+                              T#2s    |        |
+                                       |        |
+                                       +--[/]---+
+
+Inputs:
+- Bottle Detected: Proximity sensor that detects any bottle
+- Empty Detected: Proximity sensor that detects only empty bottles
+
+Outputs:
+- Cylinder Extend: Output to extend the cylinder to remove empty bottles
+- Cylinder Retract: Output to retract the cylinder
+
+Functional Description:
+1. When a bottle is detected by the "Bottle Detected" sensor, it enables the rung.
+2. If the bottle is also detected as empty by the "Empty Detected" sensor, it triggers the cylinder extend output.
+3. The cylinder extend output is maintained for a duration of 2 seconds using a TON (On-Delay) timer.
+4. After the 2-second delay, the TOF (Off-Delay) timer is triggered, which maintains the cylinder retract output.
+5. The cylinder retract output is maintained until the bottle is no longer detected by the "Bottle Detected" sensor.
+
+This Ladder Diagram program ensures that when an empty bottle is detected, the cylinder extends to remove it from the conveyor. The cylinder remains extended for 2 seconds to allow sufficient time for removal. After the removal, the cylinder retracts and remains in that position until the next empty bottle is detected.

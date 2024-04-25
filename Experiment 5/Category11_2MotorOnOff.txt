@@ -1,0 +1,39 @@
+For a motor start/stop control scenario with a Start button (StartBtn) and Stop button (StopBtn) using Sequential Function Chart in ASCII art:
+
+```
+(Start of Sequential Function Chart)
+
+       +------------------------<-------------------------+
+       |                                                  |
+       |                                                  |
++============+                                            |
+||          ||                                            |
+|| Initial  ||                                            |
+|| (Stop)   ||                                            |
++============+                                            |
+       |                                                  |
+       |                                                  |
+       + StartBtn                                         |
+       |                                                  |
+       |                                                  |
++---------------+  +------+------------+--------+         |
+|    MotorOn    |  |  N   |  Motor     |        |         |
+|               |--+      |  Start     |        |         |
+|               |  |      | (Output)   |        |         |
++---------------+  +------+------------+--------+         |
+       |                                                  |
+       |                                                  |
+       + StopBtn                                          |
+       |                                                  |
+       |                                                  |
+       +----------------------->--------------------------+
+
+(End of Sequential Function Chart)
+```
+
+Here's how the control logic works according to the chart:
+
+- The system starts in the "Initial" (Stop) state. The motor is not running.
+- When the Start button (StartBtn) is pressed (`+ StartBtn`), the system transitions to the "MotorOn" state.
+  - In the "MotorOn" state, the system activates the Motor Start (Output) (`+------+ Motor Start (Output)`), causing the motor to run.
+- When the Stop button (StopBtn) is pressed while in the "MotorOn" state (`+ StopBtn`), the system transitions back to the "Initial" state, stopping the motor.

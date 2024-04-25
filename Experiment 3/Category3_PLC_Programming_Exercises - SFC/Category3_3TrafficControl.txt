@@ -1,0 +1,56 @@
+To design a sequential function chart (SFC) for a traffic light system with pedestrian and emergency vehicle priorities, the program will be described in a textual form using ASCII art since SFCs are primarily graphical. We'll structure the flow considering key components: standard traffic light sequence, pedestrian button input, and emergency vehicle detection.
+
+For simplicity, let's define the steps (activities) and transitions (conditions) as follows:
+
+- **Steps:** `Green`, `Yellow`, `Red`, and special modes like `EmergencyGreen`.
+- **Transitions:** 
+  - `T_GreenToYellow` for transitioning from green to yellow under normal operation.
+  - `T_YellowToRed` for transitioning from yellow to red.
+  - `T_RedToGreen` for transitioning from red to green in normal traffic flow.
+  - `EmergencyDetected` and `EmergencyCleared` for handling emergency vehicle detection.
+  - `PedestrianRequest` and `PedestrianCrossingDone` for pedestrian button inputs.
+
+A simplified ASCII art representation is as follows:
+
+```
++-------+   T_GreenToYellow   +---------+   T_YellowToRed   +-------+   T_RedToGreen   +--------+
+| Green |-------------------->| Yellow  |------------------>| Red   |---------------->| Green  |
++-------+                     +---------+                    +-------+                 |(Start) |
+    |                          /|\    |                          |                      +--------+
+    |      EmergencyDetected  |      |       EmergencyDetected  |                           |   
+    |                          |      |                          |                           |
+    +--------------------------+      +--------------------------+                           |
+    |                                           |                                            |
+    |                                           |                                            |
+    |                                           v                                            |
+    |                                      +------------+                                     |
+    |                                      | Emergency  |   EmergencyCleared                  |
+    +------------------------------------->|  Green    |<-----------------------------------+
+                                           +------------+
+```
+
+For pedestrian handling, a parallel branch could be added, commonly synchronized with the main traffic flow during the `Red` state, for safer operation. Due to the limitations of ASCII art complexity, consider this as a conceptual add-on:
+
+```
+   +-------+                          (Pedestrian Request)
+   | Red   |----------------------------+
+   +-------+                            |
+        ^                               v
+        |                          +------------+
+        +--------------------------| Pedestrian |
+                                   | Crossing   |
+                                   +------------+
+                                        |
+                               (Pedestrian Crossing Done)
+                                        |
+                                        v
+```
+
+### Explanation:
+- The system starts in `Green` state.
+- After `T_GreenToYellow`, the light turns to `Yellow`, and then to `Red` after `T_YellowToRed`.
+- Once it's `Red`, the system will loop back to `Green` under `T_RedToGreen`, completing the standard traffic light cycle.
+- If an emergency vehicle is detected (`EmergencyDetected`), the system immediately transitions to `EmergencyGreen`, regardless of the current state, to allow the vehicle to pass. The system remains in `EmergencyGreen` until `EmergencyCleared` is detected.
+- Pedestrian requests are handled ideally during the `Red` phase, allowing safe crossing.
+
+Note: This ASCII representation is a simplification. Actual SFC programming would include actions within each state (like setting light colors) and more detailed condition handling, especially for debouncing pedestrian inputs or handling multiple simultaneous emergency vehicles. Emergency vehicle priority typically overrides pedestrian requests, requiring careful consideration in real implementations.

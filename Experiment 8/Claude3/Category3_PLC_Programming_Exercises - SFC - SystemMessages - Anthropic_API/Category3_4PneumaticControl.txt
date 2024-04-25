@@ -1,0 +1,81 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program to control the pneumatic system per your requirements:
+
+       +----+
+  -->--| S1 |
+       +----+
+         |
+         |
+    +---------+
+    |    N    |
+    +---------+
+    | Action1 |
+    +---------+
+         |
+         |
+       +----+
+   +---| T1 |
+   |   +----+
+   |     | IN1 AND NOT FLOW_OK
+   |     |
+   |  +-----+
+   +--| S11 |
+      +-----+
+         |
+         |
+    +---------+
+    |    N    |
+    +---------+
+    | Action2 |
+    +---------+
+         |
+         |
+       +----+
+   +---| T2 |
+   |   +----+  
+   |     | IN1 AND FLOW_OK
+   |     |
+   |  +-----+
+   +--| S12 |
+      +-----+
+         |
+         |
+    +---------+
+    |    N    |
+    +---------+
+    | Action3 |
+    +---------+
+         |
+         |
+        (*)
+        
+        
+  Action1:
+    FLOW_SP := 50.0;  // Set flow setpoint to 50 standard liters/min
+    PRESSURE_MIN := 5.5;  // Set minimum pressure to 5.5 bar 
+    PRESSURE_MAX := 6.0;  // Set maximum pressure to 6.0 bar
+    START_CONTROL;
+    
+  Action2:  
+    ADJUST_FLOW_DOWN;
+    
+  Action3:
+    ADJUST_FLOW_UP;
+    
+  T1: t#100ms // Transition time 100ms
+  T2: t#100ms
+  
+  IN1: SYSTEM_ENABLE // Input to enable system
+  FLOW_OK: (FLOW >= (FLOW_SP - 1.0)) & (FLOW =< (FLOW_SP + 1.0)) // Check if flow is within +/- 1 liter of setpoint
+  PRESSURE_OK: (PRESSURE >= PRESSURE_MIN) & (PRESSURE =< PRESSURE_MAX) // Check if pressure is in range
+
+This SFC controls the pneumatic system in a loop executing every 100ms when enabled via the IN1 input. 
+
+In the initial step S1, it sets the flow setpoint to 50 l/min, pressure range to 5.5-6.0 bar and starts control.
+
+If flow is outside the +/- 1 l/min deadband around the setpoint, it transitions to step S11 and calls ADJUST_FLOW_DOWN to decrease flow. 
+
+If flow is within the deadband, it transitions to step S12 and calls ADJUST_FLOW_UP to increase flow.
+
+The PRESSURE_OK interlock ensures pressure stays within the 5.5 to 6.0 bar range.
+
+Let me know if you have any other questions!

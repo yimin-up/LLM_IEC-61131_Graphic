@@ -1,0 +1,65 @@
+Here's an IEC 61131-3 compliant Sequential Function Chart (SFC) program for the pick-and-place robot application with two conveyors:
+
+    +-----+
+    |INIT |
+    +--+--+
+       |
+       |     +-------+
+       +---->|AUTO   |
+       |     +---+---+
+       |         |
+       |         |     +--------+
+       |         +---->|CLIP    |
+       |         |     +---+----+
+       |         |         |
+       |         |         |     +----------+
+       |         |         +---->|TRANSFER  |
+       |         |         |     +----+-----+
+       |         |         |          |
+       |         |         |          |     +---------+
+       |         |         |          +---->|RELEASE  |
+       |         |         |          |     +----+----+
+       |         |         |          |          |
+       |         |         |          |          |
+       |     +---+---+     |          |          |
+       +---->|MANUAL |     |          |          |
+             +---+---+     |          |          |
+                 |         |          |          |
+                 |     +---+----+     |          |
+                 +---->|M_CLIP  |     |          |
+                 |     +---+----+     |          |
+                 |         |          |          |
+                 |         |     +----+-----+    |
+                 |         +---->|M_TRANSFER|    |
+                 |         |     +----+-----+    |
+                 |         |          |          |
+                 |         |          |     +----+----+
+                 |         |          +---->|M_RELEASE|
+                 |         |                +----+----+
+                 |         |                     |
+                 +---------+---------------------+
+
+Step descriptions:
+- INIT: Initialization step
+- AUTO: Auto mode step, waiting for the Auto button to be pressed
+- CLIP: Clipping the product from conveyor A
+- TRANSFER: Transferring the product to conveyor B (2 seconds duration)
+- RELEASE: Releasing the product onto conveyor B
+- MANUAL: Manual mode step, waiting for manual control actions
+- M_CLIP: Manual clipping of the product when Clip button is pressed
+- M_TRANSFER: Manual transfer of the product when Transfer button is pressed
+- M_RELEASE: Manual release of the product when Release button is pressed
+
+Transitions:
+- INIT to AUTO: Unconditional transition
+- AUTO to CLIP: Auto button is pressed
+- CLIP to TRANSFER: Clipping action completed
+- TRANSFER to RELEASE: 2 seconds elapsed
+- RELEASE to AUTO: Releasing action completed
+- INIT to MANUAL: Unconditional transition
+- MANUAL to M_CLIP: Clip button is pressed
+- M_CLIP to M_TRANSFER: Transfer button is pressed
+- M_TRANSFER to M_RELEASE: Release button is pressed
+- M_RELEASE to MANUAL: Unconditional transition
+
+The manual control process (MANUAL, M_CLIP, M_TRANSFER, M_RELEASE) and the auto control process (AUTO, CLIP, TRANSFER, RELEASE) are interlocked, meaning only one can be active at a time.

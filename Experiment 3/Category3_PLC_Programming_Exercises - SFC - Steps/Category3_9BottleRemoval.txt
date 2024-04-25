@@ -1,0 +1,60 @@
+Step 1:####
+Inputs:
+- `proximity_sensor`: Detects any bottle approaching the packaging area.
+- `empty_bottle_sensor`: Specifically detects empty bottles.
+
+Outputs:
+- `cylinder_actuator`: Activates the mechanism to remove empty bottles.
+
+####
+
+Step 2:####
+```
++--[Initial]-->(BottleDetection)
+             |
+             +--(EmptyBottleRemove)----------->(Packaging)
+             |         |                              |
+             +-------->|                              |
+                        [cylinder_actuator]           |
+                                                      |
+                                     [!proximity_sensor]-->(End)
+```
+
+####
+
+Step 3:####
+- **Initial**: The starting point of the program. There is no specific action here; it's just the entry state before any conditions are checked.
+
+- **BottleDetection**: This step waits for a bottle to be detected by the `proximity_sensor`. Transition from this step occurs when a bottle is detected.
+
+- **EmptyBottleRemove**: If an empty bottle is detected by the `empty_bottle_sensor`, this step activates the `cylinder_actuator` to remove the empty bottle. Transition out of this step happens in two contexts: either the empty bottle is removed successfully, or a filled bottle bypasses this step completely, as indicated by the looping transition that checks for non-empty bottles.
+
+- **Packaging**: This step represents the state where bottles (which are not detected as empty) are moved to the packaging area. No explicit action is specified here, assuming that packaging is handled externally or by another part of the process not covered in this SFC.
+
+- **End**: After a bottle is successfully passed to the packaging area without detecting a new bottle by the `proximity_sensor`, the process transitions to the "End" state, which signifies the completion of the bottling and packaging operation for a cycle.
+
+Transitions:
+- From **Initial** to **BottleDetection** automatically.
+- From **BottleDetection** to **EmptyBottleRemove** on detection of any bottle.
+- From **EmptyBottleRemove** back to itself if the `empty_bottle_sensor` is triggered, indicating the removal of an empty bottle.
+- From **EmptyBottleRemove** to **Packaging** if the `empty_bottle_sensor` is not triggered, meaning a filled bottle is present.
+- From **Packaging** to **End** when no more bottles are detected by the `proximity_sensor`.
+
+Actions:
+- Activation of the `cylinder_actuator` during the **EmptyBottleRemove** step to remove detected empty bottles.
+
+####
+
+Step 4:####
+The state machine begins at the **Initial** state, moving to **BottleDetection** to monitor for approaching bottles. When a bottle is detected, it checks if the bottle is empty in the **EmptyBottleRemove** state. If an empty bottle is detected, it actuates the cylinder to remove the bottle and returns to detecting the next bottle. If a filled bottle is detected instead, it proceeds to **Packaging**. The cycle finishes when there are no more bottles detected, transitioning to the **End** state. This SFC is a cyclical process that repeats for each bottle detected by the proximity sensor, automatically separating empty bottles from the packaging process.
+
+####
+
+Step 5:####
+According to the IEC 61131-3 standard for Sequential Function Charts (SFCs):
+- The SFC defined here properly starts with an initial step (`Initial`).
+- Transitions are defined with conditions based on inputs (`proximity_sensor` and `empty_bottle_sensor`).
+- Actions (`cylinder_actuator`) are associated with the appropriate steps (in this case, `EmptyBottleRemove`).
+- The SFC includes an end step, which is good practice for indicating the completion of a process cycle.
+
+The described SFC adheres to the structure and flow control mechanisms prescribed by the IEC 61131-3 standard, providing a coherent and effective design for the given packaging system's requirements.

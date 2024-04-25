@@ -1,0 +1,49 @@
+Step 1:####
+Inputs:
+1. Manual Button - This input is activated when the Manual mode is needed. Symbol: [ ]
+2. Auto Button - Activated for Auto mode operation. Symbol: [ ]
+3. Clip Button - Pressed to clip the product from conveyor A. Symbol: [ ]
+4. Transfer Button - Pressed to move the product to conveyor B. Symbol: [ ]
+5. Release Button - Pressed to release the product onto conveyor B. Symbol: [ ]
+
+Outputs:
+1. Clip Actuator - Clips or holds the product from/to conveyor A. Symbol: ( )
+2. Transfer Actuator - Moves the product to conveyor B. Symbol: ( )
+3. Release Actuator - Releases the product on conveyor B. Symbol: ( )
+
+Step 2:####
+```plaintext
+(Start of Ladder Diagram)
+
+|----[ ]----[ ]-----------------( )----|  ; Rung 1: Auto/Manual Mode interlock for Clip Actuator
+|                                   |
+|----[ ]----[/]----[ ]----[ ]----( )-|  ; Rung 2: Manual Mode Clip Control
+|                                   |
+|----[ ]----[/]----[ ]----[ ]----( )-|  ; Rung 3: Manual Mode Transfer Control
+|                                   |
+|----[ ]----[/]----[ ]----[ ]----( )-|  ; Rung 4: Manual Mode Release Control
+|                                   |
+|----[ ]----[ ]----[/]----[ ]----( )-|  ; Rung 5: Auto Mode Clip Control
+|----[ ]----[ ]----------(TMR)-[ ]---|  ; Rung 6: Auto Mode 2-second Timer for Transfer
+|                                   |
+|----[ ]----[ ]-------------[ ]----( )-|  ; Rung 7: Auto Mode Transfer Control after Timer
+|                                   |
+|----[ ]----[ ]--------------------( )-|  ; Rung 8: Auto Mode Release Control
+
+(End of Ladder Diagram)
+```
+
+Note: This is an abstract representation. Symbols like `[ ]` represent inputs, `( )` represent outputs, and `[/]` indicates a NOT operation. `TMR` represents a timer used in Auto mode.
+
+Step 3:####
+- Rung 1: Represents the interlock condition ensuring either Auto or Manual mode is selected.
+- Rung 2: `Manual Button AND NOT Auto Button AND Clip Button` actuates the Clip Actuator.
+- Rung 3: `Manual Button AND NOT Auto Button AND Transfer Button` actuates the Transfer Actuator.
+- Rung 4: `Manual Button AND NOT Auto Button AND Release Button` actuates the Release Actuator.
+- Rung 5: `Auto Button AND NOT Manual Button` performs the clip operation in Auto mode.
+- Rung 6: Auto mode transfer: starts a timer when Auto mode initiated.
+- Rung 7: `Auto Button AND NOT Manual Button AND Timer Done` triggers Transfer Actuator in Auto mode.
+- Rung 8: `Auto Button AND NOT Manual Button` release operation in Auto mode.
+
+Step 4:####
+The state machine is modeled through the interlocked manual and auto modes, ensuring that only one mode is active at any time. In Manual Mode, the Clip, Transfer, and Release operations are directly controlled by the respective buttons. In Auto Mode, the sequence of operations (Clip, wait 2 seconds, Transfer, and Release) is initiated by pressing the Auto button. The operations follow an ordered sequence that mimics the manual process but is automated. A timer is utilized in Auto mode to facilitate the automatic waiting period. The processes are mutually exclusive due to the interlock logic, preventing overlap and ensuring the robot operates safely and as intended.

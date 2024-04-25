@@ -1,0 +1,84 @@
+Here is a self-contained IEC 61131-3 sequential function chart program for controlling a 5-floor elevator:
+
+```
+PROGRAM Elevator_Control
+VAR
+  current_floor : INT := 1;  // Current floor, initialized to ground floor
+  direction : INT := 0;      // Current direction: 0=stopped, 1=up, -1=down 
+  door_open : BOOL := FALSE; // Door open status
+  door_timer : TON;          // Door open timer
+  floor_timer : TON;         // Floor wait timer
+  floor_button : ARRAY[1..5] OF BOOL;  // Floor call buttons
+  cabin_button : ARRAY[1..5] OF BOOL;  // Cabin destination buttons
+  floor_sensor : ARRAY[1..5,1..2] OF BOOL;  // Floor limit switches: [floor, bottom/top]
+END_VAR
+
+(Start of Sequential Function Chart)
+       +-----------------------------<------------------------------+
+       |                                                            |
++=============+                                                     |
+||  Initial   ||                                                    |
+||            ||                                                    |
++=============+                                                     |
+       |                                                            |
+       + door_open := TRUE;                                         |
+       + door_timer(IN:=TRUE, PT:=T#7s);                            |
+       |                                                            |
++==============+   +------------+                                   |
+|  DoorOpen    |   |    N       |                                   |
+|              |---+------------+                                   |
+|              |   | door_timer.Q                                   |
++--------------+   +------------+                                   |
+       |                                                            |
+       + door_open := FALSE;                                        |
+       + floor_timer(IN:=TRUE, PT:=T#10s);                          |
+       |                                                            |
++==============+   +------------+                                   |
+|  FloorWait   |   |    N       |                                   |
+|              |---+------------+                                   |
+|              |   | floor_timer.Q OR ANY_CABIN_BUTTON_PRESSED      |
++--------------+   +------------+                                   |
+       |                                                            |
+       + direction := 0;                                            |
+       |                                                            |
+       |  +------------+                                            |
+       +--| FloorLoop  |                                            |
+          +------------+                                            |
+                 |                                                  |
+                 + FOR i := 1 TO 5 DO                               |
+                 |   IF floor_button[i] AND (i > current_floor)      |
+                 |   THEN direction := 1; EXIT;                     | 
+                 |   ELSIF floor_button[i] AND (i < current_floor)   |
+                 |   THEN direction := -1; EXIT;                    |
+                 |   END_IF;                                        |
+                 + END_FOR;                                         |
+                 |                                                  |
+          +------------+                                            |
+          | MoveElevator|                                           |
+          +------------+                                            |
+                 |                                                  |
+                 + CASE direction OF                                |
+                 |   1: current_floor := current_floor + 1;         |
+                 |      IF floor_sensor[current_floor,2] THEN        |
+                 |         direction := 0;                          |
+                 |      END_IF;                                     |
+                 |  -1: current_floor := current_floor - 1;         |
+                 |      IF floor_sensor[current_floor,1] THEN        |
+                 |         direction := 0;                          |
+                 |      END_IF;                                     |
+                 + END_CASE;                                        |
+                 |                                                  |
+                 + IF direction = 0 THEN                            |
+                 |    GOTO DoorOpen;                                |
+                 + END_IF;                                          |
+                 |                                                  |
+       +------------------------------->-----------------------------+
+
+(End of Sequential Function Chart)
+
+END_PROGRAM
+```
+
+This SFC controls the elevator movement based on the floor call buttons and cabin destination buttons. It uses timers for door opening and floor waiting. The elevator moves in the current direction until a limit switch is hit, then stops and opens the door. The direction is updated based on the pressed buttons.
+
+Let me know if you have any other questions!

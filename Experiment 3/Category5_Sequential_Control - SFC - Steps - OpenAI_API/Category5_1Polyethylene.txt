@@ -1,0 +1,116 @@
+Step 1:####
+Inputs:
+1. Start_Process: Initiates the batch control process.
+2. Raw_Material_Ready: Indicates that raw materials are prepared and ready.
+3. Polymerization_Complete: Indicates the completion of the polymerization phase.
+4. Quenching_Done: Signal that the quenching step is finished.
+5. Drying_Complete: Indicates the drying phase is completed.
+6. Pelletizing_Finished: Indicates completion of the pelletizing step.
+7. Quality_Control_Pass: Indicates that the product has passed quality control checks.
+8. Packaging_Done: Signal that packaging is complete.
+
+Outputs:
+1. Prepare_Raw_Material: Actuates mechanisms to prepare raw materials.
+2. Start_Polymerization: Begins the polymerization process.
+3. Start_Quenching: Initiates the quenching process.
+4. Start_Drying: Activates the drying phase.
+5. Start_Pelletizing: Begins the pelletizing process.
+6. Conduct_Quality_Control: Initiates quality control procedures.
+7. Start_Packaging: Begins the packaging process.
+8. Store_Product: Moves the product to storage.
+
+Step 2:####
+The state machine for this batch control process includes the following sequential states:
+1. Raw Material Preparation: Preparing the raw materials required for the batch.
+2. Polymerization: Transforming the raw materials into polyethylene through a chemical process.
+3. Quenching: Rapid cooling of the polyethylene to stop the polymerization process.
+4. Drying: Removing any residual moisture from the polyethylene.
+5. Pelletizing: Cutting the polyethylene into small, manageable pellets.
+6. Quality Control: Checking the quality of the pellets to ensure they meet standards.
+7. Packaging: Packing the pellets into suitable containers for storage and shipping.
+8. Storage: Storing the packaged product until it is dispatched.
+
+Transitions between states are triggered by the completion signals of the preceding actions.
+
+Step 3:####
+```
++------------------------------+ 
+| Start_Process                | 
++-------------+----------------+ 
+              |
+[Start_Process]
+              |
+              v
++------------------------------+ 
+| Prepare_Raw_Material         |----+
++-------------+----------------+    |
+              |                      |
+[Raw_Material_Ready]                 |
+              |                      |
+              v                      |
++------------------------------+     |
+| Start_Polymerization         |<----+
++-------------+----------------+ 
+              |
+[Polymerization_Complete]       
+              |
+              v
++------------------------------+
+| Start_Quenching              |----+
++-------------+----------------+    |
+              |                      |
+[Quenching_Done]                     |
+              |                      |
+              v                      |
++------------------------------+     |
+| Start_Drying                 |<----+
++-------------+----------------+ 
+              |
+[Drying_Complete]
+              |
+              v
++------------------------------+
+| Start_Pelletizing            |----+
++-------------+----------------+    |
+              |                      |
+[Pelletizing_Finished]               |
+              |                      |
+              v                      |
++------------------------------+     |
+| Conduct_Quality_Control      |<----+
++-------------+----------------+ 
+              |
+[Quality_Control_Pass]
+              |
+              v
++------------------------------+
+| Start_Packaging              |----+
++-------------+----------------+    |
+              |                      |
+[Packaging_Done]                     |
+              |                      |
+              v                      |
++------------------------------+     |
+| Store_Product                |<----+
++------------------------------+
+```
+
+Step 4:####
+1. Prepare_Raw_Material: On receiving the Start_Process signal, the process starts with raw material preparation.
+2. Start_Polymerization: Once Raw_Material_Ready, the polymerization stage is initiated.
+3. Start_Quenching: Following the Polymerization_Complete signal, the quenching process starts.
+4. Start_Drying: After quenching (Quenching_Done), the drying stage is initiated to remove moisture.
+5. Start_Pelletizing: Post-drying, the pelletizing steps make the product manageable for testing and packaging.
+6. Conduct_Quality_Control: After Pelletizing_Finished, quality control ensures product standards before packaging.
+7. Start_Packaging: With Quality_Control_Pass, the packaging process begins.
+8. Store_Product: Once Packaging_Done, the final product is moved to storage.
+
+Transitions are contingent upon the completion of each stage, ensuring a sequential flow that is crucial for batch processing integrity.
+
+Step 5:####
+The SFC adheres to IEC 61131-3 standards by:
+- Using clearly defined process steps.
+- Employing transitions based on process completion signals.
+- Structuring in a sequential logic flow that ensures no step begins before its prerequisite step is completed.
+- Utilizing input and output signals effectively to drive actions within each step.
+This compliance ensures a robust design that is maintainable, scalable, and easy to diagnose or troubleshoot, aligning with industrial standards for process control automation.

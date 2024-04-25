@@ -1,0 +1,47 @@
+Creating a non-linear model-predictive controller (NMPC) for a steam generator startup within the constraints of a Sequential Function Chart (SFC) visualization using ASCII art, and adhering to IEC 61131-3 standards, poses a unique challenge. SFC is better suited for depicting the sequence of operations or steps in a process rather than the intricacies of NMPC algorithms. However, what can be done is to outline the high-level steps that such a controller might follow during the startup of a steam generator.
+
+Given the complexity of NMPC and the steam generator startup process, let's simplify it into essential steps and translate that into a conceptual SFC program. This will include initializing the system, pre-warming, pressure build-up while maintaining safety checks, and achieving operational state, each represented as steps and transitions. 
+
+It is important to note that real NMPC entails complex mathematical calculations that are not directly representable in SFC or ASCII art. Instead, these calculations would typically be implemented in function blocks or structured text (ST) called within the SFC framework.
+
+```
+     +-[ ]----------[ ]-----------------[ ]------------------[ ]-------+
+     |  Init         Pre-Warm            Pressure Build-up     Operation|
+     | (S1)           (S2)                 (S3)                 (S4)    |
+     +---+---+---+-------+--------+-------------+-----------+---+---+---+
+         |   ^   |       |        |             |           |   |   ^   
+Check    |   |   | Start | Temp   | Pressure &  | Reach     |   |   | Error
+System   |   +---+ Pulse +------->+ Safety OK   +--------->-+   +---+ & Safety
+Ready    |       |       | Achieve|             | Desired   |       | Checks
+         +------>+       | Temp   |             | Operation |       |
+              Init OK    |        |             | Conditions|       |
+                         +--------+             +-----------+       |
+                                  Temp OK            ^              |
+                                                     |              |
+                                                     +--------------+
+                                                     Abort or Shutdown
+```
+
+**Step Descriptions:**
+
+- **Init (S1):** System initialization, checking system readiness, loading configuration parameters for the steam generator startup parameters.
+  
+- **Pre-Warm (S2):** Gradual pre-warming of the steam generator. This step includes monitoring temperature to achieve a predefined threshold essential for pressurization.
+
+- **Pressure Build-Up (S3):** Begins once the temperature is in the desired range. Pressure inside the steam generator is carefully increased while continuously monitoring safety parameters, including pressure levels, to ensure they are within safe limits.
+
+- **Operation (S4):** Transition to operational state occurs when the desired operation conditions are achieved, including stable pressure and temperature. The NMPC here ensures optimal transition to steady-state operation, considering factors like fuel efficiency and minimizing stress on the system.
+
+**Transitions:**
+
+- **Check System Ready ¡ú Init OK:** Ensure the system's readiness for initialization. If not ready, repeat check until ready.
+  
+- **Start Pulse ¡ú Temp Achieve:** Initiator for pre-warming, moving to next step when temperature threshold is achieved.
+  
+- **Temp OK ¡ú Pressure & Safety OK:** Transition to pressure build-up is contingent on achieving the pre-warm temperature and ensuring all safety protocols are met.
+  
+- **Reach Desired Operation Conditions:** Move to operational state when the steam generator meets all predefined operational parameters.
+  
+- **Error & Safety Checks ¡ú Abort or Shutdown:** At any step, if a critical error is detected or safety parameters are breached, the process moves towards a safe shutdown or aborts operations.
+
+This high-level overview represents a simplified process compliant with IEC 61131-3 SFC methodology, with details abstracted for clarity. Real implementation would require defining each of these steps and transitions in detail, with specific conditions tailored to the steam generator's operational requirements and the predictive model's outputs.

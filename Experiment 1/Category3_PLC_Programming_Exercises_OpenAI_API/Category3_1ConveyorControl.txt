@@ -1,0 +1,78 @@
+Based on your requirements, here's a simple example of an IEC 61131-3 Structured Text (ST) program to control a conveyor belt system with three stations and sensors. Note that this program assumes that there is a boolean input from each sensor and each station's user stop control, as well as a boolean output to control the conveyor start/stop and an analog output to control the speed. 
+
+```iec
+PROGRAM ConveyorControl
+VAR
+    Sensor1, Sensor2, Sensor3, Sensor4, Sensor5: BOOL; // Sensors to detect objects
+    UserStop1, UserStop2, UserStop3: BOOL;             // User inputs to stop the conveyor at stations
+    ConveyorRun: BOOL := FALSE;                        // Output to start/stop the conveyor
+    ConveyorSpeed: REAL := 0.0;                        // Conveyor belt speed in meters per second
+    ConveyorSpeedSetpoint: REAL := 2.0;                // Desired speed setpoint for the conveyor
+END_VAR
+
+VAR CONSTANT
+    MaxStartDelay: TIME := T#5s; // Maximum time to start the conveyor after an object is detected
+END_VAR
+
+VAR
+    ObjectDetected: BOOL;          // Indicates if an object is detected on the conveyor
+    UserStopActive: BOOL;          // Indicates if any user stop control is active
+    StartTimer: TON;               // Timer used to delay conveyor start
+    StopTimer: TON;                // Timer used to delay conveyor stop
+    SystemStarted: BOOL := FALSE;  // Flag to indicate when the system has been commanded to start
+END_VAR
+
+// Evaluate if there's an object on any of the sensors
+ObjectDetected := Sensor1 OR Sensor2 OR Sensor3 OR Sensor4 OR Sensor5;
+
+// Check if any user has pressed the stop button
+UserStopActive := UserStop1 OR UserStop2 OR UserStop3;
+
+IF ObjectDetected THEN
+    // An object has been detected, prepare to start the conveyor
+    StartTimer(IN:=TRUE, PT:=MaxStartDelay);
+    StopTimer(IN:=FALSE, PT:=MaxStartDelay);
+    IF StartTimer.Q THEN
+        // Enough time has passed since an object was detected, start the conveyor
+        ConveyorRun := TRUE;
+        SystemStarted := TRUE;
+    END_IF;
+ELSE
+    IF SystemStarted THEN
+        // No objects are detected, and the system was started, prepare to stop the conveyor
+        StartTimer(IN:=FALSE, PT:=MaxStartDelay);
+        StopTimer(IN:=TRUE, PT:=MaxStartDelay);
+        IF StopTimer.Q THEN
+            // Conveyor is not needed, stop it after a delay
+            ConveyorRun := FALSE;
+            SystemStarted := FALSE;
+        END_IF;
+    END_IF;
+END_IF;
+
+// User stop control overrides sensor control
+IF UserStopActive THEN
+    ConveyorRun := FALSE;
+END_IF;
+
+// Control the conveyor speed
+IF ConveyorRun THEN
+    ConveyorSpeed := ConveyorSpeedSetpoint;
+ELSE
+    ConveyorSpeed := 0.0;
+END_IF;
+
+// Update the conveyor start/stop and speed outputs (assuming these are linked to physical I/O or control logic)
+(*
+ConveyorStartStop := ConveyorRun;
+ConveyorSpeedOutput := ConveyorSpeed;
+*)
+```
+
+Please note that in your actual control system, you would need to connect the `ConveyorRun` boolean and `ConveyorSpeed` value to the actual conveyor control outputs. The commented lines at the end of the program provide a place where you would insert your code to tie the internal logic to the real-world I/O.
+
+The `ObjectDetected` variable is set when any of the five sensors detect an object. The `UserStopActive` variable is set when any station's user stop control is activated.
+
+The `StartTimer` and `StopTimer` are instances of the timer structure `TON`, which delay the starting and stopping of the conveyor to prevent it from constantly starting and stopping when objects are intermittently detected.
+
+Important: This program is a simplified example. A real-world application would require safety considerations and likely more detailed control logic, including handling manual overrides, emergency stops, and system fault conditions. Additionally, this program assumes the control system processes the logic continuously. It should be tested and verified with the actual hardware and comply with all relevant standards for the designed application.

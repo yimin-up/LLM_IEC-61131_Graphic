@@ -1,0 +1,41 @@
+Step 1:####
+Inputs:
+- CarPresentSensor: Boolean (TRUE when a car is detected, FALSE otherwise)
+- HumanPresentSensor: Boolean (TRUE when a human is detected in the car wash area, FALSE otherwise)
+
+Outputs:
+- StartWash: Boolean (Activates the car wash process)
+- StopWash: Boolean (Deactivates the car wash process)
+- Alarm: Boolean (Activates the alarm system)
+
+Step 2:####
+```
+       +----+                +--------+                 +---------+              +------+
+       | S1 |----( )---------|   S2   |------( )--------|   S3    |-----( )------|  S4  |
+       +----+   CarPresent   +--------+  !HumanPresent  +---------+   HumanPresent  +------+
+        |  |    & !HumanPresent   |        & StartWash    |             |  |
+        |  |                     |                        |             |  |
+        |  +------<--------------+------------------------+             |  |
+        |                                                               |  |
+        +---------------------------------------------------------------+  |
+                     |                                                    |
+                     +----------------------------------------------------+
+```
+Step 3:####
+- **S1 (Initial Step):** This is the initial step where the system is waiting for the car presence sensor to be TRUE indicating a car has arrived and ensuring no human is detected in the area to safely initiate the car wash process.
+- **Transition from S1 to S2:** Happens when `CarPresentSensor` is TRUE and `HumanPresentSensor` is FALSE. This signifies that a car is present and no humans are in the wash area.
+- **S2 (Car Wash Activation):** The StartWash output is activated, indicating the start of the car wash process.
+- **Transition from S2 to S3:** This transition checks for human presence. If `HumanPresentSensor` is FALSE and `StartWash` is TRUE, the car wash process continues.
+- **S3 (Car Washing):** In this phase, the car is being washed. This step continues until a human presence is detected.
+- **Transition from S3 to S4:** If a human is detected (`HumanPresentSensor` is TRUE), the transition to Step S4 is initiated to ensure safety.
+- **S4 (Emergency Stop):** In this step, the StopWash and Alarm outputs are activated to stop the washing process and alert the presence of a human for safety reasons.
+
+Step 4:####
+The state machine represented by this Sequential Function Chart consists of four main states:
+1. **Initial Wait (S1):** Waiting for a car to be present and ensuring no human is in the area.
+2. **Start Wash (S2):** The process of starting the car wash.
+3. **Car Washing (S3):** The car is actively being washed.
+4. **Emergency Stop and Alarm (S4):** If a human enters the car wash area during the washing process, the system transitions to this state to ensure safety by stopping the wash and activating an alarm.
+
+Step 5:####
+The Sequential Function Chart follows the IEC 61131-3 standards for PLC programming, covering essential aspects such as clearly defined inputs and outputs, transitions based on these inputs, and actions taken in each step. The transitions are based on real-world conditions (e.g., car presence, human presence), and actions are appropriately set to control the car wash process and ensure safety. The chart transitions and conditions adhere to logical safety and operational requirements, making the system reliable and safe for use in an automatic car wash station scenario.

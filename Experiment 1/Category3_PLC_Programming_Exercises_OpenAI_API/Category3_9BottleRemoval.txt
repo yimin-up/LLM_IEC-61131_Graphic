@@ -1,0 +1,39 @@
+Below is a simple example of an IEC 61131-3 compliant Structured Text (ST) program that handles the described packaging process for bottles. The program assumes the following conditions:
+
+- There are two sensors for bottle detection:
+    - Sensor1 detects any bottles.
+    - Sensor2 detects only empty bottles.
+- A pneumatic cylinder is responsible for removing the empty bottles from the conveyor belt.
+- Two inputs are associated with the sensors (`SensorAnyBottle`, `SensorEmptyBottle`).
+- One output is associated with the actuator that drives the cylinder (`CylinderOut`).
+
+Please note that actual PLC programming would involve proper initialization, safety checks, handling of timing behaviors, maintenance modes, sensor debounce, actuator fail-safe states, and so on. This example focuses on the process logic assuming the sensors and actuator are wired and operating correctly.
+
+```pascal
+PROGRAM BottlePackaging
+    VAR
+        SensorAnyBottle : BOOL; // TRUE when any bottle is detected
+        SensorEmptyBottle : BOOL; // TRUE when an empty bottle is detected
+        CylinderOut : BOOL; // TRUE activates the cylinder to remove a bottle
+    END_VAR
+
+    (* Main control logic for the packaging process *)
+    IF SensorAnyBottle THEN
+        // When a bottle is detected
+        IF SensorEmptyBottle THEN
+            // If the bottle is empty, activate the cylinder to remove it
+            CylinderOut := TRUE;
+        ELSE
+            // If the bottle is not empty, ensure the cylinder is not activated
+            CylinderOut := FALSE;
+        END_IF
+    ELSE
+        // When no bottle is detected, make sure the cylinder is not activated
+        CylinderOut := FALSE;
+    END_IF
+END_PROGRAM
+```
+
+To implement this code on a PLC, you would assign the physical inputs and outputs (I/O) of the PLC to the variables `SensorAnyBottle`, `SensorEmptyBottle`, and `CylinderOut`. The actual I/O mapping would depend on the PLC hardware and configuration. You would use the software provided by the PLC manufacturer to write, compile, and download the program to the PLC.
+
+Remember that the provided example is basic and does not include details that would be necessary for a real-world application, such as interlocking conditions, error handling, maintenance mode, etc. It would also be good practice to modularize the code, for example, by having a function that controls the cylinder separately, which can add to the reliability and reusability of the program.

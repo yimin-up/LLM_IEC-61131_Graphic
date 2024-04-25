@@ -1,0 +1,46 @@
+To design a Sequential Function Chart (SFC) for controlling the temperature of a heating system using IEC 61131-3 standards, we'll need to structure the program to include steps, transitions, and actions that effectively monitor the temperature readings from the three sensors and control the heating system to maintain the specified temperature range. The logic will ensure the system heats up when the temperature drops below 20 degrees Celsius and turns off when the temperature exceeds 22 degrees Celsius. Below is a simplified ASCII art representation of such an SFC program.
+
+### Step 1: Define Variables
+```plaintext
+VAR
+    Sensor1, Sensor2, Sensor3 : REAL; (* Temperature Sensors *)
+    Heater : BOOL; (* Heater Control Signal *)
+END_VAR
+```
+
+### Step 2: Sequential Function Chart ASCII Representation
+In ASCII representation, steps (S) are represented as blocks, transitions (T) as lines, and actions (A) related to steps as annotations next to step blocks.
+
+```plaintext
+              +-----+                +-----+
+Start -->| S1  |-----T1---->| S2  |
+              +-----+                +-----+
+                 | A1                      | A2
+                 |                         |
+                 |                         |
+                 |<-------T2--------|
+```
+
+- **S1** (Initial State): Check temperature
+- **S2** (Heating State): Turn ON heater
+
+### Action Descriptions:
+- **A1:** Check if the average temperature from all three sensors is less than 20.
+    - A1 Code: `IF (Sensor1 + Sensor2 + Sensor3) / 3 < 20 THEN Heater := TRUE; END_IF`
+- **A2:** Check if the average temperature from all three sensors is more than 22.
+    - A2 Code: `IF (Sensor1 + Sensor2 + Sensor3) / 3 > 22 THEN Heater := FALSE; END_IF`
+
+### Transition Conditions:
+- **T1:** Transition from S1 to S2 when the average temperature is less than 20.
+    - T1 Code: `(Sensor1 + Sensor2 + Sensor3) / 3 < 20`
+- **T2:** Stay in S2 or move back to S1 once temperature exceeds 22, then cycle to check and maintain the temperature range.
+    - T2 Code: `(Sensor1 + Sensor2 + Sensor3) / 3 > 22`
+
+### Logical Flow Description:
+1. **Start** - The system initializes.
+2. **S1 (Initial State)** - The current state checks the temperature across all sensors.
+    - **T1** gets evaluated. If true, moves to S2. If false, remains in S1.
+3. **S2 (Heating State)** - The heater is turned ON to raise the temperature.
+    - **A2** checks if the temperature has reached above 22, if true, the heater is turned off, transitioning back to S1 through T2 to reassess and maintain the temperature within the desired range.
+
+This SFC approach provides a controlled method for maintaining the temperature within a specified range, utilizing the average readings from three sensors to ensure accuracy and system responsiveness.

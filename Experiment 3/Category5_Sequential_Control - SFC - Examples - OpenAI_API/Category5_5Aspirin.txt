@@ -1,0 +1,68 @@
+Creating a control recipe for the production of aspirin in accordance with the ISA-88 standard involves breaking down the process into manageable units, steps, and parameters. For simplicity, this example will focus specifically on the reaction stage in the aspirin production process using a Sequential Function Chart (SFC) programming approach based on the IEC 61131-3 standard. 
+
+**Note:** The following is a simplified example and should be adapted for specific production requirements and safety standards.
+
+### ISA-88 Batch Control Recipe for Aspirin Reaction Stage
+
+1. **Physical Model Components:**
+   - Reactor
+   - Crystallizer
+   - Centrifuge
+   - Dryer
+
+2. **Educts:**
+   - Acetic Anhydride
+   - Salicylic Acid
+   - Sulphuric Acid (Catalyst)
+
+3. **Products:**
+   - Acetylsalicylic Acid (Aspirin)
+   - Acetic Acid
+
+4. **Reaction Stage Steps:**
+   1. Charge Reactor with Educts
+   2. Mix Ingredients
+   3. Maintain Reaction Conditions
+   4. Discharge Product for Next Stage
+
+### Sequential Function Chart (SFC) for Reaction Stage
+
+The SFC for the reaction stage control would typically involve the following steps: charging the reactor, mixing ingredients, reacting under specific conditions, and discharging. Let¡¯s assume a simplistic approach for programming this process.
+
+**Simplified SFC Program:**
+
+```plaintext
+(Start of Sequential Function Chart)
+
++-------------------<--------------------------+
+|                                              |
+|                                              |
++=======+       +===============+       +=============+
+||Init  ||       ||Charge Reactor||       ||Mix Safety||       +==============+
++=======+       +===============+       +=============+       ||Start Mixing||
+     |                  |                      |              +==============+
+     |                  |                      |                      |
+     |                  + Educts Ready         + SA + AA Ready       + Time Out
+     |                  |                      |                      |
+ +===============+       +==============+           +=========================+
+ ||Conditioning ||       ||Reaction Time||           ||Discharge and Proceed||
+ +===============+       +==============+           +=========================+
+     |                  |                      |                      |
+     +-----------<------+-----------<----------+----------<-----------+
+     
+(End of Sequential Function Chart)
+```
+
+**Key:**
+- Init: Initialization state when the system is made ready.
+- Charge Reactor: The reactor is charged with Acetic Anhydride, Salicylic Acid, and Sulphuric Acid.
+- Mix Safety: Check to ensure it is safe to start mixing (e.g., correct volumes, no leak detection).
+- Start Mixing: Begin the mixing operation under controlled conditions.
+- Conditioning: Adjust the reactor conditions to the desired temperature and pressure for the reaction.
+- Reaction Time: Maintain reaction conditions for the specified period.
+- Discharge and Proceed: Discharge the product to the next stage of the process, typically the crystallization.
+
+**Typical Parameters:**
+- Educt volumes, reaction temperature, reaction time, and mixing speed would be specified according to the recipe requirements for aspirin production. For example, maintaining the reaction temperature might require parameters such as `TempSetPoint = 80¡ãC` and `ReactTime = 2 hours`.
+
+**Note:** Actual implementation would require detailed parameter values based on experimental or process data, safety interlocks, emergency shutdown procedures, and compliance with health and safety regulations, which are simplified in this example for clarity.

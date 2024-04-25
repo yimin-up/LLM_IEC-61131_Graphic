@@ -1,0 +1,62 @@
+In this Sequential Function Chart (SFC) program, we will design a cascade control system for regulating pressure in an oil refinery vessel. The primary loop will manage the vessel's pressure, and the secondary loop will adjust the oil flow into the vessel based on the primary loop's output.
+
+Please find below an ASCII art representation of the SFC program for the cascade control system:
+
+```
+         +---------+
+         |  Start  |
+         +----+----+
+              |
+              v
+     +--------+--------+
+     | Initialize      |<----------------------------------------------+
+     +--------+--------+                                               |
+              |                                                        |
+              v                                                        |
+     +--------+--------+            +----------------+                |
+     | Read Pressure   |----------->| Compare Pressure|                |
+     +--------+--------+            | with Setpoint   |                |
+                                    +----------------+                |
+                                              |                       |
+                   +--------------------------+                        |
+                   |                           |                        |
+        +----------v---------+       +---------+---------+              |
+        | Adjust Setpoint    |       | Execute Primary   |              |
+        | for Secondary Loop |       | Control Algorithm|              |
+        +----------+---------+       +---------+---------+              |
+                   |                           |                        |
+                   v                           v                        |
+         +---------+---------+       +---------+---------+              |
+         | Read Flow Rate    |       | Adjust Primary    |              |
+         +---------+---------+       | Loop Output       |              |
+                   |                 +---------+---------+              |
+                   v                           |                        |
+         +---------+---------+                |                        |
+         | Execute Secondary |<---------------+                        |
+         | Control Algorithm |                                         |
+         +---------+---------+                                         |
+                   |                                                   |
+                   |                                                   |
+                   v                                                   |
+         +---------+---------+                                         |
+         | Adjust Secondary  |                                         |
+         | Loop Output       |                                         |
+         +---------+---------+                                         |
+                   |                                                   |
+                   +---------------------------------------------------+
+```
+
+### Explanation of the Sequential Function Chart:
+
+- **Start**: The initial step where the system starts or resets.
+- **Initialize**: System initialization where variables or setpoints can be configured before entering the main control loops.
+- **Read Pressure**: The primary loop starts by reading the current pressure in the vessel.
+- **Compare Pressure with Setpoint**: This step involves comparing the measured pressure with the desired setpoint.
+- **Adjust Setpoint for Secondary Loop**: Based on the comparison and control requirements, adjust the setpoint for the secondary loop (oil flow) accordingly.
+- **Read Flow Rate**: The secondary loop reads the current flow rate of oil into the vessel.
+- **Execute Secondary Control Algorithm**: The system performs calculations or actions based on the secondary loop's response to the adjusted setpoint.
+- **Adjust Secondary Loop Output**: The output (e.g., valve position) of the secondary loop is adjusted based on the control algorithm's outcome to regulate the oil flow.
+- **Execute Primary Control Algorithm**: Independently, the primary loop control algorithm runs to adjust the pressure based on the original setpoint and readings.
+- **Adjust Primary Loop Output**: The output of the primary loop is adjusted (e.g., a different valve affecting pressure) according to the algorithm to maintain the desired pressure.
+
+This SFC design for a cascade control system illustrates how the output of the primary loop becomes the setpoint for the secondary loop, providing a layered approach to managing oil refinery vessel pressure. Note, in a real implementation, the specific actions (e.g., "Read Pressure," "Execute Secondary Control Algorithm") would need to be further detailed with actual IEC 61131-3 code, specifying the algorithms and logic that guide how adjustments are made to control outputs based on sensor inputs.

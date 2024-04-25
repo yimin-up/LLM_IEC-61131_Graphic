@@ -1,0 +1,79 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program in ASCII art to control a traffic light system with pedestrian buttons and emergency vehicle priority:
+
+      PROGRAM TrafficLight
+      VAR
+        EmergencyVehicle: BOOL := FALSE;  (* Emergency vehicle sensor input *)  
+        PedestrianEast: BOOL := FALSE;    (* Pedestrian push button for east/west *)
+        PedestrianNorth: BOOL := FALSE;   (* Pedestrian push button for north/south *)
+        Green_EW: BOOL := FALSE;          (* Green light output for east/west traffic *)
+        Yellow_EW: BOOL := FALSE;         (* Yellow light output for east/west traffic *)
+        Red_EW: BOOL := FALSE;            (* Red light output for east/west traffic *)  
+        Green_NS: BOOL := FALSE;          (* Green light output for north/south traffic *)
+        Yellow_NS: BOOL := FALSE;         (* Yellow light output for north/south traffic *) 
+        Red_NS: BOOL := FALSE;            (* Red light output for north/south traffic *)
+        Walk_EW: BOOL := FALSE;           (* Pedestrian walk signal for east/west *)
+        DontWalk_EW: BOOL := FALSE;       (* Pedestrian don't walk signal for east/west *) 
+        Walk_NS: BOOL := FALSE;           (* Pedestrian walk signal for north/south *)
+        DontWalk_NS: BOOL := FALSE;       (* Pedestrian don't walk signal for north/south *)
+        T1: TON;                          (* Timer for green light duration *)
+        T2: TON;                          (* Timer for yellow light duration *)
+        T3: TON;                          (* Timer for red light duration *)
+      END_VAR
+
+      LD    EmergencyVehicle 
+      ANDN  Green_EW
+      ANDN  Yellow_EW 
+      ST    Red_EW
+      ST    DontWalk_EW
+      
+      LD    EmergencyVehicle
+      ANDN  Green_NS
+      ANDN  Yellow_NS
+      ST    Red_NS
+      ST    DontWalk_NS
+      
+      LD    Green_EW           (* Normal operation - east/west green light *)
+      TON   T1, 30s
+      LD    T1.Q
+      R     Green_EW
+      ST    Yellow_EW
+      
+      LD    Yellow_EW          (* east/west yellow light *)  
+      TON   T2, 5s
+      LD    T2.Q
+      R     Yellow_EW
+      ST    Red_EW
+      ST    Green_NS
+      
+      LD    PedestrianEast     (* east/west pedestrian crossing *)
+      AND   Red_EW
+      ST    Walk_EW
+      TON   T3, 15s
+      LD    T3.Q
+      R     Walk_EW
+      ST    DontWalk_EW
+      
+      LD    Green_NS           (* Normal operation - north/south green light *)
+      TON   T1, 30s 
+      LD    T1.Q
+      R     Green_NS
+      ST    Yellow_NS
+      
+      LD    Yellow_NS          (* north/south yellow light *)
+      TON   T2, 5s
+      LD    T2.Q 
+      R     Yellow_NS
+      ST    Red_NS
+      ST    Green_EW
+           
+      LD    PedestrianNorth    (* north/south pedestrian crossing *)  
+      AND   Red_NS
+      ST    Walk_NS
+      TON   T3, 15s
+      LD    T3.Q
+      R     Walk_NS
+      ST    DontWalk_NS
+           
+    END_PROGRAM
+
+This provides the basic traffic light sequencing, pedestrian crossings when a button is pushed, and emergency vehicle preemption to set all lights to red. Timers control the duration of each light. Let me know if you need any clarification or have additional requirements!

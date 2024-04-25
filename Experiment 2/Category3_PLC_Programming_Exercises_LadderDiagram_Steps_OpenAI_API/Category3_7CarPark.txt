@@ -1,0 +1,46 @@
+Step 1:####
+Inputs:
+- X1: Photoelectric switch at the ground floor entry/exit.
+- X2: Photoelectric switch at the basement entry/exit.
+- M1: ON for one scan when a car from the ground floor passes X1.
+- M2: ON for one scan when a car from the basement passes X1.
+- M3: ON for one scan when a car from the basement passes X2.
+- M4: ON for one scan when a car from the ground floor passes X2.
+
+Intermediate variables:
+- M20: ON during the process of a car entering the passage from the ground floor.
+- M30: ON during the process of a car entering the passage from the basement.
+
+Outputs:
+- Y1: Red lights at the entry/exit of both ground floor and basement.
+- Y2: Green lights at the entry/exit of both ground floor and basement.
+
+Standard symbols use (ASCII representation):
+- Inputs (X1, X2, M1, M2, M3, M4) are represented by [--( )--] with their respective labels.
+- Outputs (Y1, Y2) are represented by [--( )--] with their respective labels.
+- Intermediate variables (M20, M30) are treated like internal coils and are represented by [--( )--].
+
+Step 2:####
+```
+|--[X1]----[/]----[/]----[M20]--(M1)---|
+|--[M1]---------------------------(Y1)--|
+|--[/M20]--------------------------(Y2)--|
+                     |
+|--[X2]----[/]----[/]----[M30]--(M3)---|
+|--[M3]---------------------------(Y1)--|
+|--[/M30]--------------------------(Y2)--|
+```
+
+Step 3:####
+For rung 1: If X1 (ground floor photoelectric switch) detects a car and none of the cars are passing through (M20 = OFF), then activate M1.
+For rung 2: If M1 (car passing from ground floor) is detected, activate Y1 (turn ON red lights).
+For rung 3: If no car is in the passage from the ground floor (M20 = OFF), keep Y2 ON (green lights ON).
+(Similar logic applies to the basement section represented by inputs X2 and M3 for cars passing from the basement.)
+
+Step 4:####
+The state machine of this Ladder Diagram functions as follows:
+- Initially, green lights are ON (Y2), and red lights are OFF (Y1).
+- When a car is detected at the ground floor entrance (X1), the system checks if another car is currently passing; if not, it turns ON the red lights (Y1) for both the ground floor and basement and turns OFF the green lights (Y2).
+- Similarly, the process works for a car detected at the basement entrance (X2) with the same logic applied through M3.
+- Once a car passes through the passage, the intermediate variables M20/M30 reset to OFF, allowing the system to return to its initial state with green lights (Y2) ON and red lights (Y1) OFF.
+- The system prohibits entry/exit when a car is passing through by keeping the red lights (Y1) ON and only allows passage again when the track is clear, indicated by the green lights (Y2) ON.

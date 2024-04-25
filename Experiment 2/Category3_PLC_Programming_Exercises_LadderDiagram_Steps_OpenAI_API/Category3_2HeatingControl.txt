@@ -1,0 +1,39 @@
+Step 1:####
+For the heating system control, we need:
+
+Inputs:
+- Temperature Sensor 1 (TS1)
+- Temperature Sensor 2 (TS2)
+- Temperature Sensor 3 (TS3)
+
+Outputs:
+- Heater (H)
+
+Standard symbols:
+- Inputs are represented as contacts "]-[".
+- Outputs are represented as coils "()".
+
+
+Step 2:####
+The Ladder Diagram program in ASCII art:
+
+```
++----] TS1 [----+----] TS2 [----+----] TS3 [----+----( H )----+
+                 |                 |                 | 
+```
+
+This Ladder Diagram logic is simplified for the purpose of illustrating the requirement. It activates the heater when all three temperature sensors signal that the temperature is below the desired range. It doesn't directly include the logic for maintaining the temperature between 20 and 22 degrees Celsius, assuming these temperature checks are performed externally to the PLC (i.e., the sensors only send a "turn on" signal when the temperature is below 20 degrees). Advanced implementations could involve analog input processing, more complex logic for dealing with varying sensor readings, or handling failure modes.
+
+Step 3:####
+Logical expressions for each rung:
+
+- Rung 1: TS1 AND TS2 AND TS3 - This implies the heater (H) is activated only when all three temperature sensors indicate that the temperature is below the lower threshold of the desired temperature range.
+
+Step 4:####
+The state machine of this Ladder Diagram can be described as follows:
+
+- If all three temperature sensors detect temperatures below 20 degrees Celsius, the output (Heater) is activated to heat the environment.
+- Once the environment reaches the target temperature range (i.e., any of the sensors detects a temperature above 20 degrees), assuming the temperature sensors change their state appropriately, the heater will turn off.
+- The cycle continues to maintain the temperature within the range, with the heater turning on when the temperature drops below 20 degrees as detected by all sensors and turning off when the system is within or above the target range.
+
+This description assumes a simplistic logic where the sensors directly control the heater based on their readings, suitable for illustrating the basic principle. More complex systems would likely incorporate averaging of sensor readings, hysteresis to prevent rapid cycling of the heater, and safety checks.

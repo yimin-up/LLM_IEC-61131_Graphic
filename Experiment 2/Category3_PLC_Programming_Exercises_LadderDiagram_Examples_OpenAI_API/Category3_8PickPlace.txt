@@ -1,0 +1,48 @@
+    Below is a representation of the PLC program for the described pick-and-place application using ASCII art for a Ladder Diagram.
+    ```
+    (Start of Ladder Diagram)
+    |                                                           |
+    |            Auto/Manual       Manual                      |
+    +-----------/| |---------------| |-------------------------+
+    |            |                  |                          |
+    |            |           +------+                          |
+    |            |           |                                 |
+    |            +-----------| Clip                           Clip
+    +-----------/| |---------+                             ----( )-----
+    |                                                           |
+    |                        Transfer                          Transfer
+    +-----------/| |-------------------------------------- ----( )-----
+    |                                                           |
+    |                          Release                          Release
+    +-----------/| |-------------------------------------- ----( )-----
+    |                                                           |
+    |            Auto/Manual       Auto                         |
+    +-----------/| |---------------| |-------------------------+
+    |            |                  |                          |
+    |            |           +------+                          |
+    |            |           |                                 |
+    |            +-----------| AutoClip                        AutoClip
+    +-----------/| |---------+                             ----( )-----
+    |                                                           |
+    |                                                           |
+    |            +-----------+                        Timer    TimerDone
+    |            |   Timer   |---------/( )--------- ----( )----     |
+    | AutoClip --|IN      DN |                        AutoTransfer   |
+    |        T#2s|PT      Q  |-----------------------------------(S)  |
+    |            +-----------+                                         |
+    |                                                           |
+    |                         AutoRelease                        AutoRelease
+    | TimerDone ------------------------------------------------(S)    |
+    |                                                           |
+    (End of Ladder Diagram)
+    ```
+    Notes: 
+
+    - "Auto/Manual" is assumed to be a selector switch or a logic condition determining the mode.
+    - Clip, Transfer, Release, AutoClip, AutoTransfer, and AutoRelease represent outputs to the robotic arm's mechanisms. 
+    - External buttons or control logic conditions are assumed for Clip, Transfer, and Release in manual mode. 
+    - The auto mode sequence is initiated by 'Auto' logic condition; 'AutoClip' activates automatically; followed by a 'Timer' for the transfer duration (2 seconds assumed here as "T#2s"); then 'AutoTransfer' logic and finally 'AutoRelease'.
+    - "TimerDone" is a condition that is true when the timer has completed its countdown. This triggers 'AutoRelease'.
+    - This diagram does not show safety and interlocking logic explicitly, which are crucial for real-world applications.
+    
+    This diagram simplifies complex logic for illustration purposes and might need adjustments based on specific application requirements, such as detailed handling of mode transitions and failure modes.

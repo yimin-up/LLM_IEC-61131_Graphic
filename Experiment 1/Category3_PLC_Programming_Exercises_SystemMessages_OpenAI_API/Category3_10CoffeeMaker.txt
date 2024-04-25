@@ -1,0 +1,81 @@
+Given the requirements for the coffee machine, the following IEC 61131-3 Structured Text program implements the described functionality. This program assumes that an appropriate hardware configuration for sensors and actuators (valves, mixer, push buttons, etc.) is in place and accessible through PLC I/O addresses. The specific addressing and hardware configuration will depend on the PLC and the device setup, which are abstracted in this example for simplicity.
+
+```pascal
+PROGRAM CoffeeMachine
+VAR
+    TankLevel: INT; // Current level of liquid in the mixer tank
+    MaxLevel: INT := 130; // Maximum tank level in milliliters
+    MixerTimer: TON; // Timer for the mixer
+    MixerOn: BOOL := FALSE; // Control flag for the mixer
+    ValveCoffee, ValveMilk, ValveOutput: BOOL := FALSE; // Control flags for the valves
+    ButtonStart, ButtonEmergency, ButtonCoffeeMilk, ButtonCoffeeOnly: BOOL := FALSE; // Push buttons
+    MachineState: INT := 0; // State machine control
+END_VAR
+
+// Mixer Timer configuration
+MixerTimer(IN := MixerOn, PT := T#4s);
+
+// Emergency Stop
+IF ButtonEmergency THEN
+    ValveCoffee := FALSE;
+    ValveMilk := FALSE;
+    ValveOutput := FALSE;
+    MixerOn := FALSE;
+    MachineState := 0;
+    RETURN;
+END_IF
+
+CASE MachineState OF
+    0: // Idle State 
+    BEGIN
+        IF ButtonStart THEN
+            MachineState := 1;
+        END_IF
+    END
+    1: // Check which recipe (Coffee+Milk or Coffee only)
+    BEGIN
+        IF ButtonCoffeeMilk THEN
+            ValveCoffee := TRUE;
+            ValveMilk := TRUE;
+            MachineState := 2;
+        ELSIF ButtonCoffeeOnly THEN
+            ValveCoffee := TRUE;
+            MachineState := 2;
+        END_IF
+    END
+    2: // Filling Mixer Tank
+    BEGIN
+        IF TankLevel >= MaxLevel THEN
+            ValveCoffee := FALSE;
+            ValveMilk := FALSE;
+            MixerOn := TRUE;
+            MachineState := 3;
+        END_IF
+    END
+    3: // Mixing
+    BEGIN
+        IF MixerTimer.Q THEN
+            MixerOn := FALSE;
+            ValveOutput := TRUE;
+            MachineState := 4;
+        END_IF
+    END
+    4: // Dispensing
+    BEGIN
+        IF NOT MixerTimer.Q THEN // Assuming the output will be controlled by the mixer timer logic for simplicity
+            ValveOutput := FALSE;
+            MachineState := 0; // Return to Idle State after dispense
+        END_IF
+    END
+END_CASE
+```
+
+This Structured Text program represents a simple state machine for the coffee machine's operation:
+
+1. **Idle State (0):** Waiting for the start button or handling the initial state.
+2. **Recipe Selection (1):** Determines whether to make coffee with milk or coffee only based on which button is pressed.
+3. **Filling Mixer Tank (2):** Opens the appropriate valves until the tank level reaches its maximum.
+4. **Mixing (3):** Turns the mixer on for a fixed time using the `TON` timer.
+5. **Dispensing (4):** Opens the output valve to dispense the coffee and then returns to the idle state.
+
+Please adapt the sensor and actuator control flags (`ValveCoffee`, `ValveMilk`, `ValveOutput`, and tank level sensor input) to your specific PLC hardware configuration. This program requires that you configure the timers, inputs, and outputs correctly in your PLC environment for it to function as intended.

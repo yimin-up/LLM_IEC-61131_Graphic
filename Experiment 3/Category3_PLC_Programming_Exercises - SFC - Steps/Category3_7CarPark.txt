@@ -1,0 +1,44 @@
+Step 1:####
+Inputs:
+- X1: Photoelectric switch at the ground floor entry/exit.
+- X2: Photoelectric switch at the basement entry/exit.
+- M1, M2, M3, M4: Momentary signals for cars passing respective sensors.
+
+Intermediate Variables:
+- M20: Indication of a car entering the passage from the ground floor.
+- M30: Indication of a car entering the passage from the basement.
+
+Outputs:
+- Y1: Red lights at the entry/exit of both the ground floor and the basement.
+- Y2: Green lights at the entry/exit of both the ground floor and the basement.
+
+Step 2:####
+```
++--[X1]--+  +--[M20]--+          +--[M30]--+  +--[X2]--+
+|        |  |         |          |         |  |        |
+|  Init  |->| GndEnt  |->(Y1)--->| BsmEnt  |->|  End   |
+|        |  |         |  |       |         |  |        |
++--------+  +---------+  |       +---------+  +--------+
+                         |
+                         V
+                        (Y2)
+```
+
+Step 3:####
+- **Init (Initial State)**: Represents the starting state where the system checks for a car at the ground floor entrance.
+- **Transition [X1]**: Checks if a car is passing the ground floor entry/exit sensor. Transition occurs if X1 is True.
+- **GndEnt (Ground Entry)**: Indicates a car is entering the passage from the ground floor. M20 is ON during this process.
+  - **Action [Y1]**: Turns ON red lights to prohibit any car from entering or leaving. Turns OFF green lights.
+- **Transition [M20]**: Checks if the car has entered the passage from the ground floor. Transition occurs if M20 is True.
+- **BsmEnt (Basement Entry)**: Indicates the system is ready to allow a car from the basement. M30 is ON during this process.
+  - **Action [Y1]**: Continues to keep the red lights ON to prohibit entry or exit.
+- **Transition [M30]**: Checks if the process for a car entering the passage from the basement starts. Transition occurs if M30 is True.
+- **End**: Indicates the process of either entry is complete and the car has passed through.
+  - **Transition [X2]**: Checks if a car is passing the basement entry/exit sensor. Transition occurs if X2 is True.
+  - **Action [Y2]**: Turns ON green lights to allow entry or exit from both the ground floor and the basement, turns OFF red lights.
+
+Step 4:####
+The state machine of this Sequential Function Chart (SFC) manages the entry and exit process for an underground car park. It starts in an initial state assessing if a vehicle approaches from the ground floor or basement. On detection of a vehicle at the ground floor entrance, it transitions to a state where it controls the traffic lights to prohibit any further entry or exit. Once the car has entered the passage completely, the system then prepares to check for vehicles entering from the basement and manages the traffic lights accordingly. At the end of either process, the lights are reset to allow for entry and exit, signifying the clearing of the passage. The transitions are based on the sensors detecting the vehicles at the specific check points, and the intermediate variables indicate the current process stage.
+
+Step 5:####
+The generated SFC adheres to the IEC 61131-3 standard for Sequential Function Charts. The chart systematically transitions between states based on conditions being met, such as the detection of a vehicle by sensors (X1, X2) and the intermediate process flags (M20, M30). Actions are clearly defined to manage output states (Y1 for red lights, Y2 for green lights) corresponding to the state of the system. The flow is logical, progressing from detection, through processing, to conclusion, and resets the outputs as needed. Care must be taken to ensure transitions are triggered by the correct conditions and actions are executed as defined to avoid errors or unsafe states.

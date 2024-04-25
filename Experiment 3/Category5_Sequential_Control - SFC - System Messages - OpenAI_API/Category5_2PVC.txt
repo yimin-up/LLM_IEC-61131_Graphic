@@ -1,0 +1,79 @@
+Given the ISA-88 compliant control recipe requirements for the batch production of polyvinylchloride (PVC), we'll design a simple Sequential Function Chart (SFC) program that adheres to IEC 61131-3 standards for a PLC. This program outlines the main stages and operations within each stage as requested.
+
+### Sequential Function Chart Program for PVC Production
+
+**Note:** This ASCII art representation outlines the sequence of operations. For each step, relevant actions are scripted in Structured Text (ST) or Function Block Diagram (FBD) language, also in line with IEC 61131-3. Remember, in an actual PLC program, you would need to define each action's logic further, including safety interlocks, error handling, etc.
+
+#### Main Sequence
+```
++-------------+    +--------------+    +------------+
+|             |    |              |    |            |
+|  Polymerize |--->|   Decover   |--->|    Dry     |
+|             |    |              |    |            |
++-------------+    +--------------+    +------------+
+```
+
+#### Polymerize Stage Sequence
+
+```
++------------------+    +------------+    +----------------+
+|                  |    |            |    |                |
+|  Prepare Reactor |--->|   Charge   |--->|     React      |
+|                  |    |            |    |                |
++------------------+    +------------+    +----------------+
+```
+
+##### 1. Prepare Reactor
+- **Action:** Evacuate the reactor to remove oxygen.
+- **Method:** `EvacuateReactor()`
+  ```ST
+  IF NOT EvacuationValve THEN
+      EvacuationValve := TRUE; // Open valve to start evacuation
+      TIMER1(IN:=TRUE, PT:=T#10m); // Assuming 10 minutes sufficient for evacuation
+  ELSIF TIMER1.Q THEN
+      EvacuationValve := FALSE; // Close evacuation valve
+      moveToCharge(); // Move to next step
+  END_IF
+  ```
+  
+##### 2. Charge
+- **Action:** Add demineralized water and surfactants.
+- **Method:** `ChargeReactor()`
+  ```ST
+  IF NOT WaterValve THEN
+      WaterValve := TRUE; // Start adding water
+      SurfactantValve := TRUE; // Start adding surfactants
+      TIMER2(IN:=TRUE, PT:=T#5m); // Adjust time based on required amounts
+  ELSIF TIMER2.Q THEN
+      WaterValve := FALSE; // Stop water
+      SurfactantValve := FALSE; // Stop surfactants
+      moveToReact(); // Move to next step
+  END_IF
+  ```
+
+##### 3. React
+- **Action:** Add vinyl chloride monomer and catalyst, heat to 55 - 60°„C, and hold at this temperature until reactor pressure decreases.
+- **Method:** `React()`
+  ```ST
+  IF NOT MonomerValve THEN
+      MonomerValve := TRUE; // Start monomer addition
+      CatalystValve := TRUE; // Start catalyst addition
+      Heater := TRUE; // Start heating
+      ControlTemperature(55, 60); // Function to control temperature between 55 to 60°„C
+  ELSIF PressureSensor < PresetPressure THEN
+      MonomerValve := FALSE;
+      CatalystValve := FALSE;
+      Heater := FALSE;
+      moveToDecover(); // Move to next stage
+  END_IF
+  ```
+  
+#### Decover and Dry Stages
+The **Decover** and **Dry** stages would follow similar sequences involving the opening and closing of valves, heating, etc., tailored to the specifics of those processes. This has been omitted for brevity but would be designed using the same principles.
+
+### Final Notes
+- The actual control program would need to include initialization of all sensors, valves, and other actuators.
+- Error handling and safety checks (e.g., temperature out of bounds, prolonged operation times indicating a problem, manual stop interventions, etc.) should be included for each operation.
+- The progression from one stage to another should be conditioned not only on the completion of the previous stage but also on ensuring all safety and quality conditions are met.
+
+This framework provides a basic structure for the PLC program and would require further detail and testing to implement a fully functional and safe control system for PVC production.

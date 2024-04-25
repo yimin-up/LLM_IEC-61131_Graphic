@@ -1,0 +1,67 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program in ASCII art for controlling a 5-floor elevator based on the provided requirements:
+
+       +-----------------------------+
+       |          ELEVATOR           |
+       +-----------------------------+
+       |                             |
+       |    +------------------+     |
+       |    |     INIT_POS     |     |
+       |    +------------------+     |
+       |              |              |
+       |              |              |
+       |    +------------------+     |
+       |    |    WAIT_CALL     |     |
+       |    +------------------+     |
+       |         |         |         |
+       |         |         |         |
++-----------+    |    +-----------+ |
+| UP_BUTTON |----+    | DN_BUTTON |-+
++-----------+         +-----------+
+       |                   |
+       |                   |
++-------------+     +-------------+
+|  MOVE_UP_F  |     |  MOVE_DN_F  |
++-------------+     +-------------+
+       |                   |
+       |                   |
++-------------+     +-------------+
+|   UP_LIMIT  |     |   DN_LIMIT  |
++-------------+     +-------------+
+       |                   |
+       |                   |
+       |    +------------------+
+       |    |    OPEN_DOOR     |
+       |    +------------------+
+       |         |         |
+       |         |         |
+       |    +----------+    |
+       |    | DOOR_TMR |    |
+       |    |    7s    |    |
+       |    +----------+    |
+       |         |         |
+       |         |         |
+       |    +------------------+
+       |    |    WAIT_DEST     |
+       |    +------------------+
+       |         |         |
+       |         |         |
+       |    +----------+    |
+       |    | WAIT_TMR |    |
+       |    |    10s   |    |
+       |    +----------+    |
+       |         |         |
+       |         |         |
+       +-----------------------------+
+
+Transition conditions:
+- INIT_POS to WAIT_CALL: Elevator initialized at a default floor
+- WAIT_CALL to MOVE_UP_F: Up button pressed on a floor
+- WAIT_CALL to MOVE_DN_F: Down button pressed on a floor 
+- MOVE_UP_F to UP_LIMIT: Elevator reached target floor
+- MOVE_DN_F to DN_LIMIT: Elevator reached target floor
+- UP_LIMIT/DN_LIMIT to OPEN_DOOR: Elevator stopped, open door
+- OPEN_DOOR to WAIT_DEST: Door opened for 7 seconds
+- WAIT_DEST to WAIT_CALL: No button pressed for 10s, close door
+- WAIT_DEST to MOVE_UP_F/MOVE_DN_F: Destination floor button pressed
+
+This SFC handles elevator initialization, waiting for calls, moving up/down to the target floor, stopping at limits, opening doors with timers, and waiting for destination floor selection. The transitions define the logic flow between the steps based on floor call buttons, limit switches and timers.

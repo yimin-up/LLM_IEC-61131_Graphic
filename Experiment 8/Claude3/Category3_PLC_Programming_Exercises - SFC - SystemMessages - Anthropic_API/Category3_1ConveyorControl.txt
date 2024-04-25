@@ -1,0 +1,91 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program to control the conveyor belt system based on your requirements:
+
+       +----+
+  -->--| S1 |
+       +----+
+         |
++--------+--------+
+|                 |
+|    Conveyor     |
+|     Running     |
+|                 |
++--------+--------+
+         |
+   +-----+-----+
+   |           |
++--+--+     +--+--+
+| S2a |     | S2b |
++-----+     +-----+
+   |           |
++--+--+     +--+--+
+| S3a |     | S3b |
++-----+     +-----+
+   |           |
++--+--+     +--+--+
+| S4a |     | S4b |
++-----+     +-----+
+   |           |
++--+--+     +--+--+
+| S5a |     | S5b |
++-----+     +-----+
+   |           |
+   +-----+-----+
+         |
++--------+--------+
+|                 |
+|    Conveyor     |
+|     Stopped     |
+|                 |
++--------+--------+
+         |
+       +----+
+       | S6 |---->
+       +----+
+
+S1: Initial Step
+    Automatically start conveyor
+    Set conveyor speed to 2 m/s
+    Transition to Conveyor Running
+
+Conveyor Running:
+    If any stop button pressed (Station1_Stop OR Station2_Stop OR Station3_Stop)
+        Transition to S2a
+    Else If Sensor1 AND Sensor2 AND Sensor3 AND Sensor4 AND Sensor5
+        Transition to S2b  
+
+S2a: 
+    Stop conveyor
+    Transition to Conveyor Stopped
+
+S2b:
+    Maintain conveyor speed at 2 m/s 
+    Transition to S3b
+
+S3a:
+    Transition to Conveyor Stopped 
+
+S3b: 
+    If any stop button pressed
+        Transition to S4a
+    Else If Sensor1 AND Sensor2 AND Sensor3 AND Sensor4 AND Sensor5
+        Transition to S4b
+
+S4a:
+    Transition to Conveyor Stopped
+
+S4b:
+    If any stop button pressed 
+        Transition to S5a
+    Else If NOT (Sensor1 AND Sensor2 AND Sensor3 AND Sensor4 AND Sensor5)
+        Transition to S5b
+
+S5a: 
+    Transition to Conveyor Stopped
+
+S5b:
+    Transition to Conveyor Running
+
+Conveyor Stopped:
+    Transition to S6
+
+S6: Final Step

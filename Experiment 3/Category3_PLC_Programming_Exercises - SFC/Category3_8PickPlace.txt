@@ -1,0 +1,66 @@
+Designing a PLC program for the described pick-and-place application using Sequential Function Chart (SFC) in ASCII, as defined in IEC 61131-3, involves defining steps (actions) and transitions (conditions to move between actions).
+
+Given the requirements, we will divide the process into two main parts based on the mode of operation (Auto and Manual), and manage the interlock to ensure that the robot cannot execute both processes at the same time.
+
+**Legend:**
+- `[ ]` represent steps (actions).
+- `---` and `|` represent the flow and transitions.
+- `(Condition)` represents the transition condition.
+
+**ASCII SFC Diagram**:
+
+```
+                     Start
+                       |
+                [Initialize]
+                       |
+          +-------------+-------------+
+          |                           |
+      (Manual)                    (Auto)
+          |                           |
+          v                           v
+    [Manual Control]            [Auto Control]
+          |                           |
+  +-------+-------+            +-------+-------+
+  |               |            |               |
+  |           [Clip]           |           [Clip]
+  |               |            |               |
+  |           (Clip)           |           (Clip)
+  |               |            |               |
+  |          [Transfer]---(2s)---[Transfer]
+  |               |               |
+  |           (Transfer)         (Transfer)
+  |               |               |
+  |          [Release]          [Release]
+  |               |               |
+  |            (Release)        (Release)
+  |               |               |
+  |       +-------+-------+       |
+  |       |               |       |
+  +------>| [Idle/Wait]   |<------+
+          +---------------+
+```
+
+**Note on Interlock Mechanism:**
+
+To manage the interlock between the Auto and Manual modes and ensure that they can't be executed simultaneously, you can implement an additional logic (not shown in the simple ASCII diagram). This can be done by maintaining a state variable (e.g., `currentMode`) that indicates the current mode of operation. Before entering either `[Manual Control]` or `[Auto Control]`, check that `currentMode` is neither Auto nor Manual, respectively. Upon entry into a control mode, set `currentMode` accordingly. Upon exiting a control mode (returning to `[Idle/Wait]`), reset `currentMode` to a neutral state. This ensures that while in one mode, attempting to initiate the other mode fails until the system returns to a neutral state or idle/waiting status.
+
+**Pseudocode for Interlock:**
+
+```plc
+IF currentMode == NONE THEN
+  IF Manual THEN
+    currentMode = MANUAL
+    GOTO Manual Control
+  ELSEIF Auto THEN
+    currentMode = AUTO
+    GOTO Auto Control
+  END_IF
+ELSEIF currentMode == MANUAL && ModeComplete THEN
+  currentMode = NONE
+ELSEIF currentMode == AUTO && ModeComplete THEN
+  currentMode = NONE
+END_IF
+```
+
+This pseudocode utilizes a simple interlock strategy by requiring the current mode to be none before allowing a mode change, thus preventing concurrent operation of the manual and auto processes.

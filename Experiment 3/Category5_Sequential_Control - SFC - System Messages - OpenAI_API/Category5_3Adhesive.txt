@@ -1,0 +1,76 @@
+Given the challenge of creating a control sequence for the 'Reaction' phase in a batch process for adhesive production, we'll design the sequential control aspect leveraging the Sequential Function Chart (SFC) language as described in IEC 61131-3. This design will be self-contained, including process parameters, timers, and the necessary control logic.
+
+For simplicity, let's assume the 'Reaction' step involves the following sequence:
+
+1. **Preheating**: The mixture needs to preheat to a certain temperature.
+2. **Mixing**: Once the desired temperature is reached, the mixing process begins.
+3. **Addition of Catalyst**: After a specified time of mixing, a catalyst is added.
+4. **Hold time**: The mixture is held at reaction conditions for a set period.
+5. **Cool Down**: Finally, the mixture is cooled to a safe handling temperature.
+
+### Sequential Function Chart (ASCII Art)
+
+```
+   +----------------+      +------------+      +-------------------+      +-----------+      +--------------+
+   |   Preheating   |----->|   Mixing   |----->| Addition of       |----->|   Hold    |----->|   Cool Down  |
+   | (Temp >= 70°„C) |      | (Time 5min)|      | Catalyst (Time    |      |(Time 15min)|      |(Temp <= 35°„C)|
+   +----------------+      +------------+      | 2min)             |      +-----------+      +--------------+
+                                                +-------------------+
+```
+
+### Details and Control Logic
+
+Each step will have associated conditions that must be met before moving to the next step. Variables like temperature and time are significant here.
+
+```iec
+(* Define Variables *)
+VAR
+    temp: REAL; (* Current temperature in °„C *)
+    timer: TON; (* Timer for tracking mixing, catalyst addition, and hold time *)
+    step: INT; (* Step tracker: 1=Preheating, 2=Mixing, 3=Catalyst Addition, 4=Hold, 5=Cool Down *)
+END_VAR
+
+(* Control Logic Implementation *)
+
+(* Preheating *)
+IF step = 1 THEN
+    IF temp >= 70 THEN
+        step := 2; (* Move to Mixing *)
+        timer(IN:=TRUE, PT:=T#5m); (* Start timer for mixing, 5 minutes *)
+    END_IF;
+END_IF;
+
+(* Mixing *)
+IF step = 2 AND timer.Q THEN
+    step := 3; (* Move to Catalyst Addition *)
+    timer(IN:=TRUE, PT:=T#2m); (* Start timer for catalyst addition, 2 minutes *)
+END_IF;
+
+(* Addition of Catalyst *)
+IF step = 3 AND timer.Q THEN
+    step := 4; (* Move to Hold *)
+    timer(IN:=TRUE, PT:=T#15m); (* Start timer for hold, 15 minutes *)
+END_IF;
+
+(* Hold *)
+IF step = 4 AND timer.Q THEN
+    step := 5; (* Transition to Cool Down *)
+END_IF;
+
+(* Cool Down *)
+IF step = 5 THEN
+    IF temp <= 35 THEN
+        step := 6; (* Process complete, Next steps or End *)
+    END_IF;
+END_IF;
+
+(* Reset the Timer if the step changes or is completed *)
+IF step <> step_prev THEN
+    timer(IN:=FALSE); (* Reset timer *)
+    step_prev := step; (* Update previous step tracker *)
+END_IF;
+```
+
+This pseudo-code-sketch provides an example framework to build upon. Actual implementation may involve specific hardware interfacing code and might require adjustments based on the physical system's response times and precise requirements. It is essential to ensure that all hardware used (sensors, actuators, etc.) is correctly interfaced with the PLC and that safety measures are in place for both the equipment and the personnel.
+
+For a complete and deployable solution, the programmer would also add error handling, safety checks (for example, for over-temperature conditions), and interfaces for user inputs/outputs (such as starting/stopping the batch, emergency shutoff, and displaying current status).

@@ -1,0 +1,77 @@
+Implementing a traffic light control system using IEC 61131-3 Structured Text (ST) requires handling typical traffic light sequences along with incorporating inputs such as pedestrian push buttons and emergency vehicle detection to modify the sequence for priority handling. Below, I'll provide a basic implementation outline along with Structured Text code tailored to these requirements.
+
+### Design Overview
+
+1. **Traffic Light States:** Standard traffic lights operate in sequences (e.g., Green -> Yellow -> Red).
+2. **Pedestrian Button:** Upon pressing the button, the system should ensure the next state favors pedestrian crossing (typically by turning the corresponding traffic light to Red).
+3. **Emergency Vehicle Detection:** When an emergency vehicle is detected, the system should immediately transition to a state that allows the vehicle to pass (e.g., turn the traffic light facing the emergency vehicle to Green).
+
+### Structured Text Program
+
+```pascal
+PROGRAM TrafficLightControl
+    VAR
+        // State Representations
+        TrafficState: INT := 1; // 1-Green, 2-Yellow, 3-Red
+        PedestrianRequest: BOOL := FALSE;
+        EmergencyDetected: BOOL := FALSE;
+
+        // Timing control
+        Timer: TON;
+    END_VAR
+
+    // Configuration Parameters
+    CONST
+        TIME_GREEN: TIME := T#20s;
+        TIME_YELLOW: TIME := T#4s;
+        TIME_RED: TIME := T#20s;
+    END_CONST
+
+    // Main Control Logic
+    IF EmergencyDetected THEN
+        TrafficState := 1; // Prioritize emergency by setting traffic light to Green
+    ELSIF PedestrianRequest AND TrafficState <> 3 THEN
+        // Initiate transition to allow pedestrian crossing
+        // Ensure sequence goes to Yellow before Red for safety
+        TrafficState := 2; // Switch to Yellow 
+        PedestrianRequest := FALSE; // Acknowledge the pedestrian request
+    ELSE
+        CASE TrafficState OF
+            1: // Green
+                Timer(IN:= NOT Timer.Q, PT:=TIME_GREEN);
+                IF Timer.Q THEN
+                    TrafficState := 2; // Transition to Yellow
+                    Timer(IN:=FALSE);
+                END_IF
+            2: // Yellow
+                Timer(IN:= NOT Timer.Q, PT:=TIME_YELLOW);
+                IF Timer.Q THEN
+                    TrafficState := 3; // Transition to Red
+                    Timer(IN:=FALSE);
+                END_IF
+            3: // Red
+                Timer(IN:= NOT Timer.Q, PT:=TIME_RED);
+                IF Timer.Q THEN
+                    IF PedestrianRequest THEN
+                        // If there's still a pending pedestrian request
+                        // stay in Red to ensure crossing
+                        PedestrianRequest := FALSE;
+                    ELSE
+                        TrafficState := 1; // Transition back to Green
+                    END_IF
+                    Timer(IN:=FALSE);
+                END_IF
+        END_CASE
+    END_IF
+END_PROGRAM
+```
+
+### Notes
+
+- The `Timer` instance of `TON` is used for managing state duration. It is reset every time a state transition occurs.
+- `TrafficState` controls the current state of the traffic light. Simple integer values are used for simplicity.
+- `PedestrianRequest` is a flag that, when set, indicates a pedestrian has requested to cross. This flag influences the transition to the Red state.
+- `EmergencyDetected` instantly transitions the traffic light to Green to prioritize the detected emergency vehicle.
+- Timing for each state can be adjusted via the `TIME_GREEN`, `TIME_YELLOW`, and `TIME_RED` constants.
+  
+For real-world applications, ensure that this program is expanded with necessary safety checks, error handling, and conform to local traffic regulations and standards.

@@ -1,0 +1,66 @@
+Designing a traffic light system with the requirements mentioned can be quite complex. The system must handle normal traffic light cycling (e.g., Green -> Yellow -> Red) and incorporate emergency overrides and pedestrian crossing requests. While we cannot implement an actual IEC 61131-3 program here, below is an ASCII art representation of a Sequential Function Chart (SFC) that encapsulates the described logic. This diagram is intended to portray the logical flow and operation rather than the actual code.
+
+```
+(Start of Sequential Function Chart)
+
+        +---------------------------------------------------+
+        |                                                   |
+        |                                                   |
++============+         +=================================+  |
+||          ||  EMERG  ||                                 |  |
+|| Initial  ||-------->||  Emergency Handling Sequence   |  |
+||          ||         ||                                 |  |
++============+         +=================================+  |
+        |                                                   |
+        |                                                   |
+        + NORMAL                                            |
+        |                                                   |
+        |                                                   |
+        +------->+================+    +=================+  |
+                ||                |    |                 |  |
+                ||   GreenCycle   |---->|    YellowCycle  |  |
+                ||                |    |                 |  |
+                +================+    +=================+  |
+                        |                     |             |
+                        |                     |             |
+                        |        +============+=========+   |
+                        |        |                      |   |
+                        +------->|        RedCycle       |---
+                        PEDEST   |                      |  EMERG
+                                 +======================+
+
+                                     |        |
+                                     |        |
+                                     |  PED   |
+                                     v        |
+                                 +============+=========+
+                                 |                      |
+                                 | Pedestrian Crossing  |
+                                 |                      |
+                                 +======================+
+                                         |
+                                         |
+                                         +------------------+
+```
+
+### Key Components Description:
+
+- **Initial**: The initial state of the traffic light, typically starting with the green light for vehicle traffic.
+  
+- **GreenCycle**: Represents the green light being active, allowing vehicles to pass.
+
+- **YellowCycle**: Transition state indicating that the lights will change soon, advising vehicles to prepare to stop.
+
+- **RedCycle**: The red light is active, vehicles must stop.
+
+- **Emergency Handling Sequence**: An override state that gives priority to emergency vehicles, altering the normal cycle of the traffic lights.
+
+- **Pedestrian Crossing**: Activated when a pedestrian requests to cross, typically switching the traffic light to red.
+
+- **EMERG**: An input or condition that detects the presence of emergency vehicles, prompting the system to transition to the emergency handling sequence.
+
+- **PEDEST**: An input triggered by pedestrians pressing the push button to cross the street.
+
+### Note:
+
+In an actual IEC 61131-3 implementation, each of these states would correspond to a step in the SFC, and transitions between them would be governed by conditions evaluated from the inputs (e.g., pedestrian button pressed, emergency vehicle detected). The logic within each step (or state) would control the outputs to the traffic lights (and possibly other devices, such as sound signals for visually impaired pedestrians), ensuring lawful and safe movement through the intersection.

@@ -1,0 +1,91 @@
+Here's an example of a simple Structured Text program written in IEC 61131-3 PLC programming language for the described coffee machine scenario. It includes basic control logic for the tanks, valves, mixer, and operation based on button input. Please note that actual implementations would likely need additional error handling and safety features.
+
+Assumptions: 
+- The tanks have sensors to measure the levels of coffee, milk, and mixture.
+- Valves and mixer are controlled using boolean output signals (true to open/start, false to close/stop).
+- Push buttons are represented as boolean input signals (true when pressed).
+- We use a TON (Timer On Delay) for the mixer timer.
+- The emergency stop will override all other operations.
+
+```pascal
+PROGRAM CoffeeMachineControl
+VAR
+    // Input pushbuttons
+    Button_EmergencyStop: BOOL;
+    Button_StartMachine: BOOL;
+    Button_CoffeeMilk: BOOL;
+    Button_CoffeeOnly: BOOL;
+
+    // Tank level sensors
+    CoffeeLevel: INT; // Coffee tank level in ml
+    MilkLevel: INT;   // Milk tank level in ml
+    MixerLevel: INT;  // Mixer tank level in ml
+
+    // Valves and Mixer Control
+    Valve_Coffee: BOOL;
+    Valve_Milk: BOOL;
+    Valve_Output: BOOL;
+    Mixer_Start: BOOL;
+  
+    // Mixer operation timer
+    MixerTimer: TON;
+
+    // Constants
+    MAX_MIXER_LEVEL: INT := 130; // in ml
+    MIXING_TIME: TIME := T#4s;  // 4 seconds mixing time
+END_VAR
+
+VAR_GLOBAL
+    // Global emergency stop variable
+    EmergencyStopped: BOOL := FALSE;
+END_VAR
+
+// Mixer control
+IF EmergencyStopped THEN
+    Valve_Coffee := FALSE;
+    Valve_Milk := FALSE;
+    Mixer_Start := FALSE;
+    Valve_Output := FALSE;
+    MixerTimer(IN := FALSE, PT := MIXING_TIME);
+    RETURN; // Exit the program if emergency stop is engaged
+END_IF;
+
+IF Button_EmergencyStop THEN
+    EmergencyStopped := TRUE;
+    RETURN;
+END_IF;
+
+IF Button_StartMachine THEN
+    IF Button_CoffeeMilk THEN
+        Valve_Coffee := CoffeeLevel > 0; // Open coffee valve if there is coffee
+        Valve_Milk := MilkLevel > 0;     // Open milk valve if there is milk
+    ELSIF Button_CoffeeOnly THEN
+        Valve_Coffee := CoffeeLevel > 0; // Open coffee valve if there is coffee
+        Valve_Milk := FALSE;             // Do not open milk valve
+    END_IF;
+    
+    IF MixerLevel >= MAX_MIXER_LEVEL THEN
+        Valve_Coffee := FALSE; // Close coffee valve if mixer is full
+        Valve_Milk := FALSE;   // Close milk valve if mixer is full
+        Mixer_Start := TRUE;   // Start mixing
+        MixerTimer(IN := TRUE, PT := MIXING_TIME); // Start mixer timer
+    END_IF;
+ELSE
+    Valve_Coffee := FALSE;
+    Valve_Milk := FALSE;
+    Mixer_Start := FALSE;
+    MixerTimer(IN := FALSE, PT := MIXING_TIME);  // Stop mixer timer
+    Valve_Output := FALSE;
+END_IF;
+
+// Mixing finished - Release output
+IF MixerTimer.Q THEN
+    Mixer_Start := FALSE;    // Stop mixing
+    Valve_Output := TRUE;    // Open the output valve to pour coffee
+    MixerTimer.IN := FALSE;  // Reset mixer timer
+ELSE
+    Valve_Output := FALSE;   // Keep the output valve closed
+END_IF;
+```
+
+This program is simplified and does not include all the checks and safety mechanisms that a real-world coffee machine would require. It would need to be tested and validated within the context of a specific PLC and coffee machine hardware.

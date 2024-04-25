@@ -1,0 +1,45 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program to control the conveyor system per your requirements:
+
+      PROGRAM ConveyorControl
+      VAR
+        StartPB    : BOOL := FALSE; (* Start Pushbutton *)  
+        StopPB1    : BOOL := FALSE; (* Stop Pushbutton Station 1 *) 
+        StopPB2    : BOOL := FALSE; (* Stop Pushbutton Station 2 *)
+        StopPB3    : BOOL := FALSE; (* Stop Pushbutton Station 3 *)
+        Sensor1    : BOOL := FALSE; (* Sensor 1 *)
+        Sensor2    : BOOL := FALSE; (* Sensor 2 *)  
+        Sensor3    : BOOL := FALSE; (* Sensor 3 *)
+        Sensor4    : BOOL := FALSE; (* Sensor 4 *)
+        Sensor5    : BOOL := FALSE; (* Sensor 5 *)
+        ConveyorRun: BOOL := FALSE; (* Conveyor Run Output *)
+        Speed      : REAL := 2.0;   (* Conveyor Speed Setpoint in m/s *)
+      END_VAR
+
+      LD    StartPB 
+      OR(   Sensor1
+      OR    Sensor2  
+      OR    Sensor3
+      OR    Sensor4
+      OR    Sensor5 )
+      ANDN  StopPB1
+      ANDN  StopPB2 
+      ANDN  StopPB3
+      ST    ConveyorRun
+      
+      LD    ConveyorRun
+      MOVE  2.0
+      ST    Speed
+      
+      END_PROGRAM
+      
+Explanation:
+- The program uses a single rung of ladder logic
+- Starts with the Start pushbutton as an OR condition
+- ORs in the 5 object sensors 
+- AND NOTs the 3 Stop pushbuttons from the stations
+- Stores the result in the ConveyorRun boolean coil
+- A separate rung loads ConveyorRun and moves the 2.0 m/s setpoint 
+  to the Speed variable when the conveyor is running
+- Assumes the Speed variable is linked to the conveyor drive
+
+Let me know if you have any other questions!

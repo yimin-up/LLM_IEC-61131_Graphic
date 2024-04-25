@@ -1,0 +1,60 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program to control a heating system to maintain temperature between 20-22буC based on 3 temperature sensors:
+
+       +----+
+  -->--| S1 |
+       +----+
+         |
++--------+--------+
+|                 |
+|    +---------+  |
+|    |  INIT   |  |
+|    +---------+  |
+|         |       |
+|        (1)      |
+|         |       |
+|    +---------+  |
+|    | HEATING |  |
+|    |  OFF    |  |
+|    +---------+  |
+|         |       |
+|        (2)      |
+|         |       |
+|    +---------+  |
+|    | HEATING |  |
+|    |   ON    |  |
+|    +---------+  |
+|         |       |
++--------+--------+
+          |
+       +----+
+       | S2 |---->
+       +----+
+
+S1: avg(temp1, temp2, temp3) > 22
+S2: avg(temp1, temp2, temp3) < 20
+
+(1): avg(temp1, temp2, temp3) <= 22
+(2): avg(temp1, temp2, temp3) >= 20
+
+INIT:
+    heater := OFF;
+
+HEATING OFF:
+    heater := OFF;
+
+HEATING ON: 
+    heater := ON;
+
+This SFC has 3 steps:
+1. INIT - initializes heater to off state
+2. HEATING OFF - turns heater off when avg temp > 22буC 
+3. HEATING ON - turns heater on when avg temp < 20буC
+
+Transitions:
+- S1 moves from HEATING ON to HEATING OFF when avg temp exceeds 22буC
+- S2 moves from HEATING OFF to HEATING ON when avg temp drops below 20буC  
+- (1) and (2) loop in their respective steps while temp is 20-22буC range
+
+The avg() function calculates the average of the 3 temperature sensor readings. The heater coil is turned on/off accordingly to maintain the temperature between 20-22буC.
+
+Let me know if you have any other questions!

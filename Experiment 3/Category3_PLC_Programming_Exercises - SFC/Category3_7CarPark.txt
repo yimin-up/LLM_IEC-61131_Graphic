@@ -1,0 +1,48 @@
+To design the PLC program for the Entry/Exit Control of the Underground Car Park using Sequential Function Chart (SFC) in accordance with IEC 61131-3, we will define our steps and transitions based on the description of the process and the role of sensors and actuators involved.
+
+#### Initial Assumptions
+- The system is at a "Ready" state initially, with green lights on (Y2=ON) and red lights off (Y1=OFF).
+- A car's presence at either entry/exit point triggers a sequence to ensure safe passage.
+- The transition conditions are based on sensor inputs (M1, M2, M3, M4).
+- Following the complete passage of a car, the system returns to the "Ready" state.
+- Intermediate states are used to represent the system during the car's passage.
+  
+#### Sequential Function Chart (ASCII Art Representation)
+
+```
++------+
+|      |                    +---------+
+| Init +------------------> | Ready   | <------------------------------------------+
+|      |     Y2:=ON;        +----+----+                                           |
++------+     Y1:=OFF;            |                                                |
+                                  |                                                |
+                              +---v---+           +--------+                     +-+-------+
+                              |  M1   |           |  M3    |                     |         |
+                              |  OR   |           |  OR    |                     | Car at  |
+                              |  M2   +---------->+  M4    |                     | Basement|
+                              +-------+           +---+----+                     +----+----+
+                                                          |                          |
+                              +---------+           +-----v----+                +---+----+
+          +-------------------+ Passage  +<----------+ Passage  +<---------------+ Passage |
+          |                   +----+-----+    Y1:=ON;+ Clearing +     Y1:=ON;     +---+----+
+          |                        |          Y2:=OFF| (Car at  |     Y2:=OFF;        |
+ +--------v---------+        +-----v----+     M30=ON  | Basement)|    M20=ON;         |
+ | Car at Ground    +------->+ Passage  +<------------+          |                   |
+ | Floor Transition |        | Clearing |                        |                   |
+ |    Y1:=ON;       |        +----------+                        +-------------------+
+ |    Y2:=OFF;      |          Y1:=ON;
+ |    M20=ON;       |          Y2:=OFF; 
+ +-----------------+           M30=ON;  
+```
+
+#### Explanation of the Steps and Transitions:
+- **Init**: Initial state of the PLC after power on or reset.
+- **Ready**: System is ready for either incoming or outgoing traffic, with green lights on (Y2=ON) and red lights off (Y1=OFF).
+- **M1 OR M2 Transition**: Detects a car at the ground floor entry/exit, prepares the system for passage from the ground floor.
+- **M3 OR M4 Transition**: Detects a car at the basement entry/exit, prepares the system for passage from the basement.
+- **Passage Clearing (Car at Ground Floor / Basement)**: Represents the process of a car passing through the passage. During this state, red lights are on (Y1=ON) to block further entry, green lights are off (Y2=OFF), and the corresponding M20 or M30 variable is set to ON indicating the ongoing process.
+- **Passage**: Transition state indicating the next step in the sequence depending on the transition conditions being met.
+- **Car at Ground Floor Transition**: Detects the completion of the passage for a car entering/exiting from the ground floor and prepares to return to the "Ready" state.
+- **Car at Basement Transition**: Same as above but for cars entering/exiting from the basement.
+
+This ASCII art SFC design outlines the logic but would need to be implemented with actual SFC programming tools or software complying with IEC 61131-3 for execution in a PLC system.

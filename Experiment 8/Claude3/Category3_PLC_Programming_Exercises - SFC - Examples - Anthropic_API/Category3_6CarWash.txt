@@ -1,0 +1,63 @@
+Here's an IEC 61131-3 compliant Sequential Function Chart (SFC) for an automatic car wash station with human detection safety:
+
+```
+(Start of Sequential Function Chart)
+
+       +----------------------<------------------------+
+       |                                               |
+       |                                               |
++============+                                         |
+||          ||                                         |
+|| Initial  ||                                         |
+||          ||                                         |
++============+                                         |
+       |                                               |
+       |                                               |
+       + CarDetected                                   |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   WashCar     |   |  N   | StartWash  |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + HumanDetected                                 |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|  EmergencyStop|   |  N   |  StopWash  |        |     |
+|               |---|      |            |        |     |
+|               |   |  N   |   Alarm    |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + NOT HumanDetected                             |
+       |                                               |
+       |                                               |
++---------------+                                      |
+|   WashDone    |                                      |
+|               |                                      |
+|               |                                      |
++---------------+                                      |
+       |                                               |
+       |                                               |
+       + NOT CarDetected                               |
+       |                                               |
+       |                                               |
+       +----------------------->-----------------------+
+
+(End of Sequential Function Chart)
+```
+
+Explanation:
+1. The system starts in the "Initial" step.
+2. When a car is detected by the sensor (CarDetected), it transitions to the "WashCar" step.
+3. In the "WashCar" step, the "StartWash" action is executed to begin the car washing process.
+4. If a human is detected in the car wash area (HumanDetected) during the washing process, it immediately transitions to the "EmergencyStop" step.
+5. In the "EmergencyStop" step, the "StopWash" action is executed to halt the washing process, and an "Alarm" action is triggered to alert about the presence of a human.
+6. If the human is no longer detected (NOT HumanDetected), it transitions to the "WashDone" step, indicating that the washing process is complete.
+7. When the car is no longer detected (NOT CarDetected), it transitions back to the "Initial" step, ready for the next car.
+
+This SFC ensures that the car wash station operates automatically when a car is detected and stops immediately if a human is detected in the car wash area, providing a safety mechanism.

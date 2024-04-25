@@ -1,0 +1,57 @@
+Step 1:####
+
+For the heating system control based on temperature sensors, we have the following inputs and outputs:
+
+Inputs:
+- TempSensor1: First temperature sensor reading.
+- TempSensor2: Second temperature sensor reading.
+- TempSensor3: Third temperature sensor reading.
+
+Outputs:
+- Heater: Controls the heater ON/OFF.
+
+####
+
+Step 2:####
+```plaintext
++----+   T<20   +------------+   AvgTemp>=20   +---------+   AvgTemp<=22   +------------+   AvgTemp>22   +----+
+| S1 |-------->| Calculate  |--------------->| Heater  |--------------->| Calculate  |--------------->| S2 |
++----+         | AvgTemp    |                 | ON      |                | AvgTemp    |                +----+
+              +------------+                 +---------+                +------------+                  
+                 |  ^                                                      |  ^
+                 |  |_______________________ AvgTemp<20 __________________|  |
+                 |________________________________ AvgTemp>22 ___________________________________________|
+```
+####
+
+Step 3:####
+
+- **Step S1 (Initial Step):** The initial step before the heating control logic begins. It does not perform any actions but leads to the 'Calculate AvgTemp' step if the temperature (average of three sensors) is below 20 degrees Celsius.
+
+- **Action 'Calculate AvgTemp':** Calculates the average temperature from the three temperature sensors. This action is performed repeatedly in two steps to decide if the Heater should be turned on or adjusted.
+
+- **Transition T<20:** This transition evaluates if the calculated average temperature is below 20 degrees Celsius. If true, the system moves to the 'Heater ON' step to activate the heater.
+
+- **Step 'Heater ON':** Turns the heater on to raise the temperature. It remains in this state until the average temperature is at least 20 degrees Celsius, ensuring the temperature does not fall below the desired minimum.
+
+- **Transition AvgTemp>=20:** Checks if the average temperature has reached or exceeded 20 degrees Celsius. If so, it transitions to the next 'Calculate AvgTemp' step to verify if the heating needs adjustment.
+
+- **Transition AvgTemp<=22:** This transition verifies if the heating has successfully raised the temperature within the desired range (<=22 degrees Celsius). If the temperature is within this threshold, the control moves back to calculate the average temperature for further adjustments if necessary.
+
+- **Transition AvgTemp>22:** Evaluates if the average temperature has exceeded the upper limit of 22 degrees Celsius. If this condition is met, the system transitions to the 'Heater OFF' step (S2) to stop the heating.
+
+- **Step S2 ('Heater OFF'):** This step signifies that the heater is turned off to prevent overheating. The process can loop back to the initial steps if the average temperature falls below 20 degrees Celsius again.
+
+####
+
+Step 4:####
+
+This Sequential Function Chart describes the state machine for controlling a heating system to maintain a temperature between 20 and 22 degrees Celsius. The system starts in an initial state (S1), calculates the average temperature from three sensors, and decides whether to turn on the heater based on this average. If the temperature is below 20 degrees, the heater is activated until the temperature reaches the target range (20 to 22 degrees). Once in the range, the system continuously checks to ensure the temperature remains within this range, recalculating the average temperature and adjusting the heater as necessary. If the temperature exceeds 22 degrees, the heater is turned off (S2), and the system monitors until the temperature drops back into the desired range, repeating the control loop as needed.
+
+####
+
+Step 5:####
+
+The generate Sequential Function Chart adheres to the IEC 61131-3 standard by clearly defining inputs and outputs, organizing logic into distinct steps and transitions based on conditions derived from inputs, and demonstrating a control flow that progresses logically from initial state to desired operation and adjustments as necessary. Each action and transition has a clear purpose towards achieving the control objective, maintaining a consistent temperature range within set parameters, thereby satisfying the requirements for a compliant IEC 61131-3 SFC program.
+
+####

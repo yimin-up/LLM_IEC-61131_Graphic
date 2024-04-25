@@ -1,0 +1,94 @@
+Here's the SFC program for the Entry/Exit Control of the Underground Car Park according to IEC 61131-3:
+
+    INITIAL_STEP
+    +-----------+
+    |           |
+    |   Y1=OFF  |
+    |   Y2=ON   |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |    M1     |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |   Y1=ON   |
+    |   Y2=OFF  |
+    |   M20=ON  |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |    M4     |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |   Y1=OFF  |
+    |   Y2=ON   |
+    |   M20=OFF |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |    M3     |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |   Y1=ON   |
+    |   Y2=OFF  |
+    |   M30=ON  |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |    M2     |
+    |           |
+    +-----------+
+          |
+          |
+          |
+    +-----------+
+    |           |
+    |   Y1=OFF  |
+    |   Y2=ON   |
+    |   M30=OFF |
+    |           |
+    +-----------+
+          |
+          |
+          |
+       RETURN
+
+This SFC program follows the IEC 61131-3 standard and meets the given requirements:
+
+1. The initial step sets the green lights (Y2) ON and red lights (Y1) OFF.
+2. When a car enters from the ground floor (M1=ON), the red lights turn ON, green lights turn OFF, and M20 is set to indicate a car is in the passage.
+3. The system waits for the car to pass through to the basement (M4=ON), then turns the green lights back ON, red lights OFF, and resets M20.
+4. Similarly, when a car enters from the basement (M3=ON), the red lights turn ON, green lights turn OFF, and M30 is set.
+5. The system waits for the car to pass through to the ground floor (M2=ON), then turns the green lights back ON, red lights OFF, and resets M30.
+6. The program returns to the initial step, allowing the cycle to repeat.

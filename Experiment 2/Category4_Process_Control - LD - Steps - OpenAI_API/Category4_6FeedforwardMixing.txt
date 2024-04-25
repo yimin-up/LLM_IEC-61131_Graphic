@@ -1,0 +1,64 @@
+To implement feedforward control for mixing two reactants using a Ladder Diagram (LD) according to IEC 61131-3, we need to design a control system that maintains specific ratios of these reactants. Let's assume the goal is to control valves for each reactant based on the flow rate requirement for a process.
+
+### Step 1: Define and list the inputs and outputs of the Ladder Diagram, and the standard symbols they use.
+
+####
+
+Inputs:
+1. Flow_Rate_Req (FR_Req): Input that represents the required flow rate for the process (Boolean).
+2. Flow_Rate_Reactant1 (FR_R1): Analog input representing the flow rate of Reactant 1.
+3. Flow_Rate_Reactant2 (FR_R2): Analog input representing the flow rate of Reactant 2.
+
+Outputs:
+1. Valve_Control_Reactant1 (VC_R1): Control signal for the valve of Reactant 1 (Boolean).
+2. Valve_Control_Reactant2 (VC_R2): Control signal for the valve of Reactant 2 (Boolean).
+
+Standard Symbols:
+- Inputs are represented by --| |-- for discrete and --|>|-- for analog comparisons.
+- Outputs are represented by --( )--.
+
+### Step 2: Give the Ladder Diagram program.
+
+####
+
+```
+        +----[ FR_Req ]--------------( VC_R1 )----+
+        |                                       |
+        |        +----[>FR_R1]--+               |
+        |        |              |               |
+        +----[   ]----+       [>FR_R2]--( VC_R2 ) 
+        |        |              |
+        +----[ FR_Req ]--------------( VC_R2 )----+
+```
+This is a simplified representation. The actual control logic would involve scaling the analog inputs and implementing PID control for precise flow control, not typically represented in basic LD diagrams but implied here for conceptual understanding.
+
+### Step 3: Give the logical expressions for each rung.
+
+####
+
+1. \( \text{VC\_R1} = \text{FR\_Req} \)
+2. \( \text{VC\_R2} = \text{FR\_Req} \ AND \ (\text{FR\_R1} > \text{FR\_R2}) \)
+
+### Step 4: Briefly describe the state machine of the Ladder Diagram.
+
+####
+
+- **Initial State**: Both Valve_Control_Reactant1 (VC_R1) and Valve_Control_Reactant2 (VC_R2) are off. The system waits for the FR_Req signal to enable flow.
+  
+- **Active State**: Once FR_Req is true, the system checks the condition for the flow rates of both reactants.
+  
+    - If FR_Req is active, VC_R1 is turned on indicating that the reactant 1 valve is open to start the flow.
+    - Simultaneously, VC_R2 is controlled not just by the FR_Req but also evaluates whether the flow rate of Reactant 1 is greater than Reactant 2 (FR_R1 > FR_R2) to maintain the desired mixing ratio.
+  
+- **Control Logic Transition**: Based on the comparison of FR_R1 and FR_R2, the system could adjust VC_R2 to ensure the process requirements are met.
+  
+- **Final State**: The valves remain in their respective states as long as FR_Req is true, adjusting to maintain reactant flow rate ratios. When FR_Req turns off, both valves return to the initial off state.
+
+### Step 5: Check the LD you generate according to the IEC 61131 standard.
+
+####
+
+- The LD follows IEC 61131-3 standards by representing inputs on the left, logic in the middle, and outputs on the right.
+- It uses standardized symbols for Boolean and comparison operations.
+- The logic sequences are clear, with each rung dedicated to specific valve controls based on flow rate requirements and current flow rates.
+- However, it¡¯s worth noting this simplified LD diagram provides a basic view. In a real application, analog scaling, PID algorithms, or more complex logical conditions for managing the flow rates more precisely would be required and likely implemented in function blocks or structured text for more nuanced control than what basic LD can offer.

@@ -1,0 +1,49 @@
+Step 1:####
+Inputs:
+- PedestrianButton (BOOL): True when a pedestrian presses the push button.
+- EmergencyVehicleDetected (BOOL): True when an emergency vehicle is detected.
+
+Outputs:
+- GreenLight (BOOL): True to turn the green light on.
+- YellowLight (BOOL): True to turn the yellow light on.
+- RedLight (BOOL): True to turn the red light on.
+
+Step 2:####
+```
+       +-[ ]---------[ ]---------[ ]---+
+       | Step1      Trans1      Step2  |
+       | Normal     PedButton   PedWait|
+       +-[ ]---+    or          +-[ ]--+
+              |     EmergVeh       |
+              |                    |
+              |    +-[ ]---+       |
+              |    |Trans2 |       |
+              |    +-[ ]---+       |
+              |                    |
+              |   +-[ ]---------[ ]+
+              |   |Step3        Step4|
+              |   |EmergCross   Normal|
+              +-->[ ]---------[ ]<---+
+                  |Trans3      Trans4|
+                  +-[ ]---------[ ]--+
+```
+Step 3:####
+- Step1 (Normal): The default state where the traffic light is green for vehicles. Actions include `GreenLight = TRUE, YellowLight = FALSE, RedLight = FALSE`.
+- Trans1 (PedButton or EmergVeh): Transition from Normal to PedWait or EmergCross. The condition here is either `PedestrianButton = TRUE` or `EmergencyVehicleDetected = TRUE`.
+- Step2 (PedWait): The state of waiting before giving pedestrians right of way. Actions may include a short delay or flashing the green light. Eventually turns `GreenLight = FALSE, YellowLight = TRUE, RedLight = FALSE`.
+- Trans2: Transition back to Normal from either PedWait or EmergCross after a delay, condition could be a timed delay.
+- Step3 (EmergCross): Priority crossing for emergency vehicles, where `GreenLight = FALSE, YellowLight = FALSE, RedLight = TRUE` to stop vehicular traffic.
+- Trans3: Transition to Normal after emergency has passed, usually after a fixed time or when `EmergencyVehicleDetected = FALSE`.
+- Step4: Returns to the Normal state, enabling vehicle traffic.
+- Trans4: Ensures cyclic operation back to Step1 under normal conditions or continues emergency handling if required.
+
+Step 4:####
+This Sequential Function Chart (SFC) represents a state machine with four main states for controlling a traffic light. It starts in the "Normal" state, where vehicles can move freely. Upon detecting a pedestrian button press or an emergency vehicle, it transitions to either "PedWait" for pedestrians or "EmergCross" for emergency vehicles, granting them priority. After handling the pedestrian crossing or emergency vehicle passage, it transitions back to "Normal". There's a provision to cycle through these states based on conditions (pedestrian button press/emergency vehicle detection) or return to normal flow after a set delay, ensuring flexibility to react to both regular and emergency traffic conditions.
+
+Step 5:####
+According to the IEC 61131 standard, the SFC checks:
+- Clearly defined steps and transitions, ensuring deterministic behavior.
+- Conditions for each transition are specified, aligning with practical traffic control requirements.
+- Actions associated with each step are adequately described, providing explicit control over traffic lights.
+- The cyclic nature of the chart ensures continuous operation and reactivity to inputs like pedestrian requests and emergency vehicle presence.
+- The design adheres to the IEC 61131-3 requirements for creating Sequential Function Charts, including using proper symbols and logic flow, making the program ready for emulation or upload to a compatible PLC system for controlling traffic lights.

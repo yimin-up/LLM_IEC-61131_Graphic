@@ -1,0 +1,52 @@
+Designing a self-contained ladder diagram for a traffic light system involving cars and pedestrian controls, along with emergency vehicle priority, requires several key components: timers for light changes, inputs for pedestrian buttons, and sensors for emergency vehicles. The system logic should ensure that normal traffic light sequences are interrupted for emergency vehicle priority.
+
+Given the complexity of such a system, this ASCII representation simplifies the design into a conceptual overview:
+
+```
+(Start of Ladder Diagram)
+|                                                             |
+|        EMERGENCY             TIMER1                GREEN    |
++----------| |-------------------]/[-------------------( )-----+
+|                                                             |
+|                           TIMER1_DONE             YELLOW    |
++--------------------------------|/|-------------------( )-----+
+|                                                             |
+|                           +---+                            |
+|                           | T1|  PEDESTRIAN                |
+|                           +---+     BUTTON       RED       |
+|        TIMER2_DONE        | |------| |----------------( )-----+
+|        PEDESTRIAN         |                                |
+|        but not EMERGENCY --+                                |
+|                                                             |
+|        RESET_TIMER1              TIMER1                    |
+|        RESET_TIMER2       +-----+------+             +-----+
+|     +---|/|---------------|  SET_RESET |-------------|     |
+|     |                     +-----+------+             +-----+
+|     |                           |                           |
+|     |     +---------------------+                           |
+|     |     |                                                  |
+|     |     |  TIMER2_DONE        TIMER2              +-----+ |
+|     +-----+-------------------|/|-------------------|     | |
+|                                                  +-----+ +---+
+|                                                  |     | |
+|                                                  +-----+ |
+|                                                             |
+|        EMERGENCY                 +---+                     |
+|     +---| |----------------------|T2 |       +-----+       |
+|     |  TIMER1_DONE    PEDESTRIAN |   |       |     |       |
+|     |---|/|-----------|/|--------|+/ |--+    +-----+       |
+|                                      |                      |
+|     +--------------------------------+                      |
+|                                                             |
+(End of Ladder Diagram)
+```
+
+Key Components & Their Functions:
+
+- **EMERGENCY:** Input signal indicating the presence of an emergency vehicle. This signal has the highest priority and will trigger a sequence that provides immediate access through the intersection.
+- **TIMER1** and **TIMER2:** Timers control the duration of green, yellow, and red lights for both vehicles and pedestrians. TIMER1 might control main traffic lights, while TIMER2 could handle pedestrian wait times.
+- **GREEN, YELLOW, RED:** Outputs to control the corresponding traffic light signals.
+- **PEDESTRIAN BUTTON:** Input from a button pressed by pedestrians wishing to cross. This input impacts the timing by introducing a pedestrian crossing phase.
+- **RESET_TIMER1**, **RESET_TIMER2:** Logic to reset the timers based on specific conditions, ensuring that the system can return to its standard cycle after an emergency situation or pedestrian crossing phase.
+
+This diagram is a simplified representation. The detailed programming would include configuring the timers with appropriate durations for each signal phase, implementing safety interlocks to prevent conflicting signals, and ensuring overall system reliability.

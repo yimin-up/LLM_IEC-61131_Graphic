@@ -1,0 +1,100 @@
+### Step 1:#### Define and list the inputs and outputs of the Sequential Function Chart.
+
+Inputs:
+- `StartButton`: Boolean input to start the batch process.
+- `TempSensor`: Temperature sensor in the vessel, in degrees Celsius.
+- `MilkAdded`: Boolean indicating completion of milk addition.
+- `WaterAdded`: Boolean indicating completion of water addition.
+- `SugarAdded`: Boolean indicating completion of liquid sugar addition.
+- `CocoaAdded`: Boolean indicating completion of cocoa addition.
+- `MixingComplete`: Boolean indicating mixing is complete.
+- `HeatingComplete`: Boolean indicating heating to target temperature is complete.
+
+Outputs:
+- `ValveMilk`: Control signal to open/close milk valve.
+- `ValveWater`: Control signal to open/close water valve.
+- `ValveSugar`: Control signal to open/close liquid sugar valve.
+- `ValveCocoa`: Control signal to open/close cocoa valve.
+- `MixerMotor`: Control signal to start/stop the mixing motor.
+- `Heater`: Control signal to turn on/off the heater.
+
+#### Step 2:#### Briefly describe the state machine of the requirements.
+
+1. **Initialization**: Ensure all valves are closed, and the mixing motor and heater are off.
+2. **Addition of Ingredients**: Sequentially add milk, water, liquid sugar, and cocoa. Each ingredient must be added only after the previous one is fully dispensed.
+3. **Mixing**: Once all ingredients are in the vessel, start the mixing motor.
+4. **Heating**: While mixing, heat the mixture to a target temperature sufficient for cocoa milk production (e.g., 80¡ãC).
+5. **Completion**: Once the mixture has reached the target temperature and mixing is deemed complete, stop all operations and signal the completion of the batch.
+
+#### Step 3:#### Give the Sequential Function Chart program in ASCII art.
+
+```plaintext
+                     +-----------+
+                     |  Start    |
+                +--->| Button    |
+                |    +-----------+      (Initialization)
+                |          |            |
+                |          V            |
+                |    +-----------+      |
+                |    | Initialize|------+   
+                +----|           |      |
+                     +-----------+      |
+                            |(Milk)     |
+                            V           |
+                     +-----------+      |
+                +--->| Add Milk  |------+   
+                |    +-----------+      |    
+                |          |(Water)     |   
+                |          V            |
+                |    +-----------+      |(Sugar)
+                |    |  Add Water |------+    
+                +----|           |      |   
+                     +-----------+      |   
+                            |(Cocoa)    |   
+                            V           |
+                     +-----------+      |
+                +--->| Add Sugar |------+  
+                |    +-----------+      |  
+                |          |(Mix)       |  
+                |          V            |  
+                |    +-----------+      |  
+                |    |  Add Cocoa |------+  
+                +----|           |         
+                     +-----------+         
+                            |(Heat)        
+                            V               
+                     +-----------+         
+                +--->|   Mix    |         
+                |    +-----------+         
+                |          |(Heat)          
+                |          V                
+                |    +-----------+          
+                |    |   Heat   |          
+                +----|           |         
+                     +-----------+         
+                            |(Done)      
+                            V               
+                     +-----------+      
+                     |  Complete |      
+                     +-----------+      
+```
+
+#### Step 4:#### Explain the purpose of each step, action, and transition.
+
+- **Initialize:** Closes all valves, turns off the mixer motor and heater to prepare for a new batch.
+- **Add Milk/Water/Sugar/Cocoa:** Opens the respective valve for each ingredient, waits until the addition is complete (as indicated by the respective boolean inputs), then closes the valve.
+    - **Transitions**: From initialize to add milk, and subsequently from each ingredient addition to the next, are conditioned upon the completion of the prior step.
+- **Mix:** Turns on the mixer motor to combine ingredients thoroughly.
+- **Heat:** Activates the heater while mixing to reach the target temperature of the mixture.
+- **Complete:** Once the desired temperature is reached, and mixing is complete, all operations stop and the process is marked as complete.
+
+#### Step 5:#### Check the SFC you generate according to the IEC 61131 standard.
+
+The Sequential Function Chart (SFC) designed follows the IEC 61131-3 standard for structuring control logic in PLC programming:
+
+- **Stages and Steps are Clearly Defined:** Each action (ingredient addition, mixing, heating) is distinctly outlined as a step.
+- **Transitions are Condition-Based:** The flow from one step to the next is controlled by specific condition checks (e.g., ingredient added, target temperature reached), as per SFC conventions.
+- **Input and Output Actions are Associated with Steps:** Each step specifically activates the required outputs (valves, mixer, heater) and monitors the respective inputs for progressing through the batch process.
+- **Sequential Logic:** The logic flow is sequential and mirrors a typical batch process in manufacturing, starting with initialization, processing (ingredient addition, mixing, heating), and ending with process completion.
+
+This SFC layout and logic align with IEC 61131-3 guidelines for structured control and automation processes, ensuring clarity, reliability, and maintainability of the program.

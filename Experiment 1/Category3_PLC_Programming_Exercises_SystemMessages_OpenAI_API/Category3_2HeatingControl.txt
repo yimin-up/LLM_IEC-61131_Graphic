@@ -1,0 +1,49 @@
+Certainly! Below is a basic structured text program to control the temperature of a heating system based on IEC 61131-3 standards. This program reads temperatures from three sensors and controls the heating system to maintain the temperature within the desired range (20 to 22 degrees Celsius). 
+
+Keep in mind that this example assumes basic familiarity with structured text syntax and certain conventions, such as variable declarations and control logic implementations. The actual implementation of sensor readings and control outputs (e.g., turning the heater on or off) can vary based on the specific hardware and system configuration.
+
+```pascal
+PROGRAM HeatingControlSystem
+VAR
+    Sensor1, Sensor2, Sensor3: REAL; // Variables for the temperature readings from the three sensors
+    AvgTemp: REAL; // Variable to store the average temperature
+    HeaterStatus: BOOL; // TRUE when heater is ON, FALSE when heater is OFF
+END_VAR
+
+(* Initial values *)
+HeaterStatus := FALSE; // Assuming the heater is off initially
+
+(* Main control logic executed in every program cycle *)
+BEGIN
+    // Simulate or read actual temperature sensor values
+    Sensor1 := 20.5; // Example value, replace with actual sensor reading
+    Sensor2 := 21.0; // Example value, replace with actual sensor reading
+    Sensor3 := 20.8; // Example value, replace with actual sensor reading
+    
+    // Calculate the average temperature from three sensors
+    AvgTemp := (Sensor1 + Sensor2 + Sensor3) / 3.0;
+    
+    // Control logic to maintain the temperature within the desired range (20 to 22 degrees Celsius)
+    IF AvgTemp < 20.0 THEN
+        // Temperature is below desired range, turn the heater on
+        HeaterStatus := TRUE;
+    ELSIF AvgTemp > 22.0 THEN
+        // Temperature is above desired range, turn the heater off
+        HeaterStatus := FALSE;
+    END_IF;
+    
+    // Implement the HeaterStatus to control the heating system hardware
+    // This might involve writing HeaterStatus to a digital output, etc.
+    // Example:
+    // IF HeaterStatus THEN
+    //     TURN_HEATER_ON(); // Pseudocode: Replace with actual implementation
+    // ELSE
+    //     TURN_HEATER_OFF(); // Pseudocode: Replace with actual implementation
+    // END_IF;
+END_PROGRAM
+```
+
+Note:
+1. `Sensor1`, `Sensor2`, and `Sensor3` are placeholders for the actual sensor readings. In a real implementation, these would be linked to the inputs from the temperature sensors.
+2. `HeaterStatus` controls the heater. Depending on your hardware, you might write this status to a digital output or interface with a specific function/block designed for controlling the heating element.
+3. The "TURN_HEATER_ON" and "TURN_HEATER_OFF" portions are pseudocode representing the action of controlling the heater. Replace these with the appropriate commands or function blocks based on your PLC's hardware and environment.

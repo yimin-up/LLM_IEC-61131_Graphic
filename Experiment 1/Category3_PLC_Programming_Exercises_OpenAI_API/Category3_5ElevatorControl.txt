@@ -1,0 +1,144 @@
+To write a Structured Text program for controlling an elevator in a 5-floor building as per IEC 61131-3 standard, we'll need to define various elements such as inputs (buttons, limit switches), outputs (motor control, door control), and timers to manage the door opening times and waiting times. Since it is a simple example, safety features and real-life complexities will be omitted for clarity. This example assumes a single elevator serving 5 floors with limit switches at each floor to detect the elevator position.
+
+Note that this example is for educational purposes and should not be used for actual elevator control due to the lack of safety and redundancy features necessary in real-life elevator systems.
+
+Here's an example of a Structured Text program that could be used for the described elevator control:
+
+```pascal
+PROGRAM ElevatorControl
+
+(* Variable Definitions *)
+VAR
+    CurrentFloor : INT := 1;
+    RequestedFloor : INT := -1;
+    DirectionUp : BOOL := TRUE;
+
+    FloorCallUp : ARRAY[1..4] OF BOOL := [FALSE, FALSE, FALSE, FALSE];
+    FloorCallDown : ARRAY[2..5] OF BOOL := [FALSE, FALSE, FALSE, FALSE];
+    
+    InsideCall : ARRAY[1..5] OF BOOL := [FALSE, FALSE, FALSE, FALSE, FALSE];
+    BottomLimitSwitches : ARRAY[1..5] OF BOOL := [FALSE, FALSE, FALSE, FALSE, FALSE];
+    TopLimitSwitches : ARRAY[1..5] OF BOOL := [FALSE, FALSE, FALSE, FALSE, FALSE];
+
+    DoorOpen : BOOL := FALSE;
+    MotorUp : BOOL := FALSE;
+    MotorDown : BOOL := FALSE;
+
+    TimerDoorOpen : TON;
+    TimerWaitBeforeClosing : TON;
+END_VAR
+
+(* Constants *)
+CONST
+    DOOR_OPEN_TIME : TIME := T#7S;
+    DOOR_WAIT_TIME : TIME := T#10S;
+END_CONST
+
+(* Main Control Logic *)
+IF DoorOpen THEN
+    TimerDoorOpen(IN:=DoorOpen, PT:=DOOR_OPEN_TIME);
+    IF TimerDoorOpen.Q THEN
+        DoorOpen := FALSE;
+        TimerDoorOpen(IN:=FALSE, PT:=DOOR_OPEN_TIME); // Stop the Timer
+        TimerWaitBeforeClosing(IN:=TRUE, PT:=DOOR_WAIT_TIME); // Start waiting timer
+    END_IF;
+ELSE
+    TimerWaitBeforeClosing(IN:=TimerWaitBeforeClosing.IN, PT:=DOOR_WAIT_TIME);
+    IF TimerWaitBeforeClosing.Q AND RequestedFloor = -1 THEN
+        CheckForCalls(); // Reactivate the elevator if no calls have been made
+    END_IF;
+
+    (* Move elevator or open doors at destination *)
+    IF NOT DoorOpen THEN
+        IF RequestedFloor <> -1 THEN
+            MoveToFloor(RequestedFloor);
+        ELSE
+            CheckForCalls();
+        END_IF;
+    END_IF;
+END_IF;
+
+(* Functions and procedures *)
+PROCEDURE CheckForCalls();
+VAR
+    i : INT;
+BEGIN
+    FOR i := 1 TO 5 DO
+        IF InsideCall[i] THEN
+            RequestedFloor := i;
+            Exit;
+        ELSIF (i < 5) AND FloorCallUp[i] THEN
+            RequestedFloor := i;
+            DirectionUp := TRUE;
+            Exit;
+        ELSIF (i > 1) AND FloorCallDown[i] THEN
+            RequestedFloor := i;
+            DirectionUp := FALSE;
+            Exit;
+        END_IF;
+    END_FOR;
+    TimerWaitBeforeClosing(IN:=FALSE, PT:=DOOR_WAIT_TIME); // Stop the Timer
+END_PROCEDURE;
+
+PROCEDURE MoveToFloor(targetFloor : INT);
+BEGIN
+    IF CurrentFloor < targetFloor THEN
+        (* Move elevator Up *)
+        MotorDown := FALSE;
+        MotorUp := TRUE;
+        DirectionUp := TRUE;
+    ELSEIF CurrentFloor > targetFloor THEN
+        (* Move elevator Down *)
+        MotorUp := FALSE;
+        MotorDown := TRUE;
+        DirectionUp := FALSE;
+    ELSEIF CurrentFloor = targetFloor THEN
+        OpenDoor();
+    END_IF;
+    UpdateCurrentFloor();
+END_PROCEDURE;
+
+PROCEDURE UpdateCurrentFloor();
+BEGIN
+    IF TopLimitSwitches[CurrentFloor] AND MotorUp THEN
+        CurrentFloor := CurrentFloor + 1;
+        MotorUp := FALSE;
+    ELSIF BottomLimitSwitches[CurrentFloor] AND MotorDown THEN
+        CurrentFloor := CurrentFloor - 1;
+        MotorDown := FALSE;
+    END_IF;
+    
+    IF CurrentFloor = RequestedFloor THEN
+        OpenDoor();
+    END_IF;
+END_PROCEDURE;
+
+PROCEDURE OpenDoor();
+BEGIN
+    DoorOpen := TRUE;
+    TimerDoorOpen(IN:=TRUE, PT:=DOOR_OPEN_TIME);
+    MotorUp := FALSE;
+    MotorDown := FALSE;
+    ClearCalls(CurrentFloor);
+    RequestedFloor := -1;
+END_PROCEDURE;
+
+PROCEDURE ClearCalls(floor : INT);
+BEGIN
+    InsideCall[floor] := FALSE;
+    IF floor < 5 THEN
+        FloorCallUp[floor] := FALSE;
+    END_IF;
+    IF floor > 1 THEN
+        FloorCallDown[floor] := FALSE;
+    END_IF;
+END_PROCEDURE;
+
+END_PROGRAM
+```
+
+The above program is a simplified state machine for controlling an elevator. It defines variables for the floor call buttons, inside call buttons, and limit switches. The `MoveToFloor` procedure contains the logic for moving the elevator to the requested floor and stopping the motor once the target floor is reached.
+
+Note that real-world elevators would also include a variety of safety features such as overload sensors, emergency stop buttons, and more advanced logic to efficiently handle multiple simultaneous floor requests, and accessibility compliance that this code does not address.
+
+Please, always work with qualified professionals when implementing control systems for machinery as there are relevant safety and design considerations that must be addressed beyond code implementation.

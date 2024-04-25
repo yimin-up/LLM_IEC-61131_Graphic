@@ -1,0 +1,43 @@
+To create a PLC program for an automatic car wash station as specified, we need to consider the following inputs and outputs:
+
+Inputs:
+- CarPresentSensor: A sensor that detects if a car is present in the car wash station.
+- HumanPresentSensor: A sensor that detects if a human is present in the car wash area.
+
+Outputs:
+- StartCarWash: A control signal to start the car wash process.
+- SendAlarm: A control signal to activate an alarm when a human is detected in the wash area.
+
+The program logic will work as follows:
+1. The car wash process should only start if a car is detected (CarPresentSensor = TRUE) and no human is present (HumanPresentSensor = FALSE).
+2. If a human is detected in the area at any time (HumanPresentSensor = TRUE), the car wash process should stop immediately, and an alarm should be sent.
+
+Below is the Structured Text (ST) program according to IEC 61131-3 standard:
+
+```pascal
+PROGRAM AutoCarWashStation
+VAR
+    CarPresentSensor : BOOL; // TRUE if car is present, FALSE otherwise
+    HumanPresentSensor : BOOL; // TRUE if human is detected, FALSE otherwise
+    StartCarWash : BOOL; // Control signal to start/stop the car wash
+    SendAlarm : BOOL; // Control signal for the alarm
+END_VAR
+
+BEGIN
+    IF (CarPresentSensor = TRUE) AND (HumanPresentSensor = FALSE) THEN
+        // Start car wash if car is present and no human is detected
+        StartCarWash := TRUE;
+        SendAlarm := FALSE; // Ensure alarm is not active
+    ELSIF (HumanPresentSensor = TRUE) THEN
+        // Stop car wash and send alarm if human is detected
+        StartCarWash := FALSE;
+        SendAlarm := TRUE;
+    ELSE
+        // Ensure everything is stopped and reset if no car is present
+        StartCarWash := FALSE;
+        SendAlarm := FALSE;
+    END_IF;
+END_PROGRAM
+```
+
+This program checks the status of CarPresentSensor and HumanPresentSensor to control the car wash process. The washing starts only when a car is present without any human in the area, ensuring safety. When a human is detected, the process stops immediately and an alarm signal is activated to alert the necessary personnel.

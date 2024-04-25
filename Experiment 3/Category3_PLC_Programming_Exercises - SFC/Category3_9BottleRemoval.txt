@@ -1,0 +1,61 @@
+Given your requirements, I'll design a Sequential Function Chart (SFC) in ASCII art to handle the described packaging process. The process will be laid out in steps and transitions, taking advantage of the IEC 61131-3 standards. Note that the actual implementation might require some adaptation to fit the specific PLC programming environment and the hardware being used (sensors, conveyor, cylinder, etc.).
+
+### Sequential Function Chart (ASCII Art)
+
+This SFC will include several steps and transitions:
+
+1. **Start_Condition** - The initial condition to start the process.
+2. **Detect_Bottle** - The step where the system waits for a bottle to be detected by the proximity sensor.
+3. **Check_Fullness** - The step where the system checks if the bottle is full or empty using the specific sensor for detecting empty bottles.
+4. **Remove_Empty** - Activates the cylinder to remove the empty bottle from the conveyor.
+5. **Package_Bottle** - Continues to package the bottle assuming it's full.
+6. **End_Cycle** - Ends one cycle of the operation before going back to detecting the next bottle.
+
+The flow would start with the **Start_Condition**, waiting for a bottle to be detected. Upon detection, it checks if the bottle is empty. If it is, it removes the bottle; if not, it proceeds to package it.
+
+```
++----------------+    +--------------------+     +---------------+
+| Start_Condition| -> | T1: BottleDetected?| --> | Detect_Bottle |
++----------------+    +--------------------+     +---------------+
+                                                       |      
+                                      +----------------+  
+                                      |                   
+                                      v                    
+                      +----------------------------+   
+                      | T2: Is Bottle Empty?       |
+                      +----------------------------+     
+                              |                |              
+         +-------------+      | No             | Yes
+         |             |<-----+                +----->+-----------------+
+         |             |                              | Remove_Empty    |
+         |             |<-----------------------------+-----------------+
+         |             |
+         v             |
++---------------+      |
+| Package_Bottle|      |
++---------------+      |   
+         |             |
+         |             |
+         |             |
+         +-------------+
+         |
+         v
+    +--------+
+    | End    |
+    +--------+
+```
+
+### Key Transitions:
+- **T1 ("BottleDetected?")**: This checks for a bottle presence using the general proximity sensor.
+- **T2 ("Is Bottle Empty?")**: Determines whether the bottle is empty using the specific sensor for empty bottles.
+
+### Actions:
+- **Remove_Empty**: Engages the cylinder to remove an empty bottle from the conveyor.
+- **Package_Bottle**: Advances the full bottle towards the packaging area.
+
+### Notes on Implementation:
+- This ASCII art SFC represents a high-level overview. Actual programming might require defining variables, sensor inputs, actuator outputs, and additional conditions for safety and error handling.
+- The exact logic for "BottleDetected?" and "Is Bottle Empty?" depends on the sensor types and how they're interfaced with the PLC. Similarly, actions to "Remove_Empty" and "Package_Bottle" would be defined based on the specific actuators' control logic.
+- Additional steps such as initial setup, manual overrides, or error states should be considered for a comprehensive implementation.
+
+This diagram provides a structured approach to the designed process, but remember, translating it into a PLC program requires adapting it to the specificities of the hardware and software environment being used.

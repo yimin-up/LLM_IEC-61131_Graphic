@@ -1,0 +1,55 @@
+Here is a self-contained IEC 61131-3 Sequential Function Chart program in ASCII art to control a traffic light system with pedestrian buttons and emergency vehicle priority:
+
+       +----+
+  -->--+ S1 +------------------+
+       +----+                  |
+         |                     |
+         v                     |
+       +----+     +-------+    |
+       | N  |---->|  S2   |--->|
+       +----+     +-------+    |
+         |          |          |
+         v          v          |
+       +----+     +----+       |
+       | T1 |     | T2 |       |
+       +----+     +----+       |
+         |          |          |
+         v          v          |
+       +----+     +----+       |
+   +-->| S3 |     | S4 |----+  |
+   |   +----+     +----+    |  |
+   |     |          |       |  |
+   |     v          v       |  |
+   |   +----+     +----+    |  |
+   |   | T3 |     | T4 |    |  |
+   |   +----+     +----+    |  |
+   |     |          |       |  |
+   |     v          v       |  |
+   |   +----+     +----+    |  |
+   +---| S5 |     | S6 |<---+  |
+       +----+     +----+       |
+         |          |          |
+         v          v          |
+       +----+     +----+       |
+       | N  |     | N  |       |
+       +----+     +----+       |
+         |          |          |
+         +----------+----------+
+                |
+                v
+              +----+
+              | S7 |
+              +----+
+
+S1: Main Street Green 
+N: Transition to S2 after green timer done
+S2: Main Street Yellow
+T1: 3 sec timer for yellow light
+S3: Main Street Red
+T3: 1 sec all-red timer
+S5: Side Street Green, Main Street Red
+N: Transition to S6 after green timer or pedestrian button
+S6: Side Street Yellow, Main Street Red  
+T4: 3 sec yellow timer
+S7: Emergency Vehicle Preemption
+Transition to S1 when emergency vehicle clear

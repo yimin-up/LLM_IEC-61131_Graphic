@@ -1,0 +1,42 @@
+Step 1:####
+For this packaging system, we have the following inputs and outputs:
+
+Inputs:
+- Proximity sensor that detects any bottle: Let's denote this as "AnyBottleSensor" (ABS) - Symbol: \(I_0\)
+- Proximity sensor that detects only empty bottles: Denoted as "EmptyBottleSensor" (EBS) - Symbol: \(I_1\)
+
+Outputs:
+- Cylinder to remove empty bottles: Denoted as "RemoveCylinder" (RC) - Symbol: \(Q_0\)
+
+Step 2:####
+The Ladder Diagram program could be structured as follows in ASCII art representation. 
+
+```
+       +----[/]----+----[/]----( )----+
+       |   ABS     |   EBS     |  RC  |
+       |  (I_0)    |  (I_1)    | (Q_0)|
+       +-----------+-----------+------+
+```
+
+Step 3:####
+Logical Expression for the given rung:
+
+- For the "RemoveCylinder" (\(Q_0\)) output to be activated, we need the presence of any bottle (ABS or \(I_0\)) AND the detection of it being an empty bottle (EBS or \(I_1\)). Thus, the rung can be represented by the following logical expression:
+
+\[Q_0 = I_0 \land I_1\]
+
+This means the cylinder to remove empty bottles (\(Q_0\)) will be activated when both sensors \(I_0\) (any bottle) and \(I_1\) (empty bottle) are in a true state.
+
+Step 4:####
+The state machine of this Ladder Diagram can be described in basic terms as follows:
+
+Initial State (No bottle in proximity):
+- No output is active as both \(I_0\) and \(I_1\) are in a false state.
+
+State 1 (Bottle Detected by ABS):
+- If a bottle is detected by ABS \(I_0\), and NOT detected as empty by EBS \(I_1\), \(Q_0\) remains inactive, allowing the non-empty bottle to pass for packaging.
+
+State 2 (Empty Bottle Detected by ABS and EBS):
+- When a bottle is detected by ABS \(I_0\) (meaning a bottle is present) AND it is detected as empty by EBS \(I_1\), the RemoveCylinder \(Q_0\) is activated to remove the empty bottle from the conveyor.
+
+This design ensures that only empty bottles are removed while filled ones proceed for packaging. The simple use of logic gates achieves the intended function of segregating empty bottles from the packaging line efficiently.

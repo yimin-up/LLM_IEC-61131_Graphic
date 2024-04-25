@@ -1,0 +1,37 @@
+To implement the described Entry/Exit Control logic for an underground car park using Structured Text (ST) programming according to IEC 61131-3, the following PLC program structure can be used. This program assumes M1, M2, M3, and M4 are already implemented within the PLC to track the cars' movement for one scan cycle after passing the respective photoelectric switches.
+
+```iec
+PROGRAM EntryExitControl
+    VAR
+        X1, X2          : BOOL; // Photoelectric switches
+        M1, M2, M3, M4  : BOOL; // Single-scan indicators for vehicle passage
+        M20, M30        : BOOL; // Indicates a car entering from ground floor/basement
+        Y1, Y2          : BOOL; // Outputs for Red/Green lights
+    END_VAR
+    
+    // Initial State
+    Y1 := FALSE; // Turn off Red lights
+    Y2 := TRUE;  // Turn on Green lights
+
+    // Process
+    M20 := M1 OR M4; // Ground floor car is passing through
+    M30 := M2 OR M3; // Basement car is passing through
+    
+    IF M20 OR M30 THEN
+        // A car is in the passage, set Red lights ON and Green lights OFF
+        Y1 := TRUE;  // Red lights ON
+        Y2 := FALSE; // Green lights OFF
+    ELSE
+        // The passage is clear, set Green lights ON and Red lights OFF
+        Y1 := FALSE; // Red lights OFF
+        Y2 := TRUE;  // Green lights ON
+    END_IF;
+    
+END_PROGRAM
+```
+
+This program assumes that the intermediate variables M20 and M30 are already computed according to their descriptions, based on the inputs M1, M2, M3, and M4. If those are not computed elsewhere, additional logic would be needed to capture the transitions and assign the intermediate variables appropriately.
+
+This Structured Text snippet shows the basic control logic where if any car from the ground floor or the basement is passing through the single-lane passage, the red light turns on, and the green light turns off, prohibiting entry. Once the passage is clear, the lights switch back to green, allowing cars to enter or exit again.
+
+Make sure to map the physical inputs and outputs (X1, X2, Y1, Y2) correctly in the PLC's configuration to use this ST program. Additional safety interlocks and timing checks may be required to ensure this system operates safely and reliably in a real-world scenario.

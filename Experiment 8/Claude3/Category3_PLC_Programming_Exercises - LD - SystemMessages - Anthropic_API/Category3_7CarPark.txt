@@ -1,0 +1,124 @@
+Here's the Ladder Diagram program in ASCII art according to IEC 61131-3 for the Entry/Exit Control of the Underground Car Park:
+
+```
++--+----+--+----+--+----+--+----+--+----+--+----+--+
+|  |    |  |    |  |    |  |    |  |    |  |    |  |
+|  | M1 |  | M2 |  | M3 |  | M4 |  | M20|  | M30|  |
+|  |    |  |    |  |    |  |    |  |    |  |    |  |
++--+----+--+----+--+----+--+----+--+----+--+----+--+
+   |         |         |         |         |
+   |         |         |         |         |
+   +----+    |         |         |         |
+        |    |         |         |         |
+        +----+         |         |         |
+             |         |         |         |
+             +----+    |         |         |
+                  |    |         |         |
+                  +----+         |         |
+                       |         |         |
+                       +----+    |         |
+                            |    |         |
+                            +----+         |
+                                 |         |
+                                 +----+    |
+                                      |    |
+                                      +----+
+                                           |
+                                           |    +--+----+
+                                           +----|  |    |
+                                                |  | Y1 |
+                                                |  |    |
+                                                +--+----+
+
++--+----+--+----+--+----+--+----+--+----+--+----+--+
+|  |    |  |    |  |    |  |    |  |    |  |    |  |
+|  | M1 |  | M2 |  | M3 |  | M4 |  | M20|  | M30|  |
+|  |    |  |    |  |    |  |    |  |    |  |    |  |
++--+----+--+----+--+----+--+----+--+----+--+----+--+
+   |         |         |         |         |
+   |         |         |         |         |
+   +----+    |         |         |         |
+        |    |         |         |         |
+        +----+         |         |         |
+             |         |         |         |
+             +----+    |         |         |
+                  |    |         |         |
+                  +----+         |         |
+                       |         |         |
+                       +----+    |         |
+                            |    |         |
+                            +----+         |
+                                 |         |
+                                 +----+    |
+                                      |    |
+                                      +----+
+                                           |
+                                           |    +--+----+
+                                           +----|  |    |
+                                                |  | Y2 |
+                                                |  |    |
+                                                +--+----+
+
++--+----+  +--+----+
+|  |    |  |  |    |
+|  | X1 |  |  | X2 |
+|  |    |  |  |    |
++--+----+  +--+----+
+   |         |
+   |         |    +--+----+
+   |         +----|  |    |
+   |              |  | M1 |
+   |              |  |    |
+   |              +--+----+
+   |
+   |         +--+----+
+   +---------+  |    |
+              |  | M2 |
+              |  |    |
+              +--+----+
+
++--+----+  +--+----+
+|  |    |  |  |    |
+|  | X2 |  |  | X1 |
+|  |    |  |  |    |
++--+----+  +--+----+
+   |         |
+   |         |    +--+----+
+   |         +----|  |    |
+   |              |  | M3 |
+   |              |  |    |
+   |              +--+----+
+   |
+   |         +--+----+
+   +---------+  |    |
+              |  | M4 |
+              |  |    |
+              +--+----+
+
++--+----+  +--+----+
+|  |    |  |  |    |
+|  | M1 |  |  | M3 |
+|  |    |  |  |    |
++--+----+  +--+----+
+   |         |
+   |         |    +--+----+
+   |         +----|  |    |
+   |              |  | M20|
+   |              |  |    |
+   |              +--+----+
+   |
+   |         +--+----+
+   +---------+  |    |
+              |  | M30|
+              |  |    |
+              +--+----+
+```
+
+Explanation:
+1. The first rung turns on the red lights (Y1) when any of the conditions M1, M2, M3, M4, M20, or M30 are true.
+2. The second rung turns on the green lights (Y2) when none of the conditions M1, M2, M3, M4, M20, or M30 are true.
+3. The third rung sets M1 when X1 is ON and resets M2 when X2 is ON.
+4. The fourth rung sets M3 when X2 is ON and resets M4 when X1 is ON.
+5. The fifth rung sets M20 when M1 or M3 is ON and resets M30 when M1 or M3 is ON.
+
+This Ladder Diagram program implements the entry/exit control logic as described in the requirements. The initial setting of the traffic lights is green lights ON and red lights OFF, and the lights change according to the presence of cars detected by the photoelectric switches.

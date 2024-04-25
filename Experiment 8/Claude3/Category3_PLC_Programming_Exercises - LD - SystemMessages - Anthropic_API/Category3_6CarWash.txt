@@ -1,0 +1,57 @@
+Here's an IEC 61131-3 compliant Ladder Diagram (LD) program for an automatic car wash station with the given requirements:
+
+```
+                                     +-----+
+                                     |     |
+                                     | TON |
++---+  +---+  +---+  +---+  +---+    |     |    +---+  +---+
+|   |  |   |  |   |  |   |  |   |    | PT  |    |   |  |   |
+| I |--|S1 |--|S2 |--|/H |--|/A |----| 5s  |----|W  |--|M  |
+|   |  |   |  |   |  |   |  |   |    |     |    |   |  |   |
++---+  +---+  +---+  +---+  +---+    +-----+    +---+  +---+
+                                         |
+                                         |
+                                     +---+---+
+                                     |       |
+                                     |   R   |
+                                     |       |
+                                     +---+---+
+                                         |
+                                         |
+                                     +---+---+
+                                     |       |
+                                     |  TOF  |
+                                     |       |
+                                     | PT    |
+                                     | 2s    |
+                                     |       |
+                                     +---+---+
+                                         |
+                                         |
+                                     +---+---+
+                                     |       |
+                                     |   A   |
+                                     |       |
+                                     +-------+
+
+I  - Car presence sensor
+S1 - Car wash station 1 sensor
+S2 - Car wash station 2 sensor
+H  - Human presence sensor
+A  - Alarm output
+W  - Car wash motor
+M  - Car wash motor contactor
+TON - On-delay timer
+TOF - Off-delay timer
+```
+
+Explanation:
+1. The car presence sensor (I) detects if a car is present at the car wash station.
+2. The car wash station sensors (S1 and S2) ensure that the car is properly positioned in the car wash area.
+3. The human presence sensor (/H) is normally closed and detects if a human is present in the car wash area. The "/" symbol represents a normally closed contact.
+4. If a car is detected (I), properly positioned (S1 and S2), and no human is present (/H), the on-delay timer (TON) is triggered with a preset time (PT) of 5 seconds.
+5. After the 5-second delay, the car wash motor (W) is activated, which in turn activates the car wash motor contactor (M) to start the washing process.
+6. If a human is detected (/H) or an alarm condition (/A) occurs during the washing process, the car wash motor (W) is immediately stopped, and the off-delay timer (TOF) is triggered with a preset time (PT) of 2 seconds.
+7. After the 2-second delay, the alarm output (A) is activated to alert the operator about the presence of a human or an alarm condition.
+
+Note: This is a simplified representation of the Ladder Diagram, and additional safety measures, interlocks, and error handling may be required in a real-world implementation.

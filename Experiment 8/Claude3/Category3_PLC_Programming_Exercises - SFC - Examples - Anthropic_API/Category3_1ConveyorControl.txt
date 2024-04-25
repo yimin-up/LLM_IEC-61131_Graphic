@@ -1,0 +1,58 @@
+Here is a self-contained IEC 61131-3 sequential function chart program to control the conveyor belt system as specified:
+
+```
+PROGRAM ConveyorControl
+VAR
+  Sensor1 : BOOL := FALSE;  // Object presence sensor 1 
+  Sensor2 : BOOL := FALSE;  // Object presence sensor 2
+  Sensor3 : BOOL := FALSE;  // Object presence sensor 3 
+  Sensor4 : BOOL := FALSE;  // Object presence sensor 4
+  Sensor5 : BOOL := FALSE;  // Object presence sensor 5
+  
+  StopButton1 : BOOL := FALSE;  // Stop button at station 1
+  StopButton2 : BOOL := FALSE;  // Stop button at station 2 
+  StopButton3 : BOOL := FALSE;  // Stop button at station 3
+  
+  ConveyorMotor : REAL := 0.0;  // Conveyor motor speed in m/s
+END_VAR
+
+INITIAL_STEP WaitForObject:
+  ConveyorMotor := 0.0;  // Conveyor stopped
+  
+  IF Sensor1 OR Sensor2 OR Sensor3 OR Sensor4 OR Sensor5 THEN
+    GOTO StartConveyor;
+  END_IF;
+END_STEP
+
+STEP StartConveyor:
+  ConveyorMotor := 2.0;  // Start conveyor at 2 m/s
+  
+  IF NOT (Sensor1 OR Sensor2 OR Sensor3 OR Sensor4 OR Sensor5) THEN  
+    GOTO WaitForObject;
+  END_IF;
+  
+  IF StopButton1 OR StopButton2 OR StopButton3 THEN
+    GOTO StopConveyor; 
+  END_IF;
+END_STEP
+
+STEP StopConveyor:
+  ConveyorMotor := 0.0;  // Stop the conveyor
+  
+  IF NOT (StopButton1 OR StopButton2 OR StopButton3) THEN
+    GOTO StartConveyor;
+  END_IF; 
+END_STEP
+
+END_PROGRAM
+```
+
+This SFC program defines the control logic as follows:
+
+1. It starts in the initial step `WaitForObject` with the conveyor motor stopped. 
+2. When any of the 5 object sensors become TRUE, it transitions to the `StartConveyor` step.
+3. In `StartConveyor`, the conveyor motor is set to 2 m/s. It stays in this step as long as any sensor detects an object. If all sensors become FALSE, it goes back to `WaitForObject` and stops the conveyor.
+4. If any of the 3 stop buttons are pressed while in `StartConveyor`, it transitions to the `StopConveyor` step which stops the motor. 
+5. It remains in `StopConveyor` until all stop buttons are released, then goes back to `StartConveyor` to resume motion.
+
+So in summary, the conveyor automatically starts when an object is sensed, maintains 2 m/s while objects are present, and stops when all objects are clear. The stop buttons allow operators at each station to pause the conveyor as needed.

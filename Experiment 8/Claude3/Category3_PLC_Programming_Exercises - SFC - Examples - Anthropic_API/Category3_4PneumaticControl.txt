@@ -1,0 +1,76 @@
+Here is a self-contained IEC 61131-3 sequential function chart program to control the pneumatic system as specified:
+
+```
+PROGRAM PneumaticControl
+VAR
+  Pressure: REAL;  // Current system pressure in bar 
+  FlowRate: REAL := 50.0;  // Target flow rate of 50 standard liters/min
+  PressureHigh: BOOL;  // High pressure limit switch
+  PressureLow: BOOL;   // Low pressure limit switch
+  ValveOpen: BOOL;  // Output to open flow control valve
+  ValveClose: BOOL; // Output to close flow control valve 
+  CompressorOn: BOOL;  // Output to turn on air compressor
+  CompressorOff: BOOL; // Output to turn off air compressor
+END_VAR
+
+(* Main control steps *)
+INITIAL_STEP Init:
+  CompressorOn := TRUE;
+  ValveClose := TRUE;
+END_STEP
+
+TRANSITION FROM Init TO Pressurizing 
+  := (Pressure < 5.5);
+
+STEP Pressurizing:  
+  CompressorOn := TRUE;
+  ValveClose := TRUE;
+END_STEP
+
+TRANSITION FROM Pressurizing TO Regulating
+  := (Pressure >= 5.5);
+  
+STEP Regulating:
+  CompressorOff := TRUE;
+  ValveOpen := (FlowRate < 50.0) & (Pressure > 5.5);
+  ValveClose := (FlowRate >= 50.0) OR (Pressure <= 5.5); 
+END_STEP
+
+TRANSITION FROM Regulating TO Pressurizing
+  := (Pressure < 5.5);
+
+TRANSITION FROM Regulating TO Venting  
+  := (Pressure > 6.0);
+
+STEP Venting:
+  CompressorOff := TRUE;
+  ValveOpen := TRUE;
+END_STEP
+  
+TRANSITION FROM Venting TO Regulating
+  := (Pressure <= 6.0);
+  
+(* Pressure switch logic *)  
+PressureHigh := (Pressure > 6.0);
+PressureLow := (Pressure < 5.5);
+
+(* Run control loop every 100 ms *)
+CONFIG
+  TASK ControlTask(INTERVAL := T#100ms);
+END_CONFIG
+
+PROGRAM_END
+```
+
+This SFC controls the pneumatic system in a loop running every 100 ms:
+
+- It starts in an Init step that turns on the compressor and closes the valve
+- It transitions to Pressurizing when pressure is below 5.5 bar
+- In Pressurizing, it keeps the compressor on and valve closed to build pressure 
+- It transitions to Regulating when pressure reaches 5.5 bar
+- In Regulating, it turns off the compressor and modulates the valve to maintain 50 slpm flow
+- If pressure drops below 5.5 bar it transitions back to Pressurizing
+- If pressure exceeds 6 bar it transitions to Venting to relieve pressure
+- It transitions back to Regulating when pressure drops to 6 bar
+
+The high and low pressure limit switches are set based on the current pressure reading. Let me know if you have any other questions!

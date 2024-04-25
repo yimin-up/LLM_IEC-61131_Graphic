@@ -1,0 +1,58 @@
+Below is a simplified Sequential Function Chart (SFC) program for the reaction stage of acetylsalicylic acid production according to the ISA-88 control recipe structure and the IEC 61131-3 standards. This ASCII art represents the flow of operation in the reactor, which is the focus for this sequence.
+
+Please note, in a real-world application, specifics such as times, temperatures, and quantities would need to be determined experimentally or specified by a chemical engineer. The values and steps provided here are illustrative and represent a conceptual sequence.
+
+```
++----------------+      +----------------+     +-----------------+
+|                |      |                |     |                 |
+|   Start        | ---> |Add Educts      | --> |   Mix Educts    |
+|   Reaction     |      |(Acetic         |     |   and Catalyst  |
+|                |      | anhydride,     |     |                 |
++----------------+      | Salicylic acid,|     +-----------------+
+                        | and sulphuric  |
+                        | acid)          |
+                        +----------------+      +-----------------+
+                                                  |                 |
+                                                  |   Check Temp    | ----+
+                                                  |   & Pressure    |     |
+                                                  +-----------------+     |
+                                                        |                |
+                                                        |                |
+                           +----------------------------+                |
+                           |                                              | No
+                           |                                              |
+                           v                                              |
+       +-------------------------+          +----------------+           |
+       |                         |          |                | <---------+
+       |   Hold Temp & Pressure  |          |   Adjust Temp  |
+       |   for Reaction to       | ----->   |   & Pressure   |
+       |   Complete              |          |                |
+       |                         |          +----------------+
+       +-------------------------+
+               |
+               | Yes
+               v
+      +------------------+     +-------------------+
+      |                  |     |                   |
+      | Reaction Complete|     | Transition to next|
+      |                  |     | stage (e.g.,      |
+      +------------------+     | crystallization)  |
+                              |                   |
+                              +-------------------+
+```
+
+This SFC outlines the main steps involved in the reaction stage of acetylsalicylic acid production:
+
+1. **Start Reaction**: The initial state where the process is ready to start.
+
+2. **Add Educts**: The acetic anhydride, salicylic acid, and sulphuric acid are added to the reactor.
+
+3. **Mix Educts and Catalyst**: The contents of the reactor are mixed thoroughly to ensure a uniform reaction mixture.
+
+4. **Check Temp & Pressure**: Continuously monitor the temperature and pressure of the reaction mixture. If the conditions are not within desired parameters:
+    - **Adjust Temp & Pressure**: Corrective actions are taken to adjust the temperature and pressure to the desired levels.
+    - **Hold Temp & Pressure for Reaction to Complete**: Once the desired conditions are achieved, maintain those conditions for the reaction to complete.
+
+5. **Reaction Complete**: Upon completion of the reaction, the process is ready to transition to the next stage, such as crystallization or filtration.
+
+It is important to remember that in a real system, safety interlocks, error handling routines, more detailed control of parameters based on real-time data, and integration with the plant's SCADA or DCS systems for monitoring and operator intervention would be necessary. This sequence also does not cover ancillary but crucial steps such as initial reactor preparation, post-reaction cleaning, or emergency shutdown procedures.

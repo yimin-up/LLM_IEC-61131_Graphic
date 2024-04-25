@@ -1,0 +1,50 @@
+Given the process description and the system requirements, the PLC program in Sequential Function Chart (SFC) according to IEC 61131-3 for the control of traffic lights in an underground car park's single-lane passage will entail controlling the transitions between green and red lights based on the car's movement detected by the sensors. The steps below describe the process, including the initialization step and handling entry/exit from both the ground floor and the basement.
+
+### Sequential Function Chart (SFC) Steps:
+- **Initial Setting**: This step initializes the traffic lights to Green ON and Red OFF.
+
+- **Ground Floor Entry/Exit Detected (M1)**: This step activates when a car from the ground floor passes X1, transitioning towards activating M20 and setting the lights to allow the car to enter/exit the passage securely.
+
+- **Basement Entry/Exit Detected (M3)**: This step activates when a car from the basement passes X2, transitioning towards activating M30 and setting the lights for the car to enter/exit the passage securely.
+
+- **Passage Clear from Ground Floor (M2)**: This step verifies the passage through by a ground floor entering/exiting vehicle.
+
+- **Passage Clear from Basement (M4)**: This verifies the passage through by a basement entering/exiting vehicle.
+
+### Transition Conditions:
+- From **Initial Setting** to **Ground Floor Entry/Exit Detected (M1)**: X1 = ON
+- From **Initial Setting** to **Basement Entry/Exit Detected (M3)**: X2 = ON
+- From **Ground Floor Entry/Exit Detected (M1)** to **Passage Clear from Ground Floor (M2)**: M2 = ON
+- From **Basement Entry/Exit Detected (M3)** to **Passage Clear from Basement (M4)**: M4 = ON
+
+### Actions for Each Step:
+1. **Initial Setting**: Y2 = ON, Y1 = OFF
+2. **Ground Floor Entry/Exit Detected and Basement Entry/Exit Detected**: M20 = ON or M30 = ON respectively, Y1 = ON, Y2 = OFF
+3. **Passage Clear from Ground Floor and Basement**: Go back to Initial Setting with Y2 = ON, Y1 = OFF
+
+### ASCII Art Summary:
+Please note that ASCII art representation is conceptual and focuses on depicting the logical flow rather than syntactical accuracy of SFC charts.
+
+```
+(Start)
+    |
+    v
++----------+     X1=ON      +-----------+     M2=ON       +-----------------+
+|Initial   | ------------> |Enter from | --------------> | Passage Clear   |
+|Settings  |                |Ground     |                  | from Ground    |
+|Y2=ON,Y1=OFF|<------------ |Floor M1   | <--------------- |Floor M2        |
++----------+    M4=ON,      +-----------+    M1=ON        +-----------------+
+                X2=OFF                                  |  ^
+                                                         |  |
+                                                         v  |
+                      +-----------+     M3=ON              |
+                      | Enter from| --------------------->  |
+                      | Basement  |                        |
+                      | M3        | <----------------------+
+                      +-----------+
+                (M30=ON, Y1=ON, Y2=OFF)                        
+```
+
+### Note:
+- The representation illustrates a simplified view. Actual SFC programming might involve more steps for detailed sensor handling, traffic light control logic, and error handling for robust system implementation.
+- IEC 61131-3 SFC does allow for more intricate handling of parallel processes and conditional transitions, which may require a more detailed implementation depending on the PLC system capabilities and additional functional requirements.

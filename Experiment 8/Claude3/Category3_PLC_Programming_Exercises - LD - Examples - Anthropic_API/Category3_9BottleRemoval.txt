@@ -1,0 +1,51 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program for the bottle packaging system:
+
+```
+PROGRAM BottlePackaging
+VAR
+  ConveyorMotor: BOOL;
+  BottlePresent: BOOL; 
+  EmptyBottle: BOOL;
+  RejectCylinder: BOOL;
+  BottleCounter: INT;
+  RejectCounter: INT;
+END_VAR
+
+|                                                                 |
+|  BottlePresent                                                  |
++-------| |--------------------------------------------------------+
+|        EmptyBottle                                              |
++-------| |--------------------------------------------------------(S)- RejectCylinder
+|                                                                 |
+|  BottlePresent     EmptyBottle                                  |
++-------| |--------------|/|---------------------------------------+
+|                                                                 |
+|  BottlePresent     EmptyBottle        BottleCounter             |
++-------| |--------------|/|--------------( )---------------------+
+|                                                                 |
+|  BottlePresent     EmptyBottle                                  |
++-------| |--------------|/|---------------------------------------+
+|                                                                 |
+|                                        RejectCounter            |
++---------------------------------------( )---------------------+
+|                                                                 |
+|  BottlePresent                                                  |
++-------| |--------------------------------------------------------(S)- ConveyorMotor
+|                                                                 |
+|  EmptyBottle                                                    | 
++-------|/|--------------------------------------------------------(R)- ConveyorMotor
+|                                                                 |
+|                                                                 |
+
+```
+
+Explanation:
+- `BottlePresent` is a proximity sensor that detects any bottle
+- `EmptyBottle` is a proximity sensor that only detects empty bottles 
+- When a bottle is present (`BottlePresent` is True), the `ConveyorMotor` starts
+- When an empty bottle is detected (`EmptyBottle` is True), the `RejectCylinder` is activated to remove it
+- Non-empty bottles increment the `BottleCounter`
+- Empty bottles increment the `RejectCounter`
+- The conveyor stops if an empty bottle is detected to allow the reject cylinder to remove it
+
+Let me know if you have any other questions!

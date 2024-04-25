@@ -1,0 +1,119 @@
+Below is a simple example of a Structured Text (ST) program following the IEC 61131-3 standard for a traffic light control system. This example assumes the logic controller is connected to several input and output signals:
+
+Inputs:
+- `SensorEmergency`: Bool (a sensor or input indicating the presence of emergency vehicles)
+- `ButtonPedestrian`: Bool (a pedestrian push button)
+  
+Outputs:
+- `LightMainRed`: Bool (the red light for the main traffic)
+- `LightMainYellow`: Bool (the yellow light for the main traffic)
+- `LightMainGreen`: Bool (the green light for the main traffic)
+- `LightPedestrianRed`: Bool (the pedestrian red light)
+- `LightPedestrianGreen`: Bool (the pedestrian green light)
+
+The program will manage the lights giving priority first to emergency vehicles and second to pedestrians when requested.
+
+```pascal
+PROGRAM TrafficLightControl
+VAR
+    Timer: TON; // on-delay timer
+    State: INT := 0; // Current state of the traffic light
+    EmergencyActive: BOOL := FALSE; // Indicates whether an emergency vehicle is present
+    PedestrianWait: BOOL := FALSE; // Indicates whether a pedestrian has pushed the button
+    StateDuration: TIME; // Defines how long the current state lasts
+END_VAR
+
+(* Define constants for state durations *)
+CONST
+    DurationGreen: TIME := T#20s;
+    DurationYellow: TIME := T#5s;
+    DurationRed: TIME := T#20s;
+    DurationPedestrianGreen: TIME := T#10s;
+    DurationAllRed: TIME := T#2s;
+END_CONST
+
+(* State machine definitions *)
+CONST
+    StateMainGreen: INT := 1;
+    StateMainYellow: INT := 2;
+    StateMainRed: INT := 3;
+    StatePedestrianGreen: INT := 4;
+    StateEmergencyOverride: INT := 5;
+END_CONST
+
+(* Handle input events *)
+IF SensorEmergency AND NOT EmergencyActive THEN
+    State := StateEmergencyOverride;
+    EmergencyActive := TRUE;
+    PedestrianWait := FALSE;
+ELSIF ButtonPedestrian AND State = StateMainGreen THEN
+    PedestrianWait := TRUE;
+END_IF
+
+(* Traffic light state machine *)
+CASE State OF
+    0: (* Initial state *)
+        State := StateMainGreen; // Start with the main road green
+        Timer(IN := TRUE, PT := DurationGreen);
+
+    StateMainGreen:
+        LightMainGreen := TRUE;
+        LightPedestrianRed := TRUE;
+        IF Timer.Q OR PedestrianWait THEN
+            LightMainGreen := FALSE;
+            Timer(IN := FALSE); // Reset timer
+            State := StateMainYellow;
+            Timer(IN := TRUE, PT := DurationYellow);
+        END_IF;
+
+    StateMainYellow:
+        LightMainYellow := TRUE;
+        IF Timer.Q THEN
+            LightMainYellow := FALSE;
+            Timer(IN := FALSE);
+            State := StateMainRed;
+            Timer(IN := TRUE, PT := DurationRed);
+        END_IF;
+
+    StateMainRed:
+        LightMainRed := TRUE;
+        IF Timer.Q THEN
+            LightMainRed := FALSE;
+            Timer(IN := FALSE);
+            IF PedestrianWait THEN
+                State := StatePedestrianGreen;
+                Timer(IN := TRUE, PT := DurationPedestrianGreen);
+            ELSE
+                State := StateMainGreen; // Switch back to green after red
+                Timer(IN := TRUE, PT := DurationGreen);
+            END_IF;
+            PedestrianWait := FALSE;
+        END_IF;
+
+    StatePedestrianGreen:
+        LightPedestrianGreen := TRUE;
+        IF Timer.Q THEN
+            LightPedestrianGreen := FALSE;
+            Timer(IN := FALSE);
+            State := StateMainRed; // Return to the main red state after the pedestrian has crossed
+            Timer(IN := TRUE, PT := DurationAllRed);
+        END_IF;
+
+    StateEmergencyOverride:
+        LightMainRed := TRUE; // Emergency vehicles require all directions to be red
+        LightPedestrianRed := TRUE;
+        IF NOT SensorEmergency THEN
+            EmergencyActive := FALSE;
+            State := StateMainRed; // Go back to red after the emergency has passed
+            Timer(IN := TRUE, PT := DurationAllRed);
+        END_IF;
+
+    ELSE
+        State := 0; // Reset to the initial state for any undefined state
+END_CASE
+END_PROGRAM
+```
+
+Note that this program assumes the timer is reset each time a state transition occurs and that emergency vehicles will be sensed continuously as long as they are present. The state machine logic will need to implement the cycle that runs the sequence of traffic lights after handling emergency vehicles.
+
+This structure doesn't contain any hardware-specific interactions (like actually triggering a relay to switch the traffic lights), communication with other systems, error handling, or more sophisticated pedestrian request handling (such as debouncing button presses). These would need to be considered in a production environment.

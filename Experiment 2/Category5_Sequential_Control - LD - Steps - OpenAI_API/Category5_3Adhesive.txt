@@ -1,0 +1,75 @@
+#### Step 1:#### Define and list the inputs and outputs of the Ladder Diagram, and the standard symbols they use.
+
+Inputs:
+- Start: Button to start the reaction process. Symbol used: `|--( )--|`
+- Stop: Button to stop the reaction process. Symbol used: `|--( )--|`
+- TempHigh: Temperature sensor to detect high temperature. Symbol used: `/--( )--\`
+- TempOK: Temperature sensor to detect optimal reaction temperature. Symbol used: `/--( )--\`
+
+Outputs:
+- Heater: Activates the heating system to control temperature. Symbol used: `|--( )--|`
+- Mixer: Activates the mixer in the reactor. Symbol used: `|--( )--|`
+- Alarm: Activates an alarm in case of high temperature. Symbol used: `|--( )--|`
+
+Timers:
+- T_Reaction: Timer for the reaction process duration. Symbol used: `/---[ TON ]---\`
+
+#### Step 2:#### Give the Ladder Diagram program.
+
+```
++----[ ]----+----( )----+
+| Start     | Heater    | (1) Start heating
++-----------+           |
+| Stop      |           |
++----[/]----+----( )----+
+            | Mixer     | (2) Start mixing
++----[ ]----+----( )----+
+| TempOK    | Heater    | (3) Maintain temperature
++----[/]----+-----------+
+| TempHigh  |           |
++----[ ]----+----( )----+
+            | Alarm     | (4) High temperature alarm
++----[ ]--------------[ TON ]----( )----+
+| Start                | T_Reaction     | (5) Reaction timing
+|                      | Preset=3600s   |    Start timer when process starts
++----------------------+ Done           |
+                         | Mixer        | (6) Stop mixing after complete
++----[ ]----+----[/]----+
+| Stop      | Mixer     | (7) Stop mixing manually
++-----------+-----------+
+| Stop      | Heater    | (8) Stop heating manually
++----[/]----+----( )----+
+            | Alarm     | (9) Reset alarm manually
+```
+
+#### Step 3:#### Give the logical expressions for each rung.
+
+1. `(Start AND NOT Stop) -> Heater ON`: Start heating when Start is pressed and Stop is not pressed.
+2. `(Start AND NOT Stop) -> Mixer ON`: Start mixing when Start is pressed and Stop is not pressed.
+3. `(TempOK AND NOT TempHigh) -> Heater ON`: Keep Heater ON if temperature is optimal and not high.
+4. `(TempHigh) -> Alarm ON`: Activate Alarm when temperature is too high.
+5. `(Start) AND (T_Reaction NOT done) -> T_Reaction START`: Start reaction timer when process starts.
+6. `(T_Reaction done) -> Mixer OFF`: Stop mixing when reaction time is completed.
+7. `(Stop) -> Mixer OFF`: Manually stop mixing.
+8. `(Stop) -> Heater OFF`: Manually stop heating.
+9. `(Stop) -> Alarm Reset`: Manually reset Alarm.
+
+#### Step 4:#### Briefly describe the state machine of the Ladder Diagram.
+
+The state machine for this ladder diagram begins with the reaction process's initiation, activated by the Start button while ensuring that the Stop button has not been pressed. The heating and mixing processes begin simultaneously, governed by the first two rungs.
+
+Temperature is monitored continuously, with the heater maintained as long as the temperature is optimal and not too high. An alarm is activated if the temperature exceeds the safe limit.
+
+A timer controls the duration of the reaction, stopping the mixing process once the set time elapses. Manual overrides allow stopping the mixing and heating at any time, including resetting the high-temperature alarm.
+
+The progression through these states¡ªfrom process start through temperature regulation to process completion or manual intervention¡ªdemonstrates a simple yet effective batch control sequence for adhesive production's reaction phase.
+
+#### Step 5:#### Check the LD you generate according to the IEC 61131 standard.
+
+The ladder diagram presented adheres to the IEC 61131-3 standard for several reasons:
+- It uses standardized symbols for inputs (buttons and sensors), outputs (actuators like heaters and mixers), and function blocks (timers).
+- Logical expressions are defined clearly for each rung, following the standard's requirement for clear, unambiguous control logic.
+- The use of timers and manual overrides aligns with recommended practices for process control, ensuring robust operation and safety.
+- The diagram facilitates readability and understanding, following the standard's goal of promoting clarity and consistency in PLC programming.
+
+This diagram, therefore, serves as a solid example of applying the IEC 61131-3 standard to a specific industrial process control scenario, emphasizing safety, efficiency, and operational clarity.

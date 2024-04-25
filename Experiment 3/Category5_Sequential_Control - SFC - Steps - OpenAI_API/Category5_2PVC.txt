@@ -1,0 +1,69 @@
+Given the requirements for creating an ISA-88 control recipe for the batch production of polyvinylchloride (PVC) through the polymerization process, we will construct a control recipe embodied in a Sequential Function Chart (SFC) complying with the IEC 61131-3 standard.
+
+### Step 1:#### Define and list the inputs and outputs of the Sequential Function Chart.
+
+Inputs:
+- Start_Process: Start the whole process.
+- Evacuation_Complete: Sensor/flag indicating the evacuation of the reactor is complete.
+- Charge_Complete: Sensor/flag indicating the charging of demineralized water and surfactants is complete.
+- Reaction_Temperature_Reached: Sensor/flag indicating the reactor has reached the target temperature (55-60°„C).
+- Pressure_Drop: Sensor/flag indicating the reactor pressure has decreased, signaling the end of the reaction.
+- Decover_Complete: Sensor/flag indicating the decovering process is complete.
+- Drying_Complete: Sensor/flag indicating the drying process is complete.
+
+Outputs:
+- Evacuate_Reactor: Command to start the reactor evacuation.
+- Charge_Reactor: Command to add demineralized water and surfactants.
+- Add_Monomer_and_Catalyst: Command to add vinyl chloride monomer and catalyst.
+- Heat_Reactor: Command to heat the reactor.
+- Hold_Temperature: Maintain the reactor temperature.
+- Decover: Command to start the decover process.
+- Dry: Command to start the drying process.
+
+#### Step 2:#### Briefly describe the state machine of the requirements.
+
+The state machine follows the progression of the PVC production process through these sequential stages:
+
+1. Prepare Reactor: Evacuate the reactor to ensure it's free of oxygen.
+2. Charge: Introduce demineralized water and surfactants into the reactor.
+3. React:
+    a. Add the vinyl chloride monomer and catalyst.
+    b. Heat the reactor to between 55-60°„C and hold at this temperature until the reactor pressure decreases, indicating the reaction has completed.
+4. Decover: Remove volatiles and unwanted compounds from the reaction mixture.
+5. Dry: Extract moisture to yield the finished PVC product.
+
+#### Step 3:#### Give the Sequential Function Chart program in ASCII art.
+
+```
++---------+     +---------+     +--------+     +---------+     +------+     +-------+
+| Prepare |---->| Charge  |---->| React  |---->| Decover |---->| Dry  |---->| End   |
+| Reactor |     |         |     |        |     |         |     |      |     |       |
++---------+     +---------+     +--------+     +---------+     +------+     +-------+
+    |               |              |               |              |               
+    v               v              v               v              v               
+  Evacuate       Charge         Add Monomer      Decover        Dry                
+  Reactor        Reactor        & Catalyst                                     
+                                Heat & Hold                                    
+```
+
+#### Step 4:#### Explain the purpose of each step, action, and transition.
+
+- **Prepare Reactor**: This step is to prepare the reactor by evacuating oxygen to create an inert atmosphere for the polymerization reaction. The action `Evacuate_Reactor` is triggered, and the transition to the next step occurs when `Evacuation_Complete` is true.
+  
+- **Charge**: Upon completion of the reactor preparation, the next step is to charge the reactor with demineralized water and surfactants, initiated by the `Charge_Reactor` action. Transition to the React step is made when `Charge_Complete` is signaled.
+
+- **React**: Adds vinyl chloride monomer and catalyst to the reactor (`Add_Monomer_and_Catalyst`), and then heat the reactor and hold the temperature within 55-60°„C (`Heat_Reactor` and `Hold_Temperature`). The process moves to the next stage upon noticing a drop in reactor pressure (`Pressure_Drop`), indicating the reaction is complete.
+
+- **Decover**: The decovering process removes volatiles and unwanted compounds from the reaction mixture through the `Decover` action. Transition to the drying step occurs when `Decover_Complete` is true.
+
+- **Dry**: The final step involves drying the PVC to the desired moisture content through the `Dry` action. The end of the process is marked by `Drying_Complete`.
+
+#### Step 5:#### Check the SFC you generate according to the IEC 61131 standard.
+
+The Sequential Function Chart created here follows the IEC 61131-3 standard by:
+- Clearly defining inputs and outputs that correspond to physical or logical entities in the process.
+- Using steps to represent distinct states in the control logic, linked by transitions that depend on conditions derived from the inputs.
+- Organizing the steps in a sequential order that matches the process flow of PVC production.
+- Employing actions tied to each step that directly map to output commands, ensuring a cohesive control strategy for the reactor.
+
+This SFC also aligns with ISA-88 by structuring the process into modular stages and operations, facilitating understanding and implementation in a real-world PLC system for batch production control.

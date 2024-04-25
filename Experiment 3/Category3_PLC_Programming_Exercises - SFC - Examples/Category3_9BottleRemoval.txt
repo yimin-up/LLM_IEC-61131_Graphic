@@ -1,0 +1,52 @@
+Designing a PLC program for a bottle packaging line using IEC 61131-3 Sequential Function Chart (SFC) involves several steps. The system described requires control logic for detecting and removing empty bottles from a conveyor belt before packaging. For simplicity, the following sensors and actuators are considered:
+
+- **Proximity Sensor (PS)**: Detects the presence of any bottle.
+- **Empty Bottle Sensor (EBS)**: Specifically detects empty bottles.
+- **Cylinder Actuator (CA)**: Engages to remove empty bottles from the conveyor.
+
+Here's how the Sequential Function Chart for controlling such a system could be conceptualized in an ASCII art format:
+
+```
+(Start of Sequential Function Chart)
+
+          +-------------------------<----------------------------+
+          |                                                     |
+          |                                                     |
++===========+                                                   |
+||         ||                                                   |
+||Initial  ||                                                   |
+||State    ||                                                   |
++===========+                                                   |
+          |                                                     |
+          |                                                     |
+          + PS (Proximity Sensor detects a bottle)              |
+          |                                                     |
+          |                                                     |
++-------------+   +------------+-------------+----------+       |
+|DetectBottle |   |  N         | CA (Idle)   |          |       |
+|             |---|            |             |          |       |
+|             |   |            |             |          |       |
++-------------+   +------------+-------------+----------+       |
+          |                                                     |
+          |                                                     |
+          + EBS (Empty Bottle Sensor detects an empty bottle)   |
+          |                                                     |
+          |                                                     |
++-------------+                                                 |
+|Remove Empty |                                                 |
+|Bottle       |                                                 |
+|             |                                                 |
+|             |                                                 |
+|             |   +------------+-------------+----------+       |
+|             |---|  Y         | CA (Engage) |          |       |
++-------------+   +------------+-------------+----------+       |
+          |                                                     |
+          |                                                     |
+          +----------------------------------------------------->
+
+(End of Sequential Function Chart)
+```
+
+This chart begins at an initial state where it assumes the conveyor and the system are idle. When a bottle is detected by the proximity sensor (PS), the system checks if the bottle is empty using the Empty Bottle Sensor (EBS). If EBS confirms the bottle is empty, the Cylinder Actuator (CA) engages to remove the empty bottle off the conveyor. The system returns to the initial state awaiting the next bottle detection by the PS.
+
+This ASCII representation simplifies complex actions and conditions into a sequential flow. The logic gates "N" denote conditions, and "Y" stands for actions taken based on those conditions. The actual implementation would depend on the available programming environment, sensor, and actuator specifications.

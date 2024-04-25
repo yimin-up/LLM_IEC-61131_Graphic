@@ -1,0 +1,55 @@
+Given the requirements, the following Ladder Diagram in ASCII art aims to control the heating system by reading from three temperature sensors. If the average temperature falls below 20°„C, the heater turns on, and if it exceeds 22°„C, the heater turns off. This design assumes we are averaging the temperatures for a more stable system response.
+
+```
+(Start of Ladder Diagram)
+|                                                                       |
+|                              +--------+                               |
+|                              |  AVG   |                               |
+|        TempSensor1           |        |                               |
++-----------/\/\---------------|IN1     |                               |
+|                                                                       |
+|        TempSensor2           |        |                               |
++-----------/\/\---------------|IN2     |                               |
+|                                                                       |
+|        TempSensor3           |        |                               |
++-----------/\/\---------------|IN3   AVG|---(avg_temp)                 | 
+|                              +--------+                               |
+|                                                                       |
+|                                                                       |
+|                             [avg_temp < 20]                           |
+|                              +--------+                               |
+|                              |  LT    |                               |
+|      avg_temp                |        |                               |
++-----------/\/\---------------|IN1     |                               |
+|                                                                       |
+|                 20           |IN2    OUT|----( )----+                |
+|                              +--------+            |                |
+|                                                    |                |
+|                                                    |                |
+|                      Heater                        |                |
++----------------------------------------------------|/|---------------+
+|                                                    |                |
+|                             [avg_temp > 22]        |                |
+|                              +--------+            |                |
+|                              |  GT    |            |                |
+|      avg_temp                |        |            |                |
++-----------/\/\---------------|IN1     |            |                |
+|                                                                       |
+|                 22           |IN2    OUT|-------------+               |
+|                              +--------+              |               |
+|                                                      |               |
+|                                                      |               |
+|                      Heater                          |               |
++------------------------------------------------------|/|--------------+
+|                                                                       |
+(End of Ladder Diagram)
+```
+
+Explanation:
+- **TempSensor1, TempSensor2, TempSensor3**: These lines simulate the temperature readings from the three sensors.
+- **AVG**: Calculates the average temperature from the three sensors.
+- **LT (Less Than) Block**: Activates when the average temperature is less than 20°„C, indicating the need for heating.
+- **GT (Greater Than) Block**: Activates when the average temperature is greater than 22°„C, indicating the need to turn off the heating to avoid overheating.
+- **Heater**: Controlled directly by the outputs of LT and GT blocks, turning on when the temperature is too low and off when the temperature is too high. 
+
+Note: This is a simplified representation that assumes the existence of blocks or functionalities such as AVG, LT, and GT for handling the comparison logic, which might require function blocks or more detailed implementation in specific PLC programming environments adhering to IEC 61131-3 standards.

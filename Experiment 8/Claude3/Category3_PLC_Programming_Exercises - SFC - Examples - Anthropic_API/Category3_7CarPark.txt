@@ -1,0 +1,86 @@
+Here's the Sequential Function Chart (SFC) program according to IEC 61131-3 for the Entry/Exit Control of the Underground Car Park:
+
+```
+(Start of Sequential Function Chart)
+
+       +----------------------<------------------------+
+       |                                               |
+       |                                               |
++============+                                         |
+||          ||                                         |
+|| Initial  ||                                         |
+||          ||                                         |
++============+                                         |
+       |                                               |
+       |                                               |
+       + NOT M20 AND NOT M30                           |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   GreenOn     |   |  N   |  SET Y2    |        |     |
+|               |---+------+------------+--------+     |
+|               |   |  N   |  RESET Y1  |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + M1 OR M4                                      |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   RedOnM20    |   |  N   |  SET Y1    |        |     |
+|               |---+------+------------+--------+     |
+|               |   |  N   |  RESET Y2  |        |     |
+|               |   |  N   |  SET M20   |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + M2                                            |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|  M20_Reset    |   |  N   |  RESET M20 |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + M2 OR M3                                      |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   RedOnM30    |   |  N   |  SET Y1    |        |     |
+|               |---+------+------------+--------+     |
+|               |   |  N   |  RESET Y2  |        |     |
+|               |   |  N   |  SET M30   |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       + M1                                            |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|  M30_Reset    |   |  N   |  RESET M30 |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+       +----------------------->-----------------------+
+
+(End of Sequential Function Chart)
+```
+
+Explanation:
+1. The Initial step sets the green lights (Y2) ON and red lights (Y1) OFF when the PLC starts.
+
+2. The GreenOn step keeps the green lights ON and red lights OFF when no car is entering the passage (M20 and M30 are OFF).
+
+3. When a car enters from the ground floor (M1) or leaves the basement (M4), the RedOnM20 step turns the red lights ON, green lights OFF, and sets M20 to indicate a car is in the passage from the ground floor.
+
+4. When the car from the ground floor completely passes through the passage (M2), the M20_Reset step resets M20.
+
+5. Similarly, when a car leaves the basement (M2) or enters from the ground floor (M3), the RedOnM30 step turns the red lights ON, green lights OFF, and sets M30 to indicate a car is in the passage from the basement.
+
+6. When the car from the basement completely passes through the passage (M1), the M30_Reset step resets M30.
+
+7. The process repeats, allowing cars to enter and leave while ensuring only one direction of traffic at a time.

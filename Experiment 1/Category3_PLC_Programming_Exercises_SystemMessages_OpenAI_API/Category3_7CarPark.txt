@@ -1,0 +1,67 @@
+To design an Entry/Exit Control program for an Underground Car Park according to IEC 61131-3 in Structured Text (ST), we first define the logic that controls the Red and Green lights based on the input from the photoelectric switches and intermediate variables. The program should ensure safety and efficiency in vehicle movement through the entry/exit passage with the conditions provided. 
+
+Here's how the program could be structured:
+
+```pascal
+PROGRAM UndergroundCarParkControl
+VAR
+    X1, X2: BOOL; // Photoelectric switches
+    M1, M2, M3, M4: BOOL; // Intermediate signals
+    M20, M30: BOOL; // Control signals for passage engagement
+    Y1, Y2: BOOL; // Outputs for Red and Green lights
+END_VAR
+
+// Initial settings for Green lights ON and Red lights OFF
+Y1 := FALSE;
+Y2 := TRUE;
+
+// Logic to detect car at entry/exit and set the Mx variables for one scan cycle
+IF X1 THEN
+    M1 := NOT M1;
+    M2 := NOT M2;
+END_IF;
+
+IF X2 THEN
+    M3 := NOT M3;
+    M4 := NOT M4;
+END_IF;
+
+// Logic to detect car movement and control the traffic lights
+// If a car is entering the passage from the ground floor
+IF M1 THEN
+    M20 := TRUE;
+    Y1 := TRUE;  // Turn Red lights ON
+    Y2 := FALSE; // Turn Green lights OFF
+END_IF;
+
+// If a car is entering the passage from the basement
+IF M2 THEN
+    M30 := TRUE;
+    Y1 := TRUE;  // Turn Red lights ON
+    Y2 := FALSE; // Turn Green lights OFF
+END_IF;
+
+// Reset passage control signals once the car has passed
+IF M3 THEN
+    M20 := FALSE; // Passage clear from ground floor to basement
+END_IF;
+
+IF M4 THEN
+    M30 := FALSE; // Passage clear from basement to ground floor
+END_IF;
+
+// Enable Green lights when the passage is clear
+// Both M20 and M30 FALSE means the passage is clear
+IF NOT M20 AND NOT M30 THEN
+    Y1 := FALSE; // Turn Red lights OFF
+    Y2 := TRUE;  // Turn Green lights ON
+END_IF;
+```
+
+This ST program follows the logic described in the requirements:
+- It listens for activations at the photoelectric switches (X1 and X2) to detect car movements. 
+- It uses intermediate variables (M1 to M4) to track the position of the car during one scan cycle.
+- The program engages either M20 or M30 when a car moves through the entry/exit, depending on the direction.
+- Finally, it controls the Red (Y1) and Green (Y2) lights to safely manage the cars' movement in and out of the underground car park.
+
+Note that this example assumes the PLC is adequately set to handle single cycle activation for M1 to M4. Further refinement might be required depending on the physical setup and response times of the hardware components involved.

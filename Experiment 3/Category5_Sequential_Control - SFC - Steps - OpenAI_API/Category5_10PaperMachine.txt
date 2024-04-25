@@ -1,0 +1,67 @@
+To create a Sequential Function Chart (SFC) for the startup sequence of the press section in a Valmet paper machine, we'll first define the inputs and outputs, describe the state machine, and then create the SFC program in ASCII art. Following this, we will explain the purpose of each step, action, and transition, ensuring that it is compliant with the IEC 61131-3 standard.
+
+### Step 1:####
+Inputs:
+- Start_Button (bool): Operator starts the sequence.
+- E_Stop (bool): Emergency stop.
+- Paper_Feed_OK (bool): Confirmation that paper feed is ready.
+- Press_Ready (bool): Confirmation that press section is ready.
+- Safety_Guards_OK (bool): Confirmation that all safety guards are in place.
+
+Outputs:
+- Press_Motor_Start (bool): Start motor of the press.
+- Water_Spray_On (bool): Activate water spray system.
+- Press_Load_Adjust (real): Adjust the load/pressure of the press.
+- Sequence_Active (bool): Indicate that the startup sequence is active.
+- Sequence_Completed (bool): Indicate that the startup sequence has been completed.
+
+### Step 2:####
+State Machine Description:
+1. Initialization: Set initial conditions.
+2. Safety Check: Ensure all safety conditions are met (E_Stop not engaged, Safety_Guards_OK).
+3. Startup: Start the press section operations.
+   - Paper feed check.
+   - Press preparation (motor start, load adjustments).
+4. Water Spray Activation: Activate water spraying for moisture.
+5. Operation Ready: Press section is ready for continuous operation.
+6. Error Handling: In case any condition is not met or an emergency stop is engaged.
+
+### Step 3:####
+```
++--------------+
+| Initialization |
++------+-------+
+       |
+       v
++------+-------+      +--------+
+| Safety Check |----->|  Error |
++------+-------+      +--------+
+       |
+       v
++------+-------+
+|   Startup    |
++------+-------+
+       |
+       v
++------+-------+
+| Water Spray  |
+| Activation   |
++------+-------+
+       |
+       v
++------+-------+
+| Operation    |
+| Ready        |
++--------------+
+```
+
+### Step 4:####
+- Initialization: Set `Sequence_Active` to true, reset `Sequence_Completed`.
+- Safety Check: Check `E_Stop`, `Safety_Guards_OK`. If any condition is false, transition to Error state.
+- Startup: Check `Paper_Feed_OK` and `Press_Ready`. Start `Press_Motor_Start` and adjust `Press_Load_Adjust` to a predefined value.
+- Water Spray Activation: Turn `Water_Spray_On` true.
+- Operation Ready: Set `Sequence_Completed` to true, indicating that the press is ready for operation.
+- Error: Handles any errors or safety condition failures. Can loop back to Initialization or Safety Check after resolving the issue.
+
+### Step 5:####
+According to IEC 61131-3, an SFC program must consist of a series of steps and transitions. Steps contain actions, and transitions define the conditions under which the control flow moves from one step to another. The ASCII art SFC created follows these guidelines by defining clear steps for each part of the process, including error handling and safety checks, and transitions marked by arrows to indicate the flow of operation. Each step's actions link directly to input and output variables, ensuring responsiveness to the operational conditions and machine states.

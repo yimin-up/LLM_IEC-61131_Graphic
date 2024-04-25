@@ -1,0 +1,73 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program to control a pneumatic system with the specified requirements:
+
+```
+PROGRAM PneumaticControl
+VAR
+  FlowSetpoint: REAL := 50.0; (* Standard liters per minute *)
+  PressureMin: REAL := 5.5; (* Bar *)  
+  PressureMax: REAL := 6.0; (* Bar *)
+  FlowSensor: REAL; (* Measured flow *)
+  PressureSensor: REAL; (* Measured pressure *)
+  ControlValve: REAL; (* Valve position 0-100% *)
+  ControlLoop: TON; (* 100ms control loop timer *)
+END_VAR
+
+ControlLoop(IN:=NOT ControlLoop.Q, PT:=T#100ms);
+
+|                                                        |
+|                      ControlLoop.Q                     |
++----------------------------| |-------------------------+
+|                                                        |
+|            +----------+                                |
+|            | SUB      |                                |
+| FlowSensor-|IN1   OUT |-- FlowError                    |
+|FlowSetpoint|IN2       |                                |
+|            +----------+                                |
+|                                                        |
+|            +----------+                                |
+|            | SUB      |                                |
+|PressureMin-|IN1   OUT |-- PressureError                |
+|PressureSens|IN2       |                                |
+|            +----------+                                |
+|                                                        |
+|            +----------+                                |
+|            | SUB      |                                |
+|PressureSens|IN1   OUT |-- PressureError                |
+|PressureMax-|IN2       |                                |
+|            +----------+                                |
+|                                                        |
+|            +----------+                                |
+|            | LIMIT    |                                |
+|      0.0 --|MN        |                                |
+|FlowError --|IN    OUT |-- ControlValve                 |
+|    100.0 --|MX        |                                |
+|            +----------+                                |
+|                                                        |
+|            +----------+                                |
+|            | LIMIT    |                                |
+|      0.0 --|MN        |                                |
+|PressureErr-|IN    OUT |-- ControlValve                 |
+|    100.0 --|MX        |                                |
+|            +----------+                                |
+|                                                        |
+
+END_PROGRAM
+```
+
+This program does the following:
+
+1. Defines variables for setpoints, sensor inputs, control valve output, and a 100ms control loop timer.
+
+2. The control loop timer triggers the control logic every 100ms. 
+
+3. Calculates flow error as the difference between measured flow and setpoint.
+
+4. Calculates pressure errors as the difference between measured pressure and min/max limits.
+
+5. Limits the flow error to 0-100% range and outputs to the control valve.
+
+6. Limits the pressure errors to 0-100% range and outputs to the control valve.
+
+The control valve position will adjust based on the flow and pressure errors to try to maintain the flow at 50 slpm and the pressure between 5.5 and 6 bar. The LIMIT function blocks prevent windup.
+
+Let me know if you have any other questions!

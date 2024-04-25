@@ -1,0 +1,161 @@
+Here's a self-contained IEC 61131-3 sequential function chart for the coffee machine based on the given requirements:
+
+    PROGRAM CoffeeMachine
+    VAR
+      EmergencyStop: BOOL := FALSE;
+      StartButton: BOOL := FALSE;
+      CoffeeAndMilkButton: BOOL := FALSE;
+      CoffeeOnlyButton: BOOL := FALSE;
+      CoffeeValve: BOOL := FALSE;
+      MilkValve: BOOL := FALSE;
+      OutputValve: BOOL := FALSE;
+      MixerLevel: INT := 0;
+      MixerTimer: TON;
+    END_VAR
+
+    INITIAL_STEP
+    |
+    |
+    |----|START|-----------------------------------------------------|EMERGENCY_STOP|
+         |                                                          |
+         |                                                          |
+         |                                                          |
+         |                                                          |
+         |                                                          |
+         |                                                          |
+    |COFFEE_AND_MILK|                                           |COFFEE_ONLY|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |OPEN_COFFEE_VALVE|                                     |OPEN_COFFEE_VALVE|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |OPEN_MILK_VALVE|                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |CHECK_MIXER_LEVEL|                                     |CHECK_MIXER_LEVEL|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |CLOSE_VALVES|                                              |CLOSE_VALVES|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |START_MIXER|                                               |START_MIXER|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |WAIT_MIXING|                                               |WAIT_MIXING|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |OPEN_OUTPUT_VALVE|                                     |OPEN_OUTPUT_VALVE|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |DISPENSE_OUTPUT|                                       |DISPENSE_OUTPUT|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |CLOSE_OUTPUT_VALVE|                                    |CLOSE_OUTPUT_VALVE|
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |                                                           |
+    |END|                                                       |END|
+
+    ACTION BLOCKS:
+    
+    EMERGENCY_STOP:
+      EmergencyStop := TRUE;
+      CoffeeValve := FALSE;
+      MilkValve := FALSE;
+      OutputValve := FALSE;
+      RETURN;
+    
+    COFFEE_AND_MILK:
+      IF CoffeeAndMilkButton THEN
+        RETURN;
+      END_IF;
+    
+    COFFEE_ONLY:  
+      IF CoffeeOnlyButton THEN
+        RETURN;
+      END_IF;
+    
+    OPEN_COFFEE_VALVE:
+      CoffeeValve := TRUE;
+      RETURN;
+    
+    OPEN_MILK_VALVE:
+      MilkValve := TRUE; 
+      RETURN;
+    
+    CHECK_MIXER_LEVEL:
+      IF MixerLevel >= 130 THEN
+        RETURN;
+      END_IF;
+    
+    CLOSE_VALVES:
+      CoffeeValve := FALSE;
+      MilkValve := FALSE;
+      RETURN;
+    
+    START_MIXER:
+      MixerTimer(IN:=TRUE, PT:=T#4s);
+      RETURN;
+      
+    WAIT_MIXING:
+      IF MixerTimer.Q THEN
+        RETURN;  
+      END_IF;
+    
+    OPEN_OUTPUT_VALVE:
+      OutputValve := TRUE;
+      RETURN;
+    
+    DISPENSE_OUTPUT:
+      // Wait for output to be dispensed
+      RETURN;
+    
+    CLOSE_OUTPUT_VALVE:  
+      OutputValve := FALSE;
+      RETURN;
+    
+    END:
+      // Reset variables for next cycle
+      MixerLevel := 0;
+      RETURN;
+
+This sequential function chart represents the control flow of the coffee machine based on the provided requirements. It includes steps for handling emergency stop, selecting coffee and milk or coffee only, opening and closing valves, checking mixer level, starting the mixer, waiting for mixing to complete, dispensing the output, and resetting variables for the next cycle.

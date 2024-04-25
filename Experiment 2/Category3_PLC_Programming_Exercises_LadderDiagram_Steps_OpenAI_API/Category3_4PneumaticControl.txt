@@ -1,0 +1,43 @@
+Given the requirements for a pneumatic system control, let's approach the solution structured under the steps outlined.
+
+### Step 1:####
+#### Inputs and Outputs Listing:
+
+#### Inputs:
+1. Pressure Sensor (PS) - Digital input signal indicating if pressure is below 5.5 bar (`I0.0`), between 5.5 and 6 bar (`I0.1`), or above 6 bar (`I0.2`). Assume three separate sensors for simplicity.
+2. Flow Sensor (FS) - Digital input signal indicating if the flow is below 50 standard liters per minute (`I0.3`).
+
+#### Outputs:
+1. Air Valve (AV) - Controls the flow of air to actuators (`Q0.0`). Turning this on increases flow/pressure, and off decreases flow/pressure.
+
+#### Standard Symbols:
+- Inputs: Represented with `|` for contact (normally open).
+- Outputs: Represented with `( )` for coils.
+
+### Step 2:####
+#### Ladder Diagram Program:
+```
++----[|]----+----[|]----+----[|]----+----( )----+
+|    I0.0   |    I0.1   |   I0.3    |    Q0.0   |   
++-----------+-----------+-----------+-----------+
+|    Pressure below 5.5 |   Flow below 50 L/min |
+|         bar           |           |           |
++-----------+-----------+-----------+-----------+
+```
+This simplified Ladder Diagram ensures the air valve opens to increase pressure and flow when the pressure is below 5.5 bars or the flow rate is below 50 liters per minute. We opt for a straightforward approach instead of a function block to maintain ease of understanding and modification.
+
+### Step 3:####
+#### Logical Expressions for Each Rung:
+- Rung 1: `Q0.0 = I0.0 OR I0.3` 
+  - This means the air valve (Q0.0) is activated (set to true) if the pressure is detected to be below 5.5 bar (`I0.0`) OR the flow rate is detected to be below 50 standard liters per minute (`I0.3`).
+
+### Step 4:####
+#### State Machine Description:
+1. **Initial State**: The system starts with checking both pressure and flow rate conditions.
+2. **Condition Checking**: 
+   - If the pressure drops below 5.5 bar (`I0.0`) or the flow rate drops below 50 liters per minute (`I0.3`), the system transitions to the "Activate Air Valve" state.
+   - If both conditions are within acceptable limits, no action is taken, maintaining the current state.
+3. **Activate Air Valve**: The air valve (`Q0.0`) is energized to increase the flow of air to the actuators, aiming to bring the pressure and flow back within the target range.
+4. **Loop**: The system cyclically checks the conditions at a control loop frequency of 100 ms, reacting appropriately to maintain the pressure between 5.5 to 6 bar and the flow at 50 standard liters per minute.
+
+This system dynamically balances the actuation of the air valve based on real-time pressure and flow conditions, ensuring the pneumatic system operates within the specified parameters.

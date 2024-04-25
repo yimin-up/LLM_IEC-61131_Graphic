@@ -1,0 +1,39 @@
+To model the control system for alternating operation of two water pumps P1 and P2 with respect to the water level in a reservoir, we can use the following Ladder Diagram in ASCII art. This model includes a toggle logic to switch between pumps after each operation cycle and ensures that only one pump operates when the high water level (HL) is reached, alternating to the other pump on the next cycle, and stopping both pumps when the water level drops below the low water line (LL).
+
+```
+(Start of Ladder Diagram)
+
+|                                     HL        T1        P1             |
++-----| |-------------------------------------|/|-------( )--------------+
+|                                                                       |
+|                       +---------[ ] T1                                |
+|                       |                                               |
+|               LL      |    HL        T2        P2                     |
+|               +-------+-----| |----------------------------( )--------+
+|               |       |                                               |
+|               |       +---------[ ] T2                                |
+|               |                                                       |
+|               |       P1                              T2             |
+|               +------|/|-----------------------------[ ]-------------+
+|               |                                                       |
+|               |       P2                              T1             |
+|               +------|/|-----------------------------[ ]-------------+
+|                                                                       |
+
+(End of Ladder Diagram)
+```
+
+**Explanation of Logic**:
+
+- **HL (High Level sensor)**: Triggers the operation of the pumps when the water is above the high water line.
+- **LL (Low Level sensor)**: Stops the operation of the pumps when water is below the low water line.
+- **T1 and T2**: These are memory bits or flags used to toggle the state between P1 and P2.
+    - When T1 is active (1), it allows P1 to operate and blocks P2.
+    - When T2 is active (1), it allows P2 to operate and blocks P1.
+- **P1 and P2 (Pumps)**: Each pump is represented as an output that gets energized based on the condition of HL, LL, T1, and T2.
+
+**Operation**:
+- When HL is active and P1's turn (T1 is active), P1 will pump.
+- On the next cycle when HL is still active but it's P2's turn (T2 is active), P1 will stop and P2 will start pumping.
+- LL being active will stop both pumps regardless, ensuring the pumps don't operate when the water is below the low water line.
+- The toggling logic between T1 and T2 ensures that only one pump is active per high-level condition, and they alternate between cycles.

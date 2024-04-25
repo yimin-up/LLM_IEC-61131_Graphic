@@ -1,0 +1,35 @@
+Given the batch production of aspirin (acetylsalicylic acid), let's layout a simplified control recipe focusing on the reaction stage according to ISA-88 standards. This recipe involves charging the reactor with Acetic anhydride, Salicylic acid, and Sulphuric acid, maintaining the reaction conditions, and then discharging the reacted batch to the next stage. To keep it simple and focused, the reaction parameters are assumed, and safety checks and interlocks should be in place in a real system but are omitted here for brevity.
+
+The Ladder Diagram (LD) provided is a high-level representation and should be further detailed based on exact hardware and control requirements.
+
+```
+(Start of Ladder Diagram)
+|                                                                                   |
+|        Start_Reacting     Educts_Charged      Reaction_Completed      Move_To_Next_Stage   |
++-------------| |-------------------| |-------------------------------( )---------------------+
+|                                                                                   |
+|                                                                                   |
+|  ----[ Reactor_Fill ]----------------------------------------------------------  |
+|  | Charge Reactor:                                                          |  |
+|  | Acetic anhydride, Salicylic acid, Sulphuric acid                       |  |
+|  | Parameters: Quantity, Rate                                               |  |
+|  ----[ Reactor_Mix ]------------------------------------------------------------  |
+|  | Start Mixing:                                                             |  |
+|  | Maintain mixing speed for effective reaction                             |  |
+|  ----[ Heat_Reactor ]-----------------------------------------------------------  |
+|  | Maintain Temperature:                                                     |  |
+|  | Heat to reaction temperature and maintain                                 |  |
+|  ----[ Reaction_Timing ]-------------------------------------------------------  |
+|  | Maintain Reaction Time:                                                  |  |
+|  | Keep conditions for specified reaction time for completion               |  |
+|  ----[ Discharge_Reacted_Material ]--------------------------------------------- |
+|  | Discharge to next stage:                                                  |  |
+|  | Move reacted batch to crystallizer                                       |  |
+|  | Conditions: Completed reaction                                           |  |
+|                                                                                   |
+|                                                                                   |
+(End of Ladder Diagram)
+```
+This diagram initiates with the start of the reaction process. It follows through the key steps of charging the reactor with educts, starting the mixing process, heating the reactor to maintain the reaction temperature, timing the reaction to ensure completion, and finally, discharging the reacted material to the next stage, assuming all while conditions like `Educts_Charged` and `Reaction_Completed` are digital signals or conditions determined elsewhere in the program.
+
+Each of these steps should be elaborated with actual control logic, including interlocks for safety, PID control for temperature, timers for operations, and feedback loops for ensuring process accuracy. This diagram simplifies those aspects to focus on the sequential process control aspect of the reaction stage within the context of programming under the IEC 61131-3 standard for PLCs.

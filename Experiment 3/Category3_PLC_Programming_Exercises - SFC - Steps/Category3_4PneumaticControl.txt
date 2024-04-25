@@ -1,0 +1,57 @@
+To create a Sequential Function Chart (SFC) program according to IEC 61131-3 standards which controls a pneumatic system maintaining a flow of air to actuators at 50 standard liters per minute and a pressure range between 5.5 to 6 bar, we follow the specified steps:
+
+#### Step 1:
+Inputs:
+- PressureSensor: Real (measures the pressure in bars)
+- FlowSensor: Real (measures the flow in liters per minute)
+
+Outputs:
+- ValveControl: Bool (controls the on/off state of the pneumatic valve to regulate flow and pressure)
+
+####
+
+#### Step 2:
+```plaintext
++-----+       +-------+       +-------+       +-------+
+|     |       |       |       |       |       |       |
+| S1  +------>+  S2   +------>+  S3   +------>+  S4   |
+|     | P<5.5 |       |F<50   |       |F=50 & |       |P>6
++--+--+       +----+--+       +---+---+       +--+----+
+   |              |             |              |
+   +--------------+             |              |
+                  |             |              |
+                  +-------------+              |
+                                               |
+                                               |
+                                               +                
+```
+####
+
+#### Step 3:
+- S1 (Initialization): This step is the starting point. It checks if the PressureSensor reads below 5.5 bars to start increasing pressure.
+  - Transition to S2 is based on the condition: PressureSensor < 5.5
+  
+- S2 (Increase Pressure): This step represents the action of increasing pressure by opening the valve (ValveControl = TRUE). 
+  - Transition to S3 occurs when FlowSensor < 50
+  
+- S3 (Adjust Flow): This step adjusts the flow to reach the target of 50 liters per minute by manipulating the ValveControl.
+  - Transition to S4 is based on reaching the target flow: FlowSensor = 50 & PressureSensor >= 5.5
+  
+- S4 (Maintain): Maintains pressure and flow within the required range. If pressure exceeds 6 bars, the system cycles back to re-adjust.
+  - Transition back to S2 if Pressure > 6
+
+####
+
+#### Step 4:
+The state machine of this SFC begins at the Initialization state (S1), checking if the system needs to build up pressure. If so, it transitions to the Increase Pressure state (S2), where the valve is opened to increase pressure. Once the flow is below the target, it enters the Adjust Flow state (S3) to fine-tune the flow rate to 50 liters per minute. Finally, the Maintain state (S4) ensures that the system maintains the pressure within the acceptable range. Any deviation in pressure beyond the upper limit cycles the system back for adjustment.
+
+####
+
+#### Step 5:
+According to the IEC 61131-3 standard, the SFC provided:
+- Follows the sequence of operations required for controlling the pneumatic system as per the requirements.
+- Uses transitions based on condition evaluation (Pressure and Flow conditions) to move between steps, which is in  alignment with the standard's requirements for conditional transitions.
+- Ensures every step has an action (either checking a condition or adjusting a control output) which is a requirement for processing and controlling tasks within an SFC.
+- The loop within the SFC ensures continuous monitoring and control, meeting the criteria for cyclic control tasks as mentioned in the standard for control systems.
+
+This SFC adheres to the IEC 61131-3 standard for creating structured control applications, specifically for the management and control of a pneumatic system within specified parameters.

@@ -1,0 +1,73 @@
+Step 1:####
+
+To implement PID feedback control for the pressure in a chemical reactor using a Sequential Function Chart (SFC), we first need to define the inputs and outputs:
+
+Inputs:
+- **PressureSetPoint:** This is the target pressure we want to maintain in the reactor.
+- **CurrentPressure:** The current pressure reading from the reactor.
+
+Outputs:
+- **ValveControlSignal:** This signal controls the valve to adjust the pressure inside the reactor, which could be either increasing (by reducing the valve opening) or decreasing the pressure (by increasing the valve opening).
+
+####
+
+Step 2:####
+
+The state machine for our PID feedback control will have the following main stages:
+1. **Initialization:** Set up initial parameters for the PID controller, like initializing the PID variables (integral, derivative, previous error, etc.).
+2. **Read Inputs:** Read the current reactor pressure and the set point.
+3. **Calculate PID:** Calculate the error between the set point and the current pressure, then apply the PID algorithm to determine the control action.
+4. **Actuate Valve:** Adjust the valve based on the PID control action to either decrease or increase the pressure.
+5. **Feedback Loop:** Check if the current pressure is within acceptable limits of the set point, if not, repeat the process from the "Read Inputs" state.
+
+####
+
+Step 3:####
+
+Below is an ASCII art representation of the Sequential Function Chart (SFC) implementing the described state machine:
+
+```
++----------------+       +-------------+       +---------------+       +-----------------+       +---------------+
+| Initialization | ----> | Read Inputs | ----> | Calculate PID | ----> | Actuate Valve   | ----> | Feedback Loop |
++----------------+       +-------------+       +---------------+       +-----------------+       +---------------+
+                                                                                                     |       ^
+                                                                                                     v       |
+                                                                                                  +--------------------+
+                                                                                                  | Check if within    |
+                                                                                                  | acceptable limits |
+                                                                                                  +--------------------+
+                                                                                                             |
+                                                                                                             +---- No ----+
+                                                                                                                   |
+                                                                                                                   v
+                                                                                                             +-------------+
+                                                                                                             | Read Inputs |
+                                                                                                             +-------------+
+```
+
+####
+
+Step 4:####
+
+- **Initialization:** This step is responsible for setting the initial state of the PID controller, initializing variables like the integral part, the derivative part, the previous error, and any other necessary state variables. It ensures the system starts from a known state.
+
+- **Read Inputs:** This stage involves reading the current values of inputs, including the actual pressure in the reactor and the desired pressure set point. These values are necessary for computing the error in the Calculate PID stage.
+
+- **Calculate PID:** Here, the algorithm calculates the proportional, integral, and derivative terms based on the error (difference between the set point and current pressure). The sum of these terms gives the output control signal that aims to reduce the error to zero.
+
+- **Actuate Valve:** This step takes the output from the PID calculation and applies it to the control system actuators¡ªin this case, the valve. Adjusting the valve influences the internal pressure of the reactor, moving it towards the desired set point.
+
+- **Feedback Loop:** Finally, the system checks if the current pressure is within an acceptable range of the set point. If not, the process loops back to the "Read Inputs" stage to read the updated pressure values and continue the adjustment process. This loop continues until the desired pressure stability is achieved.
+
+####
+
+Step 5:####
+
+The above SFC adheres to the IEC 61131-3 standard by:
+- Structuring the control process into clear, sequential steps that perform specific actions and evaluations.
+- Using transitions between steps (e.g., from "Actuate Valve" to "Feedback Loop") based on conditions that reflect the process logic and objectives (e.g., checking if the current pressure is within acceptable limits).
+- Facilitating the readability and maintainability of the PID control logic through a visual and modular approach, as recommended by the standard.
+
+This approach aligns with IEC 61131-3 by promoting structured, efficient, and understandable control program design, which is particularly beneficial for complex processes like PID feedback control.
+
+####

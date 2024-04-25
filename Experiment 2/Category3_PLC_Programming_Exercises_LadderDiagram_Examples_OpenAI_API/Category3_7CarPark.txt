@@ -1,0 +1,45 @@
+Creating a PLC program for an Entry/Exit Control of the Underground Car Park system involves setting the necessary conditions for triggering the red and green lights based on the sensors at the entry and exit points. Given the scenario, we will design a Ladder Diagram to control the traffic flow using the provided sensors and outputs.
+
+```plaintext
+(Start of Ladder Diagram)
+|                                                                                        |
+|                  +------+                                                              |
+|    X1  M20       |      |      Y1              +-------+ Y2                            |
++----|/|-----------| AND  |------( )----+-------| NOT   |-( )----+                       |
+|                  |      |             +-------|       |        |                       |
+|    M1  M20  Y1   +------+                     +-------+        |                       |
++----| |---| |----------------------------------------------+   |                       |
+|                                                       |   |   |                       |
+|                  +------+                             |   |   |                       |
+|    X2  M30       |      |      Y1                    |   |   |                       |
++----|/|-----------| AND  |------( )---------------+   |   |   +----+                  |
+|                  |      |                       |   |   |        |   |                |
+|    M3  M30  Y1   +------+                       |   |   |        |   |                |
++----| |---| |------------------------------------+   |   |        |   |                |
+|                                                  |   |   |        |   |                |
+|                  +------+                         |   |   |        |   |                |
+|    M1            |      |                         |   |   |        |   |                |
++----| |-----------| OR   |---M20                    |   |   |        |   |                |
+|                  |      |                         |   |   |        |   |                |
+|    M4            +------+                         |   |   |        |   |                |
++----| |--------------------------------------------+   |   |        |   |                |
+|                                                      |   |        |   |                |
+|                  +------+                             |   |        |   |                |
+|    M3            |      |                             |   |        |   |                |
++----| |-----------| OR   |---M30                        |   |        |   |                |
+|                  |      |                             |   |        |   |                |
+|    M2            +------+                             |   |        |   |                |
++----| |------------------------------------------------+   |        |   |                |
+|                                                          |        |   |                |
+|    M20    M30                                             |        |   |                |
++----|/|----|/|---------------------------------------------+        +---+                |
+|                                                                                        |
+(End of Ladder Diagram)
+```
+Explanation:
+- The `AND` blocks determine if the passage is occupied based on sensor inputs (X1, X2) and intermediate variables (M20, M30), setting the red lights (Y1) ON.
+- `OR` blocks set M20/M30 based on cars passing the entry or exit points indicating a car is in the passage.
+- The `NOT` block followed by the `AND` gates ensures green lights (Y2) are only on when the red lights (Y1) are off, maintaining safe traffic flow.
+- The `|/|` connected to M20 and M30 at the bottom ensures the passage is only marked as occupied if no car is currently in the passage, acting as a reset mechanism once a car has passed completely.
+
+This design will ensure a safe and controlled entry/exit process to the underground car park by managing the lights based on car movements through the single-lane passage.

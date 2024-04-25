@@ -1,0 +1,31 @@
+Certainly! Below is an example of a structured text program compliant with IEC 61131-3 standards to control a heating system to maintain a temperature range between 20°„C and 22°„C using three temperature sensors. This example assumes the three sensors provide a redundant check and the heating system is turned on or off via a digital output.
+
+```iec
+PROGRAM HeatingSystemControl
+VAR
+    Sensor1, Sensor2, Sensor3: REAL; (* Temperature readings from the sensors in °„C *)
+    DesiredMinTemp, DesiredMaxTemp: REAL := 20.0; (* Desired min and max temperature constants *)
+    HeatingSystem: BOOL; (* Digital output to the heating system *)
+    AverageTemperature: REAL;
+END_VAR
+
+(* This Initialization section runs once when the PLC starts up *)
+Initialization:
+    HeatingSystem := FALSE; (* Heat is initially turned off *)
+END_INITIALIZATION
+
+(* This section runs cyclically at a fixed scan rate *)
+CYCLIC
+    AverageTemperature := (Sensor1 + Sensor2 + Sensor3) / 3.0; (* Calculate the average temperature *)
+
+    IF AverageTemperature < DesiredMinTemp THEN
+        HeatingSystem := TRUE;  (* If average temperature is below 20°„C, turn the heating system ON *)
+    ELSIF AverageTemperature > DesiredMaxTemp THEN
+        HeatingSystem := FALSE; (* If average temperature is above 22°„C, turn the heating system OFF *)
+    END_IF;
+END_CYCLIC
+```
+
+This program defines three REAL variables for the sensor readings and two REAL variables for the desired temperature range. It calculates the average temperature from the three sensors each time the main cycle runs and then it activates the heating system if the average temperature is below 20°„C and deactivates the system if the temperature rises above 22°„C. Since the language does not allow for hardware specifics, you have to map `Sensor1`, `Sensor2`, `Sensor3`, and `HeatingSystem` to their corresponding PLC input and output addresses as per the hardware's configuration. 
+
+Remember that in a real application, you would need to add error checking (e.g., what to do if one of the sensors fail, some hysteresis to prevent constant toggling of the heating system near the threshold temperatures, etc.). Also, the handling of the digital output `HeatingSystem` would likely be more involved, potentially interacting with relays, contactors, or a solid-state switch for actual heater control.

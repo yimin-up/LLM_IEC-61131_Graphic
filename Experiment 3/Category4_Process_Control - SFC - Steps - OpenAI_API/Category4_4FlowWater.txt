@@ -1,0 +1,87 @@
+Step 1:####
+For a PID feedback flow control system for chemical dosing in a water treatment process, we define the following inputs and outputs:
+
+Inputs:
+- FlowRate: The current flow rate of the water through the treatment system.
+- TargetConcentration: The desired ppm (parts per million) of the chemical (chlorine) in the water.
+- ActualConcentration: The measured ppm of the chemical in the water after dosing.
+
+Outputs:
+- DosingRate: The rate at which the chemical (chlorine) is added to the water to achieve the TargetConcentration.
+
+Constants:
+- SamplingRate: 100 ms, the rate at which the feedback loop samples the system to adjust the DosingRate.
+- BaseDosingRate: 3 ppm, the base rate of dosing for the chlorine.
+
+####
+
+Step 2:####
+The state machine for this PID feedback flow control system can be conceptualized as follows:
+
+1. Initialization: Set initial conditions, zero the DosingRate, and wait for the system to stabilize.
+2. Measure: Sample the ActualConcentration of the chemical in the water.
+3. Calculate: Calculate the error between TargetConcentration and ActualConcentration. Then, adjust the DosingRate based on PID control algorithm.
+4. Adjust: Adjust the chemical dosing pump speed according to the new DosingRate.
+5. Wait: Wait for the next sampling cycle (according to SamplingRate).
+6. Repeat: Go back to the "Measure" step to continue the feedback loop.
+
+The system continues oscillating between Measure, Calculate, Adjust, and Wait steps to maintain the ActualConcentration at the desired TargetConcentration.
+
+####
+
+Step 3:####
+
+```
+           +------------------+
+           |  Initialization  |
+           +------------------+
+                   |
+                   v
+           +------------------+
+           |      Measure     |<-----------------------------+
+           +------------------+                              |
+                   |                                         |
+                   v                                         |
+           +------------------+                              |
+           |     Calculate    |                              |
+           +------------------+                              |
+                   |                                         |
+                   v                                         |
+           +------------------+                              |
+           |      Adjust      |                              |
+           +------------------+                              |
+                   |                                         |
+                   v                                         |
+           +------------------+                              |
+           |       Wait       |------------------------------+
+           +------------------+
+```
+
+####
+
+Step 4:####
+Purpose of each step, action, and transition:
+
+- **Initialization**: Set up initial conditions for the PID control system, like zeroing the DosingRate to prevent initial overshoot and ensuring that the system parameters are correctly set for the control loop to start.
+  
+- **Measure**: In this step, the system measures the ActualConcentration of the chemical in the water. This step is critical to assess how far off the system is from the TargetConcentration.
+  
+- **Calculate**: This step involves calculating the error between the TargetConcentration and the ActualConcentration. The PID control algorithm then uses this error to calculate the necessary adjustment to the DosingRate, aiming to minimize the error over time.
+  
+- **Adjust**: Based on the calculated DosingRate from the previous step, this step adjusts the speed or output of the chemical dosing pump to match the new DosingRate, thereby moving the ActualConcentration closer to the desired TargetConcentration.
+  
+- **Wait**: This is a timing control step, where the system pauses for the length of the SamplingRate before taking another measurement. This pause allows the chemical dosing adjustments to take effect in the water treatment process before the next measurement.
+  
+- **Repeat**: The transition back to "Measure" allows for the PID control loop to continue iterating, making real-time adjustments based on feedback from the system, aiming to maintain the chemical concentration at the desired level.
+
+####
+
+Step 5:####
+This Sequential Function Chart (SFC) follows the IEC 61131-3 standard for PID feedback flow control. Key principles adhered to include:
+
+- Structured flow: The SFC presents a clear, logical flow from initialization through measurement, calculation, adjustment, and waiting, which is easy to follow and debug.
+- Modularity: Each step is distinct and modular, allowing for easier maintenance and potential reuse in different parts of the system or for different applications.
+- Transition conditions: Transitions are based on the completion of actions within each step, supporting the cyclic nature required for PID feedback loops.
+- Adherence to real-time requirements: The Wait step ensures that the system adheres to the defined SamplingRate, a critical aspect for ensuring the PID algorithm functions effectively in a real-time context.
+
+This design reflects best practices for implementing PID control in an industrial setting, leveraging the Sequential Function Chart format for clarity and efficiency.

@@ -1,0 +1,48 @@
+Here is a self-contained IEC 61131-3 Ladder Diagram program to control the conveyor belt system based on your requirements:
+
+```
+PROGRAM ConveyorControl
+VAR
+  ConveyorMotor : BOOL;
+  ConveyorSpeed : REAL := 2.0; // m/s 
+  Sensor1 : BOOL;  
+  Sensor2 : BOOL;
+  Sensor3 : BOOL;  
+  Sensor4 : BOOL;
+  Sensor5 : BOOL;
+  Station1Stop : BOOL;
+  Station2Stop : BOOL; 
+  Station3Stop : BOOL;
+END_VAR
+
+| Sensor1 OR Sensor2 OR Sensor3 OR Sensor4 OR Sensor5 |    Station1Stop      Station2Stop      Station3Stop   |
+|-------| |---------------------------------------------|-------|/|-------------|/|-------------|/|-----------( )--- ConveyorMotor
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                                                       |                                                       |
+|                        +-------------+                |                                                       |
+|      ConveyorMotor     |    MOVE     |                |                                                       |
+|------------------------|EN        ENO|----------------|                                                       |
+|                        |             |                |                                                       |
+|      ConveyorSpeed-----|IN        OUT|--- ConveyorSpeedOutput                                                 |
+|                        +-------------+                |                                                       |
+|                                                       |                                                       |
+END_PROGRAM
+```
+
+Explanation:
+- The conveyor motor (`ConveyorMotor`) is controlled based on the state of the five sensors (`Sensor1` to `Sensor5`) and the stop buttons at each station (`Station1Stop`, `Station2Stop`, `Station3Stop`).
+- If any of the sensors detect an object (`Sensor1 OR Sensor2 OR Sensor3 OR Sensor4 OR Sensor5`), and none of the station stop buttons are pressed (`NOT(Station1Stop OR Station2Stop OR Station3Stop)`), the conveyor motor is turned on.
+- The conveyor speed setpoint (`ConveyorSpeed`) is set to 2 m/s and is moved to the output (`ConveyorSpeedOutput`) using the `MOVE` function block when the conveyor motor is running.
+- The program assumes that the necessary I/O variables (`Sensor1` to `Sensor5`, `Station1Stop` to `Station3Stop`, and `ConveyorSpeedOutput`) are properly linked to the physical inputs and outputs of the PLC.
+
+This Ladder Diagram program provides the basic control logic for the conveyor belt system based on the given requirements. Additional functionality, such as fault handling, can be added as needed.

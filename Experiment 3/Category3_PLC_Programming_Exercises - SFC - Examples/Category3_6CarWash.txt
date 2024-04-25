@@ -1,0 +1,55 @@
+The SFC for an automatic car wash station, considering the conditions mentioned, would look similar to the representation below. This chart is simplified to present the process steps clearly.
+
+```
+(Start of Sequential Function Chart)
+
+       +-----------------<--------------------------+
+       |                                            |
+       |                                            |
++=============+                                     |
+||           ||                                     |
+||  Initial  ||                                     |
+||           ||                                     |
++=============+                                     |
+       |                                            |
+       |                                            |
+       + Car Detected                               |
+       |                                            |
+       |                                            |
++----------------+   +------+-------------+-------+ |
+|   CheckSafety  |   |  N   | HumanDetect | Alarm | |
+|                |---|      |             |       | |
+|                |   |      +-------------+-------+ |
++----------------+   +------+-------------+-------+ |
+       |                |  Y  |             |       |
+       |                +-----+             |       |
+       |                                     |       |
+       |                                     |       |
++----------------+   +------+-------------+-------+ |
+|   StartWash    |---|  N   |  HumanDetect| Alarm | |
+|                |   |      |             |       | |
++----------------+   |      +-------------+-------+ |
+       |             |                              |
+       |             |                              |
+       + NOT Car Detected                          |
+       |                                            |
+       |                                            |
+       +----------------->--------------------------+
+
+(End of Sequential Function Chart)
+```
+
+This chart assumes:
+- The `Initial` step is the system's idle status waiting for a car.
+- Upon detecting a car (`Car Detected` transition), the system checks for human presence (`CheckSafety`).
+  - If a human is detected (`HumanDetect`), an alarm is triggered.
+  - If no human is detected, the car wash operation starts (`StartWash`).
+- During the wash, if a human is suddenly detected (`HumanDetect` in `StartWash` action), it triggers the alarm. This condition is carefully monitored throughout the washing process.
+- Once the car is not detected, it implies the washing process is complete, and the system returns to the initial state, ready for the next car.
+
+This is a basic model. The actual implementation may require additional steps or transitions, such as:
+- Specific washing stages (e.g., pre-wash, soap, rinse, dry).
+- System maintenance checks.
+- Emergency stops and manual override mechanisms.
+
+Additionally, conditions and actions (`N`, `Y`, `HumanDetect`, `Alarm`, `StartWash`) denote simplified logic expressions and actions, respectively. In practice, each of these would correspond to specific sensors (for car and human detection) and program logic to handle the conditions and trigger the necessary outputs (e.g., starting the wash cycle, activating an alarm).

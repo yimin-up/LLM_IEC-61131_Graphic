@@ -1,0 +1,127 @@
+Here's a self-contained IEC 61131-3 sequential function chart for the coffee machine:
+
+```
+(Start of Sequential Function Chart)
+
+       +----------------------<------------------------+
+       |                                               |
+       |                                               |
++============+                                         |
+||          ||                                         |
+|| Initial  ||                                         |
+||          ||                                         |
++============+                                         |
+       |                                               |
+       |                                               |
+       + Button2                                       |
+       |                                               |
+       |                                               |
++---------------+   +------+------------+--------+     |
+|   Selection   |   |  N   |            |        |     |
+|               |---|      |            |        |     |
+|               |   |      |            |        |     |
++---------------+   +------+------------+--------+     |
+       |                                               |
+       |                                               |
+   +---+ Button3                                       |
+   |   |                                               |
+   |   |                                               |
+   |   |   +---------------+   +------+------------+--------+
+   |   |   |  OpenValves   |   |  N   | CoffeeValve        |
+   |   +-->|               |---|      | MilkValve          |
+   |       |               |   |      |                    |
+   |       +---------------+   +------+------------+--------+
+   |           |                                               
+   |           |                                               
+   |           + MixerTankMax                                 
+   |           |                                               
+   |           |                                               
+   |       +---------------+   +------+------------+--------+
+   |       |  CloseValves  |   |  N   | NOT CoffeeValve     |
+   |       |               |---|      | NOT MilkValve       |
+   |       |               |   |      |                    |
+   |       +---------------+   +------+------------+--------+
+   |           |                                               
+   |           |                                               
+   |           + MixerTimer(4s)                                
+   |           |                                               
+   |           |                                               
+   |       +---------------+   +------+------------+--------+
+   |       |  OpenOutput   |   |  N   | OutputValve        |
+   |       |               |---|      |                    |
+   |       |               |   |      |                    |
+   |       +---------------+   +------+------------+--------+
+   |           |                                               
+   |           |                                               
+   |           + MixerTankMin                                 
+   |           |                                               
+   |           |                                               
+   |           +----------------------->-----------------------+
+   |                                                           
+   |                                                           
+   + Button4                                                   
+   |                                                           
+   |                                                           
+   |   +---------------+   +------+------------+--------+     
+   |   |  OpenCoffee   |   |  N   | CoffeeValve        |     
+   +-->|               |---|      |                    |     
+       |               |   |      |                    |     
+       +---------------+   +------+------------+--------+     
+           |                                               
+           |                                               
+           + MixerTankMax                                 
+           |                                               
+           |                                               
+       +---------------+   +------+------------+--------+
+       |  CloseCoffee  |   |  N   | NOT CoffeeValve     |
+       |               |---|      |                    |
+       |               |   |      |                    |
+       +---------------+   +------+------------+--------+
+           |                                               
+           |                                               
+           + MixerTimer(4s)                                
+           |                                               
+           |                                               
+       +---------------+   +------+------------+--------+
+       |  OpenOutput   |   |  N   | OutputValve        |
+       |               |---|      |                    |
+       |               |   |      |                    |
+       +---------------+   +------+------------+--------+
+           |                                               
+           |                                               
+           + MixerTankMin                                 
+           |                                               
+           |                                               
+           +----------------------->-----------------------+
+
++---------------+   
+|  EmergencyStop|   
+|               |   
+|               |   
++---------------+   
+       ^
+       |
+       + Button1
+
+(End of Sequential Function Chart)
+```
+
+This sequential function chart represents the operation of the coffee machine based on the provided requirements. It includes the following steps:
+
+1. The machine starts in the initial state.
+2. Pressing Button2 initiates the selection process.
+3. If Button3 is pressed (Coffee and Milk):
+   - Open the coffee and milk valves to fill the mixer tank.
+   - When the mixer tank reaches the maximum level, close the valves.
+   - Start the mixer timer for 4 seconds.
+   - After the mixing is complete, open the output valve to dispense the coffee.
+   - When the mixer tank reaches the minimum level, return to the selection state.
+4. If Button4 is pressed (Coffee only):
+   - Open the coffee valve to fill the mixer tank.
+   - When the mixer tank reaches the maximum level, close the coffee valve.
+   - Start the mixer timer for 4 seconds.
+   - After the mixing is complete, open the output valve to dispense the coffee.
+   - When the mixer tank reaches the minimum level, return to the selection state.
+5. If Button1 (Emergency Stop) is pressed at any point, the machine immediately halts and enters the EmergencyStop state.
+
+Note: The transitions and actions are represented using ASCII art, and the specific syntax may need to be adapted to the actual IEC 61131-3 programming environment.

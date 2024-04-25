@@ -1,0 +1,79 @@
+Given the requirements for creating a batch recipe for 100kg of cocoa milk and incorporating the ingredients (milk, water, liquid sugar, and cocoa), as well as specifying the use of a mixing and blending vessel that can both stir and heat, here is a simplified version of both the recipe and a Sequential Function Chart (SFC) program according to IEC 61131-3 standards. Note that we will need to define some parameter values for the ingredients and process steps to make this practical.
+
+### Cocoa Milk Recipe (for 100kg batch):
+- Milk: 60kg
+- Water: 20kg
+- Liquid Sugar: 10kg
+- Cocoa: 10kg
+
+#### Process Temperatures:
+- Initial Mixing Temperature: 20°„C (ambient)
+- Final Mixing Temperature: 75°„C (to properly dissolve and blend the ingredients)
+
+### Sequential Function Chart for the Mixing Process
+
+We will now outline the SFC for the process control of mixing the ingredients. This ASCII art SFC will include stages like ingredient addition, mixing, and heating. 
+
+```
++----------------+     +----------------+     +----------------+     +----------------+
+|                |     |                |     |                |     |                |
+|  Add_Ingredients   |-->|    Mixing     |-->|    Heating      |-->|    Finished     |
+|                |     |                |     |                |     |                |
++----------------+     +----------------+     +----------------+     +----------------+
+       |                       |                       |                       |
+       v                       v                       v                       v
+    {Step 1}                {Step 2}                {Step 3}                {Step 4}
+```
+
+#### Steps Description:
+1. **Add_Ingredients**: Open valves to sequentially add milk, water, liquid sugar, and cocoa to the mixing and blending vessel.
+2. **Mixing**: Start the stirrer to mix the ingredients at ambient temperature for a specified duration to achieve a uniform mixture.
+3. **Heating**: Heat the mixture to 75°„C while continuing stirring to ensure complete dissolution of cocoa and sugar.
+4. **Finished**: Once the target temperature is reached and maintained for a specified period, stop heating and mixing, and transfer the batch for the next process step (could be cooling, packaging, etc.).
+
+#### Note:
+This ASCII art and description aim to provide a high-level conceptual understanding. In practice, each step would be detailed with specific IEC 61131-3 constructs like transitions (conditions for moving from one step to the next), actions (what to execute in each step), and specific Logic (Ladder Logic, Structured Text, Function Block Diagram, etc.) to control actuators (valves, heaters, mixers).
+
+### Parameters & Logic (Pseudocode):
+
+```pseudocode
+// Define Parameters
+milk := 60; // kg
+water := 20; // kg
+liquid_sugar := 10; // kg
+cocoa := 10; // kg
+target_temp := 75; // °„C
+
+// Define Logic Pseudocode for Steps:
+
+// Add_Ingredients
+open_valve(milk);
+wait_until(milk == 60);
+open_valve(water);
+wait_until(water == 20);
+open_valve(liquid_sugar);
+wait_until(liquid_sugar == 10);
+open_valve(cocoa);
+wait_until(cocoa == 10);
+close_all_valves();
+go_to_next_step();
+
+// Mixing
+start_stirrer();
+wait(30min); // Example mixing duration
+go_to_next_step();
+
+// Heating
+start_heater();
+while(current_temp < target_temp){
+  maintain_stirring();
+}
+stop_heater();
+go_to_next_step();
+
+// Finished
+stop_stirrer();
+notify_completion();
+```
+
+Note: This pseudocode is simplified for conceptual understanding. IEC 61131-3 compatible programming environments would require translating these process steps into actual programming constructs such as Structured Text (ST), Ladder Diagram (LD), or Function Block Diagram (FBD) within an SFC framework.

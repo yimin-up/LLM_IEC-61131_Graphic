@@ -1,0 +1,55 @@
+Here's an SFC program for an automatic car wash station based on your requirements:
+
+       +-----------+
+       |   START   |
+       +-----------+
+             |
+             |
+             v
+    +-------------------+
+    |   Car Detected?   |
+    +-------------------+
+      |YES         |NO
+      |            |
+      v            |
++-------------+    |
+|  Human       |   |
+|  Detected?   |   |
++-------------+    |
+  |YES    |NO      |
+  |       |        |
+  |       v        |
+  |   +-------------+
+  |   |    Wash     |
+  |   |     Car     |
+  |   +-------------+
+  |        |
+  |        v
+  |   +-------------+
+  |   |  Washing    |
+  |   | Completed?  |
+  |   +-------------+
+  |     |YES   |NO
+  |     |      |
+  |     |      |
+  v     |      |
++-------------+ |
+|    Alarm     | |
++-------------+ |
+                |
+                |
+                v
+           +-----------+
+           |   STOP    |
+           +-----------+
+
+Actions:
+- Wash Car: Activate car wash sequence (soap, rinse, dry)
+- Alarm: Activate alarm to alert operator about human presence
+
+Transitions:
+- Car Detected?: Sensor input to detect car presence
+- Human Detected?: Sensor input to detect human presence in the wash area
+- Washing Completed?: Timer or sensor input to determine if washing is finished
+
+Note: This is a simplified SFC and additional steps, actions, and transitions may be needed for a complete implementation. Safety measures, manual override, and error handling should also be considered in a real-world application.

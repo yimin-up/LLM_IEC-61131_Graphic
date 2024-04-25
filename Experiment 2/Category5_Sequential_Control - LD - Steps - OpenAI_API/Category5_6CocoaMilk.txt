@@ -1,0 +1,83 @@
+Given the production of 100kg of cocoa milk, which involves mixing milk, water, liquid sugar, and cocoa in a mixing and blending vessel with capabilities for stirring and heating, let's establish the ISA-88 compliant batch recipe along with the automation control logic using IEC 61131-3 Ladder Diagram (LD).
+
+### ISA-88 Batch Recipe for 100kg Cocoa Milk Production:
+
+**Ingredients:**
+- Milk: 60kg
+- Water: 20kg
+- Liquid Sugar: 10kg
+- Cocoa: 10kg
+
+**Process Parameters:**
+- Mixing Temperature: 75°„C
+- Mixing Time: 30 minutes
+
+**Equipment:**
+- Mixing and Blending Vessel
+
+  Capabilities:
+  - Stir
+  - Heat
+
+**Process Sequence:**
+1. Fill vessel with water.
+2. Heat water to 50°„C before adding other ingredients.
+3. Add milk.
+4. Add liquid sugar.
+5. Add cocoa.
+6. Heat mixture to 75°„C.
+7. Stir mixture while maintaining temperature at 75°„C for 30 minutes.
+8. Cool down the mixture to 25°„C.
+9. Discharge the product.
+
+Now, let's create a simplified Ladder Diagram program for steps 1 to 9 above, focusing on the heating and stirring parts with typical inputs and outputs.
+
+Step 1:####
+Inputs and Outputs Listing:
+- Inputs:
+  - I1: Water level sensor (True when optimal level is reached)
+  - I2: Temperature sensor (Value in °„C)
+- Outputs:
+  - Q1: Water valve (True opens the valve)
+  - Q2: Heater (True activates the heater)
+  - Q3: Stirrer (True activates the stirrer)
+- Internal/Local:
+  - M1: Process step memory
+
+Standard Symbols:
+- |--| (Contact) for inputs and internal memory flags.
+- (--|/|--): Negated Contact
+- ( ) (Coil) for outputs and memory flags.
+
+Step 2:####
+A simplified LD program sketch for steps 1, 2, 6, 7 (due to space constraints), and typical parameter values:
+
+```
+Rung 1 (Fill vessel with water):
+|--I1--|/|--|----(Q1)----
+  
+Rung 2 (Heat water to 50°„C):
+|--I1--|----|/|--I2 < 50 |--|----(Q2)----
+
+Rung 6 (Heat mixture to 75°„C after ingredients are added):
+|--M1--|----|/|--I2 < 75 |--|----(Q2)----
+
+Rung 7 (Stir mixture for 30 minutes at 75°„C):
+|--I2 >= 75|--|----(Q3)----
+```
+
+Step 3:####
+Logical expressions for each relevant rung:
+- Rung 1: If water level is not reached (I1 is false), open water valve (Q1).
+- Rung 2: If water level reached (I1 is true) and temperature < 50°„C, turn on heater (Q2).
+- Rung 6: After ingredients are added (M1 is true), and temperature < 75°„C, turn on heater (Q2) to reach 75°„C.
+- Rung 7: If temperature is >= 75°„C, activate stirrer (Q3).
+
+Step 4:####
+The state machine of this Ladder Diagram transitions between process steps based on sensor inputs and internal flags. It starts with filling the vessel, heating water, adding ingredients, heating the mixture to the desired temperature, and maintaining that temperature with stirring. Each step must be properly sequenced and completed before moving to the next, ensuring that the product meets quality standards.
+
+Step 5:####
+Check according to IEC 61131 standard:
+- The LD respects basic IEC 61131-3 structures: using contacts for inputs, coils for outputs, and employing negated contacts for branching conditions.
+- Each rung addresses a distinct step in the batch process, promoting readability and maintainability.
+- This simplified version should be expanded within a real PLC project to include timers for the mixing duration, additional conditions for safety, and signals to indicate process completion or error states.

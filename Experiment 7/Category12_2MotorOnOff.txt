@@ -1,0 +1,10 @@
+The corresponding Ladder Diagram for the given Sequential Function Chart:
+```
+(Start of Ladder Diagram)
+
+|                 StartButton      Motor       StopButton |
++------[ ]----------[ ]-----------( )----------[ ]-------+
+
+(End of Ladder Diagram)
+```
+This diagram reads as follows: The Motor coil will be energized (i.e., the motor will start) when the StartButton is pressed, provided the StopButton has not been pressed. This simple control logic allows for starting the motor with the StartButton and stops it with the StopButton.
